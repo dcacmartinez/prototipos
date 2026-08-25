@@ -1,0 +1,1301 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Digitalización de Venta — Porcinos</title>
+<link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;0,900;1,400;1,700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20,300,0,0" rel="stylesheet"/>
+<style>
+/* ══════════════════════════════════════════════════════════════
+   TOKENS — v2, fieles al Figma y a la implementación real.
+   Dos fuentes, en este orden de autoridad:
+   1) CSS exportado del Figma "Mis Operaciones - Faena - Ventas"
+      (mis_ops_faena_web.css / _app.css) → paleta y Typescale reales.
+   2) react-stage.dcac.ar › Operaciones › Digitalizar Venta › Faena
+      (estilos computados del formulario real) → medidas del form:
+      H1 Lato 800 40/48 brand · section title 18/21.6 bold #808080 ·
+      label de campo 16 bold brand · input h46 r8 pad10 · CTA de paso
+      verde #55A32A r8 · CTA de intro brand h48 · secciones blancas r8 pad 40.
+   No se usa ningún hex, radio, tamaño de fuente o peso fuera de este bloque.
+   ══════════════════════════════════════════════════════════════ */
+:root{
+  --brand:#3179A7; --brand-dark:#1C4E79; --brand-light:#DAEDF7; --brand-mid:#BFD5E4; --brand-dcp:#1795D0;
+  --bg-page:#EDEDED; --bg-1:#FFFFFF; --bg-2:#F8F8F8; --bg-3:#E8E8E8;
+  --border-tertiary:#EDEDED; --border-secondary:#C0C0C0; --border-hair:#E8E8E8;
+  --content-primary:#555555; --content-secondary:#666666; --content-tertiary:#888888;
+  --content-quaternary:#A4A4A4; --content-section:#808080; --content-disabled:#C0C0C0;
+  --positive:#54A228; --positive-strong:#55A32A; --positive-dark:#1E721E; --positive-bg:#E0EFD8; --positive-border:#CAE2BD;
+  --warning:#A3972A; --warning-bg:#F7F5E7; --warning-border:#E7E0B4;
+  --negative:#E55050; --negative-dark:#C03030; --negative-bg:#FDEFEF; --negative-border:#F8CECE;
+  --alert-info-bg:#F4F8FA; --alert-info-text:#153346;
+  --alert-warn-bg:#FDFCF9; --alert-warn-text:#4B4106;
+  --alert-neg-bg:#FEF7F7; --alert-neg-text:#612929;
+  /* Typescale — Figma "Typescale/*" + medidas del form real */
+  --fs-h1:40px; --lh-h1:48px;          /* H1 del form real (Lato 800, brand) */
+  --fs-h4:18px; --lh-h4:22px;          /* título de sección del form real (#808080) */
+  --fs-field:16px; --lh-field:24px;    /* label e input del form real */
+  --fs-display:20px; --fs-title:18px; --fs-heading:16px; --fs-body1:13px; --fs-label:14px; --fs-sub:12px; --fs-caption:11px; --fs-micro:10px; --fs-nano:9px;
+  --lh-title2:19px; --lh-title3:17px; --lh-body2:14px; --lh-caption:13px;
+  --fw-regular:400; --fw-semibold:600; --fw-bold:700; --fw-heavy:800; --fw-black:900;
+  --sp-xxs:2px; --sp-xs:4px; --sp-sm:8px; --sp-md:12px; --sp-lg:16px; --sp-xl:24px; --sp-xxl:32px; --sp-xxxl:40px;
+  --r4:4px; --r6:6px; --r8:8px; --r12:12px; --r16:16px; --r999:999px;
+  --h-input:46px; --h-btn:44px; --h-btn-lg:48px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Lato',sans-serif;font-size:var(--fs-label);color:var(--content-primary);background:var(--bg-page);min-height:100vh}
+.ms{font-family:'Material Symbols Outlined';font-weight:300;font-style:normal;line-height:1;letter-spacing:normal;text-transform:none;display:inline-block;white-space:nowrap;word-wrap:normal;direction:ltr;vertical-align:middle}
+/* tamaños de ícono — únicamente escala documentada: 16 · 20 · 24 · 32 · 48 */
+.ms-16{font-size:16px!important}.ms-20{font-size:20px!important}.ms-24{font-size:24px!important}.ms-32{font-size:32px!important}.ms-48{font-size:48px!important}
+
+/* ── tx.* — tokens semánticos de texto ── */
+.tx-title{font-size:var(--fs-title);font-weight:var(--fw-black);color:var(--content-primary)}
+.tx-card-title{font-size:var(--fs-heading);font-weight:var(--fw-black);color:var(--content-primary)}
+.tx-heading{font-size:var(--fs-heading);font-weight:var(--fw-bold);color:var(--content-primary)}
+.tx-label{font-size:var(--fs-label);font-weight:var(--fw-bold);color:var(--content-primary)}
+.tx-body-muted{font-size:var(--fs-label);font-weight:var(--fw-regular);color:var(--content-tertiary)}
+.tx-sublabel{font-size:var(--fs-sub);font-weight:var(--fw-bold);color:var(--content-primary)}
+.tx-section-label{font-size:var(--fs-sub);font-weight:var(--fw-bold);color:var(--content-tertiary);text-transform:uppercase;letter-spacing:.05em}
+.tx-overline{font-size:var(--fs-micro);font-weight:var(--fw-bold);color:var(--content-tertiary);text-transform:uppercase;letter-spacing:.08em}
+.tx-caption{font-size:var(--fs-caption);color:var(--content-tertiary)}
+
+/* ── Header web (BackHeader adaptado a navegación de escritorio: 60px, bg-1, borderBottom borderTertiary) ── */
+.hdr{background:var(--bg-1);border-bottom:1px solid var(--border-tertiary);height:60px;display:flex;align-items:center;padding:0 var(--sp-xl);position:relative;z-index:120}
+.logo{font-size:var(--fs-display);font-weight:var(--fw-bold);color:var(--brand);text-decoration:none;margin-right:var(--sp-xxl);white-space:nowrap}
+.hdr-links{display:flex;align-items:center;gap:var(--sp-xs);flex:1;height:100%}
+.hdr-item{position:relative;height:100%;display:flex;align-items:center;padding:0 var(--sp-md);cursor:pointer}
+.hdr-item .lbl{font-size:var(--fs-sub);font-weight:var(--fw-bold);color:var(--content-tertiary);text-transform:uppercase;letter-spacing:.05em;display:flex;align-items:center;gap:var(--sp-xxs)}
+.hdr-item .lbl .ms{color:var(--content-tertiary)}
+.hdr-item:hover .lbl,.hdr-item:hover .lbl .ms{color:var(--brand)}
+.hdr-actions{display:flex;align-items:center;gap:var(--sp-sm)}
+
+/* ── Btn — primary / secondary / tertiary × brand / destructive (Design_dCaC.md § Componentes › Btn) ── */
+/* Btn real del producto: 16px, radio 8, padding 10/20, alto 44 (48 en el CTA de bloque) */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:var(--sp-sm);padding:10px 20px;min-height:var(--h-btn);border-radius:var(--r8);border:none;cursor:pointer;font-family:inherit;font-size:var(--fs-field);font-weight:var(--fw-bold);white-space:nowrap}
+.btn .ms{font-size:18px!important} /* tamaño de ícono específico de Btn documentado */
+.btn-primary{background:var(--brand);color:#fff}
+/* CTA de avance de paso — en el form real es verde, no azul */
+.btn-next{background:var(--positive-strong);color:#fff}
+.btn-next:disabled{background:var(--border-secondary);color:#fff;opacity:.75;cursor:default}
+.btn-primary:disabled{background:var(--border-secondary);color:var(--content-tertiary);opacity:.75;cursor:default}
+.btn-secondary{background:var(--brand-light);color:var(--brand-dark)}
+.btn-secondary:disabled{background:var(--bg-2);color:var(--content-tertiary);opacity:.75;cursor:default}
+.btn-tertiary{background:transparent;color:var(--brand)}
+.btn-tertiary:disabled{background:transparent;color:var(--content-tertiary);opacity:.75;cursor:default}
+.btn-block{width:100%}
+.btn-lg{font-size:var(--fs-field);padding:var(--sp-md) var(--sp-xl);min-height:var(--h-btn-lg)}
+
+/* ── Dropdown de navegación (patrón adicional, respeta radios/tipografía/espaciado documentados) ── */
+.dd{display:none;position:absolute;top:100%;left:0;background:var(--bg-2);border:1px solid var(--border-tertiary);border-radius:var(--r8);min-width:230px;z-index:150;padding:var(--sp-xs) 0}
+.dd.open{display:block}
+.dd-item{padding:var(--sp-sm) var(--sp-md);font-size:var(--fs-label);color:var(--content-primary);cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:var(--sp-sm);position:relative}
+.dd-item:hover{background:var(--brand-light);color:var(--brand-dark)}
+.dd-item.disabled{color:var(--content-tertiary);cursor:default}
+.dd-item.disabled:hover{background:transparent;color:var(--content-tertiary)}
+.dd-item .ms{color:var(--content-tertiary)}
+.dd-item:hover .ms{color:var(--brand-dark)}
+.dd-note{font-size:var(--fs-caption);color:var(--content-tertiary);font-weight:var(--fw-regular)}
+.dd-badge{background:var(--brand-light);color:var(--brand-dark);border-radius:var(--r999);padding:1px var(--sp-sm);font-size:9px;font-weight:var(--fw-bold);text-transform:uppercase}
+.dd-sub{display:none;position:absolute;top:calc(var(--sp-xs) * -1);left:100%;background:var(--bg-1);border:1px solid var(--border-tertiary);border-radius:var(--r8);min-width:230px;padding:var(--sp-xs) 0} /* alterna a bg-1 (blanco) porque su padre .dd ya usa bg-2 — nunca dos superficies iguales contiguas */
+.dd-sub .dd-sub{background:var(--bg-2)} /* un 3er nivel vuelve a alternar a bg-2, porque su padre inmediato (el .dd-sub de arriba) ya es bg-1 */
+.dd-item.has-sub:hover .dd-sub{display:block}
+
+/* ── Screen / page ── */
+.screen{display:none}.screen.on{display:block}
+.page{padding:var(--sp-xxl) var(--sp-xl) 80px;min-height:calc(100vh - 60px);max-width:1256px;margin:0 auto}
+/* H1 real del form (react-stage): Lato 800 40/48 en color brand, con 20px de aire abajo */
+.page-title{font-size:var(--fs-h1);line-height:var(--lh-h1);font-weight:var(--fw-heavy);color:var(--brand);padding-bottom:20px}
+
+/* ── Card (radio 8 — el real del producto; las secciones del form son bloques blancos de padding 40) ── */
+.card{background:var(--bg-1);border-radius:var(--r8);border:1px solid var(--border-tertiary)}
+.srow{display:grid;grid-template-columns:294px 1fr;padding:var(--sp-xxxl);border-bottom:1px solid var(--border-tertiary);gap:var(--sp-xl)}
+/* título de sección (columna izquierda de cada bloque): H4 real 18/21.6 bold #808080 */
+.srow > div:first-child > .tx-heading,
+.srow > div:first-child > div.tx-body-muted{font-size:var(--fs-h4);line-height:var(--lh-h4);font-weight:var(--fw-bold);color:var(--content-section)}
+.srow:last-child{border-bottom:none}
+.sfields{display:flex;flex-direction:column;gap:var(--sp-lg)}
+
+/* ── Campos de formulario ── */
+.fgroup{display:flex;gap:var(--sp-lg);flex-wrap:wrap;align-items:flex-start}
+.field{display:flex;flex-direction:column;gap:var(--sp-xs)}
+.fw{flex:1 1 100%}.fh{flex:1 1 calc(50% - 8px);min-width:180px}.ft{flex:1 1 calc(33% - 11px);min-width:150px}.fauto{}
+/* label real del form: Lato 700 16/24 en color brand (no gris) */
+.flabel{font-size:var(--fs-field);font-weight:var(--fw-bold);color:var(--brand);display:flex;align-items:center;gap:var(--sp-xs);line-height:var(--lh-field)}
+.req{color:var(--brand)}
+.inp{height:var(--h-input);border:1px solid var(--border-secondary);border-radius:var(--r8);padding:0 var(--sp-md);font-family:inherit;font-size:var(--fs-field);color:var(--content-secondary);background:var(--bg-1);width:100%;outline:none}
+.inp:focus{border-color:var(--brand)}
+.inp.pre{background:var(--brand-light);border-color:var(--brand-mid)}
+.inp.partial{background:var(--warning-bg);border-color:var(--warning-border)}
+.inp.err{border-color:var(--negative);background:var(--negative-bg)}
+.inp-suf{display:flex;align-items:center;gap:var(--sp-sm)}
+.inp-suf .suf{font-size:var(--fs-field);color:var(--content-tertiary);white-space:nowrap;padding:0 var(--sp-sm)}
+.sel{height:var(--h-input);border:1px solid var(--border-secondary);border-radius:var(--r8);padding:0 32px 0 var(--sp-md);font-family:inherit;font-size:var(--fs-field);color:var(--content-secondary);background:var(--bg-1) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23888888'/%3E%3C/svg%3E") no-repeat right var(--sp-md) center;width:100%;outline:none;appearance:none;cursor:pointer}
+.sel:focus{border-color:var(--brand)}
+.sel.pre{background-color:var(--brand-light);border-color:var(--brand-mid)}
+.sel.partial{background-color:var(--warning-bg);border-color:var(--warning-border)}
+.sel.err{border-color:var(--negative)}
+
+/* ── TabSwitcher (Design_dCaC.md § Componentes › TabSwitcher) — reutilizado como selector segmentado en formularios ── */
+.tabsw{display:inline-flex;background:var(--bg-1);border:1px solid var(--border-tertiary);border-radius:var(--r8);padding:var(--sp-xs);gap:var(--sp-xxs)}
+.tabsw-item{padding:var(--sp-sm) var(--sp-md);border-radius:var(--r4);font-family:inherit;font-size:var(--fs-sub);font-weight:var(--fw-regular);color:var(--content-tertiary);background:transparent;border:none;cursor:pointer;white-space:nowrap}
+.tabsw-item.on{background:var(--brand-light);color:var(--brand-dark);font-weight:var(--fw-bold)}
+
+/* ── Valor bloqueado (campo fijo, no editable) ── */
+.disp-val{height:var(--h-input);border:1px solid var(--border-secondary);border-radius:var(--r8);padding:0 var(--sp-md);display:flex;align-items:center;gap:var(--sp-xs);font-size:var(--fs-field);color:var(--content-secondary);background:var(--bg-2);width:100%}
+.disp-val .ms{color:var(--content-tertiary)}
+
+/* ── Tablas anidadas (radio 8, un escalón bajo la card de radio 16) ── */
+.ptable,.jtable{width:100%;border-collapse:collapse;border:1px solid var(--border-tertiary);border-radius:var(--r8);overflow:hidden}
+.ptable th,.jtable th{background:var(--bg-2);padding:var(--sp-sm) var(--sp-md);text-align:left;font-size:var(--fs-caption);font-weight:var(--fw-bold);color:var(--content-secondary);border-bottom:1px solid var(--border-tertiary)}
+.ptable td,.jtable td{padding:var(--sp-sm) var(--sp-sm);border-bottom:1px solid var(--border-tertiary);vertical-align:middle}
+.ptable tr:last-child td,.jtable tr:last-child td{border-bottom:none}
+/* inputs/selects dentro de una tabla ya anidada bajo la card (16→8 la tabla): un escalón más abajo → 4 */
+.ptable .inp,.ptable .sel,.jtable .inp,.jtable .sel{height:36px;font-size:var(--fs-sub);border-radius:var(--r4)}
+.ptable .del-btn{background:none;border:none;cursor:pointer;color:var(--content-tertiary);display:flex;padding:var(--sp-xs)}
+.ptable .del-btn:hover{color:var(--negative)}
+.ptable-empty{padding:var(--sp-lg);text-align:center;font-size:var(--fs-sub);color:var(--content-tertiary);border:1px solid var(--border-tertiary);border-top:none;border-radius:0 0 var(--r8) var(--r8)}
+
+.sum-bar{background:var(--bg-1);border:1px solid var(--border-tertiary);border-radius:var(--r8);padding:var(--sp-md) var(--sp-lg);display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--sp-md);flex-wrap:wrap;gap:var(--sp-sm)}
+.sp{font-size:var(--fs-label);font-weight:var(--fw-bold);color:var(--content-primary)}.sp.cat{color:var(--brand)}
+.ssep{color:var(--border-secondary);margin:0 var(--sp-sm);font-weight:var(--fw-regular)}
+
+.cta-bar{display:flex;justify-content:flex-end;margin-top:var(--sp-xl);gap:var(--sp-md)}
+
+/* ── Alert (Design_dCaC.md § Componentes › Alert — variantes info/yellow/red) ── */
+.alert-info{background:var(--alert-info-bg);border:1px solid var(--brand-mid);border-radius:var(--r8);padding:var(--sp-md);display:flex;align-items:flex-start;gap:var(--sp-sm)}
+.alert-info .ms{color:var(--alert-info-text)}
+.alert-info p,.alert-info span.txt{font-size:var(--fs-sub);font-style:italic;color:var(--alert-info-text);line-height:1.4}
+.alert-warn{background:var(--alert-warn-bg);border:1px solid var(--warning-border);border-radius:var(--r8);padding:var(--sp-md);display:flex;align-items:flex-start;gap:var(--sp-sm)}
+.alert-warn .ms{color:var(--alert-warn-text)}
+.alert-warn p,.alert-warn span.txt{font-size:var(--fs-sub);font-style:italic;color:var(--alert-warn-text);line-height:1.4}
+.alert-neg{background:var(--alert-neg-bg);border:1px solid var(--negative-border);border-radius:var(--r8);padding:var(--sp-md);display:flex;align-items:flex-start;gap:var(--sp-sm)}
+.alert-neg .ms{color:var(--alert-neg-text)}
+.alert-neg p,.alert-neg span.txt{font-size:var(--fs-sub);font-style:italic;color:var(--alert-neg-text);line-height:1.4}
+
+/* ── HELP / casuística (link puntual al panel flotante) ── */
+.hlp{background:none;border:none;cursor:pointer;display:inline-flex;align-items:center;padding:0}
+.hlp .ms{color:var(--warning)}
+.hlp:hover .ms{color:#8a7a0b}
+.tag-note{font-size:var(--fs-caption);color:var(--content-tertiary);font-weight:var(--fw-regular)}
+
+/* ── Home de digitalización (intro) ── */
+/* Intro real: contenedor blanco padding 40 · 3 tiles bg-2 radio 8 padding 24 · franja legal bg-3 padding 40 */
+.benefit-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--sp-xl);padding:var(--sp-xxxl)}
+.benefit-card{padding:var(--sp-xl);background:var(--bg-2);border-radius:var(--r8)}
+.benefit-title{font-size:var(--fs-field);line-height:var(--lh-field);font-weight:var(--fw-bold);color:var(--content-primary);margin:var(--sp-md) 0 var(--sp-sm)}
+.benefit-list{list-style:none}
+.benefit-list li{color:var(--content-tertiary);font-size:var(--fs-label);padding:var(--sp-xxs) 0 var(--sp-xxs) 20px;position:relative;line-height:1.5}
+.benefit-list li::before{content:'check';font-family:'Material Symbols Outlined';font-weight:300;position:absolute;left:0;top:3px;font-size:14px;color:var(--positive)}
+.legal-box{background:var(--bg-3);border:none;border-radius:var(--r8);padding:var(--sp-xxxl);margin-top:var(--sp-lg)}
+.legal-notes{list-style:disc;padding-left:20px}
+.legal-notes li{font-size:var(--fs-label);color:var(--content-secondary);margin-bottom:var(--sp-xs)}
+.legal-notes a{color:var(--brand)}
+.choice-card{border:1px solid var(--border-tertiary);border-radius:var(--r8);padding:var(--sp-xl)}
+.choice-card .ms{color:var(--content-tertiary)}
+.choice-title{font-size:var(--fs-heading);font-weight:var(--fw-bold);color:var(--content-primary);margin:var(--sp-md) 0 var(--sp-xs)}
+.choice-sub{font-size:var(--fs-sub);color:var(--content-tertiary);margin-bottom:var(--sp-lg);line-height:1.4}
+
+/* ── Éxito (sin colores fuera de paleta: fondo bgPage + ícono en positive) ── */
+.success-wrap{min-height:calc(100vh - 60px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:var(--sp-lg);padding:var(--sp-xxl);text-align:center}
+.success-icon{width:64px;height:64px;background:var(--positive-bg);border:1px solid var(--positive-border);border-radius:var(--r999);display:flex;align-items:center;justify-content:center}
+.success-icon .ms{color:var(--positive)}
+.success-title{font-size:var(--fs-title);font-weight:var(--fw-black);color:var(--content-primary)}
+.success-sub{font-size:var(--fs-label);color:var(--content-tertiary);max-width:480px;line-height:1.6}
+.success-actions{display:flex;flex-direction:column;gap:var(--sp-sm);width:100%;max-width:360px;margin-top:var(--sp-sm)}
+
+/* ── Barra de progreso del wizard (dots tipo Badge: positive=hecho, brand=actual, borderSecondary=pendiente) ── */
+.form-progress{background:var(--bg-1);border:1px solid var(--border-tertiary);border-radius:var(--r8);padding:var(--sp-md) var(--sp-lg);display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--sp-md)}
+.fp-left{display:flex;align-items:center;gap:var(--sp-md)}
+.fp-steps{display:flex;align-items:center;gap:var(--sp-xs)}
+.fp-step{width:24px;height:6px;border-radius:var(--r999);background:var(--border-secondary)}
+.fp-step.done{background:var(--positive)}
+.fp-step.current{background:var(--brand)}
+.fp-label{font-size:var(--fs-sub);color:var(--content-secondary)}
+.fp-label strong{color:var(--brand)}
+.fp-nav{display:flex;gap:var(--sp-xs)}
+
+/* ── Alert de precarga DTE (variante dinámica: info = extracción completa, warn = extracción parcial) ── */
+.pre-banner{display:none;border-radius:var(--r8);padding:var(--sp-md) var(--sp-lg);margin-bottom:var(--sp-md);align-items:center;gap:var(--sp-sm);border:1px solid}
+.pre-banner.info{background:var(--alert-info-bg);border-color:var(--brand-mid)}
+.pre-banner.info .ms,.pre-banner.info span.txt{color:var(--alert-info-text)}
+.pre-banner.warn{background:var(--alert-warn-bg);border-color:var(--warning-border)}
+.pre-banner.warn .ms,.pre-banner.warn span.txt{color:var(--alert-warn-text)}
+.pre-banner span.txt{font-size:var(--fs-sub);font-style:italic}
+
+/* ── DTE upload ── */
+.file-chip{background:var(--bg-2);border:1px solid var(--border-tertiary);border-radius:var(--r4);padding:var(--sp-sm) var(--sp-md);display:flex;align-items:center;gap:var(--sp-sm);font-size:var(--fs-sub);margin-bottom:var(--sp-sm)}
+.file-chip .fn{flex:1;font-weight:var(--fw-bold);color:var(--content-primary)}
+.upload-area{border:1px dashed var(--brand-mid);border-radius:var(--r8);padding:var(--sp-lg);display:flex;align-items:center;gap:var(--sp-md);cursor:pointer;background:var(--bg-1)}
+.upload-area .ms{color:var(--brand)}
+.upload-area:hover{background:var(--brand-light)}
+
+/* ── Procesando ── */
+.spinner{width:40px;height:40px;border:3px solid var(--brand-mid);border-top-color:var(--brand);border-radius:var(--r999);animation:spin .8s linear infinite;margin:0 auto var(--sp-lg)}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── Resumen de lotes (agrupación de DTEs por origen/destino/fecha compartidos) ── */
+.lote-card{background:var(--bg-1);border:1px solid var(--border-tertiary);border-radius:var(--r12);margin-bottom:var(--sp-lg);overflow:hidden}
+.lote-head{display:flex;align-items:center;gap:var(--sp-md);padding:var(--sp-lg);flex-wrap:wrap}
+.lote-clickzone{cursor:pointer}
+.lote-clickzone:hover{background:var(--bg-2)}
+.lote-num{width:28px;height:28px;border-radius:var(--r999);background:var(--bg-2);border:1px solid var(--border-secondary);display:flex;align-items:center;justify-content:center;font-size:var(--fs-sub);font-weight:var(--fw-bold);color:var(--content-secondary);flex-shrink:0}
+.lote-date{font-size:var(--fs-label);font-weight:var(--fw-bold);color:var(--brand)}
+.lote-route{font-size:var(--fs-label);font-weight:var(--fw-bold);font-style:italic;color:var(--content-secondary)}
+.lote-summary{background:var(--bg-2);padding:var(--sp-sm) var(--sp-lg);display:flex;gap:var(--sp-md);font-size:var(--fs-sub);font-weight:var(--fw-bold);color:var(--content-secondary);border-top:1px solid var(--border-tertiary);border-bottom:1px solid var(--border-tertiary)}
+.lote-dte-row{display:flex;align-items:center;gap:var(--sp-sm);padding:var(--sp-md) var(--sp-lg);border-bottom:1px solid var(--border-tertiary)}
+.lote-dte-row:last-child{border-bottom:none}
+.lote-dte-row .fn{flex:1;font-weight:var(--fw-bold);font-style:italic;color:var(--brand);cursor:pointer}
+.lote-dte-row .fn:hover{text-decoration:underline}
+.lote-dte-cab{font-size:var(--fs-sub);color:var(--content-secondary);margin-right:var(--sp-lg)}
+.lote-mover{background:none;border:none;color:var(--brand);font-size:var(--fs-sub);font-weight:var(--fw-bold);cursor:pointer;display:flex;align-items:center;gap:2px;font-family:inherit}
+.lote-del{background:none;border:none;color:var(--content-tertiary);cursor:pointer;display:flex;padding:var(--sp-xs);margin-left:var(--sp-xs)}
+.lote-del:hover{color:var(--negative)}
+.lote-card.failed{opacity:.9}
+.lote-fail-note{padding:0 var(--sp-lg) var(--sp-lg);font-size:var(--fs-sub);font-style:italic;color:var(--alert-neg-text)}
+.lote-foot{display:flex;justify-content:flex-end;padding:var(--sp-md) var(--sp-lg);border-top:1px solid var(--border-tertiary)}
+.lote-add{display:flex;align-items:center;justify-content:center;gap:var(--sp-xs);padding:var(--sp-md);color:var(--brand);font-size:var(--fs-sub);font-weight:var(--fw-bold);cursor:pointer;border:1px dashed var(--brand-mid);border-radius:var(--r12);background:var(--bg-1)}
+
+/* ── Estado de extracción (extensión del componente Badge — pill+dot+color semántico igual que Badge,
+   pero con texto de dos palabras en sentence-case: el label de un proceso no es una única palabra corta
+   como pide la spec de Badge, así que se mantiene el resto de la spec y se deja de lado el uppercase) ── */
+.lote-status{display:inline-flex;align-items:center;gap:var(--sp-xxs);padding:var(--sp-xxs) var(--sp-sm);border-radius:var(--r999);font-size:var(--fs-caption);font-weight:var(--fw-bold);font-style:italic;white-space:nowrap;margin-left:auto}
+.lote-status .dot{width:7px;height:7px;border-radius:var(--r999)}
+.lote-status.success{background:var(--positive-bg);border:1px solid var(--positive-border);color:var(--positive)}
+.lote-status.success .dot{background:var(--positive)}
+.lote-status.partial{background:var(--warning-bg);border:1px solid var(--warning-border);color:var(--warning)}
+.lote-status.partial .dot{background:var(--warning)}
+.lote-status.failed{background:var(--negative-bg);border:1px solid var(--negative-border);color:var(--negative)}
+.lote-status.failed .dot{background:var(--negative)}
+
+/* ── Barra de contexto de lote/DTE en Paso 1 y 2 (solo visible cuando se vino por DTE) ── */
+.lote-ctx{display:none;background:var(--bg-2);border:1px solid var(--border-tertiary);border-radius:var(--r8);padding:var(--sp-md) var(--sp-lg);margin-bottom:var(--sp-md);align-items:center;gap:var(--sp-md);flex-wrap:wrap}
+.lote-ctx.on{display:flex}
+.lote-ctx .flex1{flex:1}
+.lote-ctx-dtes{display:flex;gap:var(--sp-md)}
+.dte-chip-link{background:none;border:none;color:var(--brand);font-size:var(--fs-sub);font-weight:var(--fw-bold);cursor:pointer;display:flex;align-items:center;gap:var(--sp-xxs);font-family:inherit}
+.dte-chip-link:hover{color:var(--brand-dark)}
+.dte-preview-pop{display:none;position:absolute;top:calc(100% + var(--sp-xs));right:0;background:var(--bg-1);border:1px solid var(--border-tertiary);border-radius:var(--r8);padding:var(--sp-md);min-width:220px;z-index:200;text-align:left}
+.dte-preview-pop.open{display:block}
+.dte-preview-pop .fn{font-weight:var(--fw-bold);color:var(--content-primary);font-size:var(--fs-sub);margin-bottom:var(--sp-xs);display:flex;align-items:center;gap:var(--sp-xs);font-style:normal}
+.dte-preview-pop .note{font-size:var(--fs-caption);color:var(--content-tertiary);font-style:italic;line-height:1.4}
+.dte-pop-anchor{position:relative}
+
+/* ══ Mis Operaciones — patrón real del Figma "Mis Operaciones - Faena - Ventas" ══
+   Nav de estados : fila centrada, ítem padding 12/24, Lato 600 16/22, activo brand / inactivo #A4A4A4
+   op-card        : radio 12 · franja "Info Tropa" blanca 12/12/12/16 · franja "ID+Sociedad+Estab"
+                    bg-2 8/12/8/16 · cuerpo blanco padding 24 24 24 0 con gap 24 (la columna
+                    izquierda va al ras del borde) · footer bg-2 padding 12                       */
+.tabs-bar{display:flex;align-items:center;justify-content:center;margin-bottom:var(--sp-lg);flex-wrap:wrap}
+.tab{display:flex;align-items:flex-start;gap:2px;padding:12px 24px;color:var(--content-quaternary);font-size:var(--fs-heading);line-height:22px;font-weight:var(--fw-semibold);cursor:pointer;white-space:nowrap}
+.tab.active{color:var(--brand)}
+.tab .cnt{font-size:var(--fs-micro);line-height:16px;font-weight:var(--fw-bold)}
+.op-card{background:var(--bg-1);border-radius:var(--r12);overflow:hidden;margin-bottom:var(--sp-lg)}
+.op-top{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-lg);padding:12px 12px 12px 16px;background:var(--bg-1)}
+.op-desc{display:flex;align-items:center;gap:var(--sp-sm);flex-wrap:wrap}
+.op-desc .seg-1{font-size:var(--fs-heading);line-height:22px;font-weight:var(--fw-regular);color:var(--brand)}
+.op-desc .seg-2{font-size:var(--fs-heading);line-height:var(--lh-title2);font-weight:var(--fw-bold);color:var(--brand)}
+.op-desc .seg-plain{font-size:var(--fs-label);line-height:var(--lh-title3);color:var(--content-secondary)}
+.op-desc .seg-muted{font-size:var(--fs-label);line-height:var(--lh-title3);color:var(--content-quaternary)}
+/* el divisor real es un guion horizontal de 22px (#EDEDED), no una barra vertical */
+.op-desc .divisor{width:22px;height:0;border-top:1px solid var(--border-tertiary)}
+.op-sub{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-sm);padding:8px 12px 8px 16px;background:var(--bg-2);flex-wrap:wrap}
+.op-sub .grp{display:flex;align-items:center;gap:var(--sp-md);flex-wrap:wrap}
+.op-sub .soc{display:flex;align-items:center;gap:2px;font-size:var(--fs-body1);line-height:16px;font-weight:var(--fw-bold);color:var(--content-quaternary)}
+.op-sub .est{display:flex;align-items:center;gap:2px;font-size:var(--fs-label);line-height:var(--lh-title3);font-weight:var(--fw-bold);color:var(--content-quaternary)}
+.op-sub .loc{font-size:var(--fs-caption);line-height:var(--lh-caption);font-style:italic;color:var(--content-quaternary)}
+.op-sub .dash{width:17px;height:0;border-top:.75px solid var(--content-quaternary)}
+.op-sub .inf{font-size:var(--fs-sub);line-height:16px;color:var(--content-tertiary)}
+.op-sub .inf b{color:var(--content-secondary)}
+.op-sub .oid{font-size:var(--fs-body1);line-height:20px;color:var(--content-quaternary)}
+.op-sub .ms{color:var(--border-secondary)}
+.op-body{display:flex;align-items:stretch;gap:var(--sp-xl);padding:var(--sp-xl) var(--sp-xl) var(--sp-xl) 0;background:var(--bg-1)}
+.op-left{display:flex;flex-direction:column;gap:var(--sp-sm);width:286px;flex-shrink:0}
+.tile{display:flex;align-items:center;gap:var(--sp-lg);padding:var(--sp-lg) var(--sp-xl);background:var(--bg-2);border-radius:0 var(--r8) var(--r8) 0;position:relative;flex:1}
+.tile .ic{width:40px;height:40px;border-radius:var(--r999);background:var(--border-tertiary);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.tile .ic .ms{color:var(--brand)}
+.tile.on .ic{background:var(--brand)}
+.tile.on .ic .ms{color:#fff}
+.tile .lbl{font-size:var(--fs-sub);line-height:var(--lh-body2);color:var(--content-quaternary)}
+.tile .val{font-size:var(--fs-label);line-height:var(--lh-title3);font-weight:var(--fw-bold);color:var(--content-secondary);margin-top:var(--sp-xs)}
+.tile .corner{position:absolute;top:0;right:0;background:var(--border-tertiary);border-radius:0 var(--r8) 0 var(--r8);padding:4px var(--sp-sm);font-size:var(--fs-caption);line-height:var(--lh-caption);font-weight:var(--fw-bold);color:var(--content-quaternary)}
+.op-center{flex:1;min-width:0;background:var(--bg-2);border-radius:var(--r8);padding:var(--sp-xl) var(--sp-xs) var(--sp-xs);display:flex;flex-direction:column;gap:var(--sp-xl)}
+.op-center .ctitle{text-align:center;font-size:var(--fs-label);line-height:var(--lh-title3);font-weight:var(--fw-heavy);color:var(--content-quaternary);text-transform:uppercase}
+.op-cols{display:flex;gap:var(--sp-xs);align-items:stretch;flex:1}
+.op-subcol{flex:1;min-width:0;background:var(--bg-1);border-radius:var(--r4);padding:var(--sp-lg);display:flex;flex-direction:column;gap:var(--sp-lg)}
+.ib{display:flex;flex-direction:column;gap:6px}
+.ib .t{font-size:var(--fs-sub);line-height:var(--lh-body2);color:var(--content-quaternary)}
+.ib .v{display:flex;align-items:flex-end;gap:var(--sp-sm);flex-wrap:wrap}
+.ib .v .dato{font-size:var(--fs-heading);line-height:var(--lh-title2);font-weight:var(--fw-bold);color:var(--content-secondary)}
+.ib .v .dato.sm{font-size:var(--fs-label);line-height:var(--lh-title3)}
+.ib .v .suf{font-size:var(--fs-caption);line-height:var(--lh-caption);font-weight:var(--fw-bold);color:var(--content-secondary);padding-bottom:1px}
+.ib-div{height:0;border-top:1px solid var(--bg-2)}
+.op-right{width:192px;flex-shrink:0;display:flex;flex-direction:column;gap:var(--sp-sm)}
+.macto{display:flex;align-items:center;gap:var(--sp-sm);padding:var(--sp-lg);min-height:72px;border-radius:var(--r8);background:var(--positive-bg);color:var(--positive-dark);border:none;cursor:pointer;font-family:inherit;text-align:left;width:100%}
+.macto .mact-txt{display:flex;flex-direction:column;gap:var(--sp-xs);min-width:0}
+.macto .ms{flex-shrink:0}
+.macto .h2{font-size:var(--fs-label);line-height:var(--lh-title3);font-weight:var(--fw-regular)}
+.macto .h1{font-size:var(--fs-heading);line-height:var(--lh-title2);font-weight:var(--fw-bold)}
+.macto.ghost{background:var(--bg-1);border:1px dashed var(--brand);color:var(--brand)}
+.macto.dcp{background:var(--brand-dcp);color:#fff}
+.op-footer{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-md);padding:var(--sp-md);background:var(--bg-2)}
+.op-footer .oper{display:flex;align-items:center;gap:var(--sp-sm);font-size:var(--fs-sub);line-height:var(--lh-body2);color:#777777}
+.op-footer .avatar{width:32px;height:32px;border-radius:var(--r999);background:var(--border-tertiary);display:flex;align-items:center;justify-content:center;color:var(--content-tertiary)}
+.btn-sm{display:inline-flex;align-items:center;justify-content:center;gap:var(--sp-sm);height:32px;min-height:32px;padding:0 var(--sp-lg) 0 var(--sp-md);border-radius:var(--r6);font-size:var(--fs-label);line-height:20px;font-weight:var(--fw-semibold);border:none;cursor:pointer;font-family:inherit}
+.btn-sm.green{background:var(--positive-bg);color:var(--positive)}
+.btn-sm.red{background:transparent;color:var(--negative)}
+.op-col-lbl{font-size:var(--fs-micro);font-weight:var(--fw-bold);text-transform:uppercase;letter-spacing:.08em;color:var(--content-tertiary);margin-bottom:var(--sp-sm)}
+.op-empty{background:var(--bg-1);border:1px dashed var(--border-secondary);border-radius:var(--r12);padding:var(--sp-xxl);text-align:center;color:var(--content-tertiary);font-size:var(--fs-sub)}
+
+/* ── Pantalla neutra (placeholder de la home actual — sin rediseñar) ── */
+.neutral-note{display:flex;align-items:center;justify-content:center;min-height:calc(100vh - 260px);flex-direction:column;gap:var(--sp-sm);text-align:center}
+.neutral-note .ms{color:var(--content-tertiary)}
+.neutral-note p{font-size:var(--fs-sub);color:var(--content-tertiary);max-width:420px;line-height:1.5}
+
+/* ══ CASUÍSTICAS — panel flotante, capa de discovery del prototipo (no forma parte del producto,
+   por eso no usa los tokens de marca del producto) ══ */
+.cas-widget{position:fixed;left:var(--sp-lg);bottom:var(--sp-lg);z-index:400;font-family:'Lato',sans-serif}
+.cas-fab{width:52px;height:52px;border-radius:var(--r999);background:#1e2d3d;border:2px solid var(--warning);color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative}
+.cas-fab .ms{color:var(--warning)}
+.cas-fab .cas-count{position:absolute;top:-6px;right:-6px;background:var(--warning);color:#1e2d3d;border-radius:var(--r999);min-width:20px;height:20px;padding:0 5px;font-size:var(--fs-caption);font-weight:var(--fw-bold);display:flex;align-items:center;justify-content:center;border:2px solid var(--bg-page)}
+.cas-panel{display:none;position:fixed;left:var(--sp-lg);bottom:80px;width:380px;max-width:calc(100vw - 32px);max-height:64vh;background:#1e2d3d;border-radius:var(--r8);color:#fff;flex-direction:column;overflow:hidden}
+.cas-panel.open{display:flex}
+.cas-top{padding:var(--sp-md);border-bottom:1px solid rgba(255,255,255,.1);display:flex;align-items:center;gap:var(--sp-sm);background:rgba(178,155,14,.1)}
+.cas-top .ms{color:var(--warning)}
+.cas-top h2{flex:1;font-size:var(--fs-sub);font-weight:var(--fw-bold);color:#fff}
+.cas-top .sub{font-size:var(--fs-caption);color:#9fb3c4}
+.cas-top-btn{background:none;border:none;cursor:pointer;color:#9fb3c4;display:flex;padding:var(--sp-xs)}
+.cas-top-btn:hover{color:#fff}
+.cas-sim{padding:var(--sp-md);border-bottom:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.03)}
+.cas-sim-label{font-size:9px;font-weight:var(--fw-bold);color:var(--warning);text-transform:uppercase;letter-spacing:.08em;margin-bottom:var(--sp-sm)}
+.cas-sim-row{margin-bottom:var(--sp-sm)}
+.cas-sim-row:last-of-type{margin-bottom:0}
+.cas-sim-row.disabled{opacity:.4;pointer-events:none}
+.cas-sim-title{font-size:var(--fs-caption);color:#9fb3c4;display:block;margin-bottom:4px}
+.cas-tabsw{display:flex;background:rgba(0,0,0,.25);border-radius:var(--r8);padding:3px;gap:2px}
+.cas-tabsw-item{flex:1;padding:6px 4px;border-radius:var(--r4);font-size:10px;font-weight:var(--fw-regular);color:#9fb3c4;background:transparent;border:none;cursor:pointer;white-space:nowrap;font-family:inherit}
+.cas-tabsw-item.on{background:var(--warning);color:#1e2d3d;font-weight:var(--fw-bold)}
+.cas-sim-btn{width:100%;margin-top:var(--sp-sm);display:flex;align-items:center;justify-content:center;gap:var(--sp-xs);background:var(--warning);color:#1e2d3d;border:none;border-radius:var(--r8);padding:var(--sp-sm) var(--sp-md);font-size:var(--fs-sub);font-weight:var(--fw-bold);cursor:pointer;font-family:inherit}
+.cas-sim-btn:hover{background:#c7ac10}
+.cas-sim-btn .ms{color:#1e2d3d}
+.cas-body{overflow-y:auto;padding:var(--sp-xs) 0;flex:1}
+.cas-item{padding:var(--sp-sm) var(--sp-md);display:flex;gap:var(--sp-sm);border-bottom:1px solid rgba(255,255,255,.06);cursor:pointer}
+.cas-item:hover{background:rgba(255,255,255,.04)}
+.cas-item.highlight{background:rgba(178,155,14,.2)}
+.cas-check{width:18px;height:18px;border-radius:var(--r4);border:1.5px solid #6c8299;flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center}
+.cas-item.done .cas-check{background:var(--positive);border-color:var(--positive)}
+.cas-item.done .cas-check .ms{font-size:13px!important;color:#fff;display:block}
+.cas-check .ms{display:none}
+.cas-txt{flex:1}
+.cas-step{font-size:9px;font-weight:var(--fw-bold);color:var(--warning);text-transform:uppercase;letter-spacing:.08em;margin-bottom:2px}
+.cas-desc{font-size:var(--fs-caption);color:#dfe8ef;line-height:1.4}
+.cas-item.done .cas-desc{color:#7c8ea0;text-decoration:line-through}
+.cas-foot{padding:var(--sp-sm) var(--sp-md);font-size:9px;color:#6c8299;border-top:1px solid rgba(255,255,255,.1);line-height:1.4}
+</style>
+</head>
+<body>
+
+<!-- ══ HEADER ══ -->
+<div class="hdr">
+  <a class="logo" href="#" onclick="return false">deCampoaCampo</a>
+  <div class="hdr-links">
+    <div class="hdr-item" id="navOperaciones" onclick="toggleDD(event)">
+      <span class="lbl">Operaciones <span class="ms ms-16">expand_more</span></span>
+      <div class="dd" id="ddOperaciones">
+        <div class="dd-item disabled"><span style="display:flex;align-items:center;gap:8px"><span class="ms ms-16">list_alt</span>Mis Operaciones</span></div>
+        <div class="dd-item has-sub">
+          <span style="display:flex;align-items:center;gap:8px"><span class="ms ms-16">add_circle</span>Nueva Operación</span>
+          <span class="ms ms-16">chevron_right</span>
+          <div class="dd-sub">
+            <div class="dd-item has-sub">
+              <span style="display:flex;align-items:center;gap:8px"><span class="ms ms-16">agriculture</span>Faena</span>
+              <span class="ms ms-16">chevron_right</span>
+              <div class="dd-sub">
+                <div class="dd-item disabled">Venta Vacuna <span class="dd-note">(flujo existente)</span></div>
+                <div class="dd-item" onclick="event.stopPropagation();closeDD();goTo('s1')">Venta Porcinos <span class="dd-badge">Nuevo</span></div>
+              </div>
+            </div>
+            <div class="dd-item disabled">Invernada</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="hdr-item"><span class="lbl">Precios <span class="ms ms-16">expand_more</span></span></div>
+    <div class="hdr-item"><span class="lbl">Mi Perfil <span class="ms ms-16">expand_more</span></span></div>
+    <div class="hdr-item"><span class="lbl">Ayuda <span class="ms ms-16">expand_more</span></span></div>
+    <div class="hdr-item"><span class="lbl">Clima</span></div>
+  </div>
+  <div class="hdr-actions">
+    <button class="btn btn-primary">Comprar</button>
+    <button class="btn btn-secondary">Cotizar</button>
+    <button class="btn btn-tertiary"><span class="ms ms-16">bolt</span>Pagos</button>
+  </div>
+</div>
+
+<!-- ══ S0 — PANTALLA ACTUAL (sin cambios; el flujo se dispara desde el menú del header) ══ -->
+<div class="screen on" id="s0">
+  <div class="page">
+    <div class="neutral-note">
+      <span class="ms ms-48">web_asset</span>
+      <p>Esta es la pantalla en la que hoy esté el usuario — no se rediseña. Para empezar la digitalización de una venta de porcinos, abrí <strong style="color:var(--content-primary)">Operaciones → Nueva Operación → Faena → Venta Porcinos</strong> en el header.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ══ S1 — HOME DE DIGITALIZACIÓN — PORCINOS ══ -->
+<div class="screen" id="s1">
+  <div class="page">
+    <div class="page-title" style="text-align:center">Ya tenés las condiciones de tu venta acordada con el comprador</div>
+    <p class="tx-body-muted" style="text-align:center;margin:-8px 0 var(--sp-xl)">Vas a digitalizarla para que la liquide <strong style="color:var(--content-primary);font-weight:var(--fw-bold)">deCampoaCampo</strong> y acceder al <strong style="color:var(--content-primary);font-weight:var(--fw-bold)">servicio de post-venta</strong></p>
+    <div class="card">
+      <div class="benefit-grid">
+        <div class="benefit-card">
+          <span class="ms ms-32" style="color:var(--content-tertiary)">local_shipping</span>
+          <div class="benefit-title">deCampoLogística</div>
+          <ul class="benefit-list"><li>Cotización de transporte</li><li>Coordinación</li><li>Procesamiento</li></ul>
+        </div>
+        <div class="benefit-card">
+          <span class="ms ms-32" style="color:var(--content-tertiary)">payments</span>
+          <div class="benefit-title">deCampoPagos</div>
+          <ul class="benefit-list"><li>Autogestión de saldos desde la fecha de carga</li><li>Conciliación cobros</li></ul>
+        </div>
+        <div class="benefit-card">
+          <span class="ms ms-32" style="color:var(--content-tertiary)">fact_check</span>
+          <div class="benefit-title">deCampoDigital</div>
+          <ul class="benefit-list"><li>Documentación automática de toda la operación</li><li>Costeo</li><li>Liquidación</li></ul>
+        </div>
+      </div>
+    </div>
+    <button class="btn btn-primary btn-block btn-lg" style="margin-top:var(--sp-lg)" onclick="goTo('s2')">Digitalizar Mi Venta</button>
+    <div class="legal-box">
+      <ul class="legal-notes">
+        <li>Digitalizar la operación tiene un costo total del <strong>1.00%</strong> en todo concepto sobre el importe de venta.</li>
+        <li>Los <strong>atrasos en el pago</strong> por parte del comprador generarán un ajuste comercial correspondiente.</li>
+        <li>Al continuar, aceptás los <a href="#">términos y condiciones</a> de este producto específico.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ══ S2 — ¿TENÉS LOS DTEs? ══ -->
+<div class="screen" id="s2">
+  <div class="page">
+    <div class="page-title" style="text-align:center">¿Tenés los DTEs de tu venta?</div>
+    <div class="card" style="padding:var(--sp-xxl) var(--sp-xl)">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-lg);max-width:760px;margin:0 auto">
+        <div class="choice-card">
+          <span class="ms ms-32">description</span>
+          <div class="choice-title">Sí, tengo los DTEs</div>
+          <div class="choice-sub">Leemos tus DTEs y completamos los datos automáticamente.</div>
+          <button class="btn btn-primary btn-block" onclick="resetDteState();viaDTE=true;goTo('s3')">Continuar con DTEs</button>
+        </div>
+        <div class="choice-card">
+          <span class="ms ms-32">edit_note</span>
+          <div class="choice-title">No, aún no cargué</div>
+          <div class="choice-sub">Ingresá los datos manualmente en el formulario.</div>
+          <button class="btn btn-secondary btn-block" onclick="resetDteState();viaDTE=false;goTo('s5')">Cargar Datos</button>
+        </div>
+      </div>
+    </div>
+    <div class="cta-bar" style="justify-content:flex-start">
+      <button class="btn btn-tertiary" onclick="goTo('s1')"><span class="ms ms-16">chevron_left</span>Anterior</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ S3 — SUBIR DTEs ══ -->
+<div class="screen" id="s3">
+  <div class="page">
+    <div class="page-title">Digitalización de Venta — Porcinos</div>
+    <div class="card">
+      <div class="srow" style="grid-template-columns:280px 1fr">
+        <div>
+          <div class="tx-heading" style="margin-bottom:var(--sp-sm)">DTEs</div>
+          <p class="tx-body-muted">Subí un DTE por jaula. Leemos los documentos y pre-llenamos los campos con los datos detectados.</p>
+          <div class="alert-info" style="margin-top:var(--sp-md)">
+            <span class="ms ms-16">info</span>
+            <span class="txt">El DTE tiene que tener como destino una planta habilitada para faena de cerdos para poder digitalizar la venta y acceder a la liquidación. <button class="hlp" style="display:inline-flex" onclick="openCas(12)" title="Ver casuística"><span class="ms ms-16">help</span></button></span>
+          </div>
+        </div>
+        <div class="sfields" id="dteUploadArea">
+          <div class="upload-area" onclick="addDte()">
+            <span class="ms ms-24">upload_file</span>
+            <span class="tx-body-muted"><strong style="color:var(--content-primary)">Subí un DTE</strong> — PDF, 1 por jaula</span>
+          </div>
+        </div>
+      </div>
+      <div class="srow" id="dteErrorRow" style="display:none;padding-top:0;border-top:none">
+        <div></div>
+        <div class="alert-neg" id="dteErrorAlert">
+          <span class="ms ms-16">error</span>
+          <span class="txt">No pudimos leer tus DTEs. Revisá que sean los archivos correctos o cargá los datos manualmente. <button class="hlp" style="display:inline-flex" onclick="openCas(12)" title="Ver casuística"><span class="ms ms-16">help</span></button></span>
+        </div>
+      </div>
+    </div>
+    <div class="cta-bar" style="justify-content:space-between">
+      <button class="btn btn-tertiary" onclick="goTo('s2')"><span class="ms ms-16">chevron_left</span>Anterior</button>
+      <div style="display:flex;gap:var(--sp-md)">
+        <button class="btn btn-tertiary" id="btnManualFallback" style="display:none" onclick="manualFallback()">Cargar datos manualmente</button>
+        <button class="btn btn-primary" id="btnAnalizar" disabled onclick="startProcessing()">Analizar DTEs</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ S4 — PROCESANDO ══ -->
+<div class="screen" id="s4">
+  <div class="page" style="display:flex;align-items:center;justify-content:center;min-height:calc(100vh - 200px)">
+    <div style="text-align:center">
+      <div class="spinner"></div>
+      <div class="tx-title" id="procPct">0%</div>
+      <div class="tx-heading" style="margin-top:var(--sp-sm)">Analizando DTEs</div>
+      <div class="tx-caption" style="margin-top:var(--sp-xs)">Aguardá un instante por favor.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ S-LOTES — RESUMEN DE LOTES (agrupación de DTEs por origen/destino/fecha) ══
+     Solo se muestra cuando se subió más de 1 DTE — con 1 solo documento no hay nada para agrupar. ══ -->
+<div class="screen" id="s-lotes">
+  <div class="page">
+    <div class="page-title">Digitalización de Venta — Porcinos</div>
+    <div style="display:grid;grid-template-columns:200px 1fr;gap:var(--sp-xl)">
+      <div>
+        <div class="tx-label" style="margin-bottom:var(--sp-xs)">Revisá y reasigná si es necesario.</div>
+        <p class="tx-body-muted">Agrupamos los documentos que comparten <strong style="color:var(--content-primary)">origen</strong>, <strong style="color:var(--content-primary)">destino</strong> y <strong style="color:var(--content-primary)">fecha</strong>.</p>
+      </div>
+      <div id="lotesList"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ S5 — PASO 1 · TROPA ══ -->
+<div class="screen" id="s5">
+  <div class="page">
+    <div class="page-title">Digitalización de Venta — Porcinos</div>
+    <div class="form-progress">
+      <div class="fp-left">
+        <div class="fp-steps"><div class="fp-step current"></div><div class="fp-step"></div></div>
+        <span class="fp-label">Paso <strong>1 de 2</strong> · Tropa</span>
+      </div>
+      <div class="fp-nav">
+        <button class="btn btn-tertiary" onclick="goToPrevPaso1()"><span class="ms ms-16">chevron_left</span>Anterior</button>
+        <button class="btn btn-tertiary" onclick="goTo('s6')">Siguiente <span class="ms ms-16">chevron_right</span></button>
+      </div>
+    </div>
+    <div class="lote-ctx" id="ctx5">
+      <div class="lote-num"></div>
+      <div class="flex1"><span class="lote-date"></span> <span class="lote-route"></span></div>
+      <div class="lote-ctx-dtes"></div>
+    </div>
+    <div class="pre-banner info" id="preBanner1">
+      <span class="ms ms-20">auto_awesome</span>
+      <span class="txt">Completamos estos datos a partir de tus DTEs. Revisalos antes de continuar.</span>
+    </div>
+
+    <div class="card">
+      <div class="srow">
+        <div class="tx-body-muted">Sociedad vendedora</div>
+        <div class="sfields">
+          <div class="fgroup">
+            <div class="field fw"><div class="flabel">Razón Social <span class="req">*</span></div>
+              <select class="sel"><option value="" disabled selected>Seleccionar sociedad</option><option>Granja San Miguel S.A.</option><option>Establecimiento Los Aromos SRL</option></select></div>
+          </div>
+          <div class="fgroup">
+            <div class="field fh"><div class="flabel">Establecimiento <span class="req">*</span> <button class="hlp" onclick="openCas(1)" title="Ver casuística"><span class="ms ms-16">help</span></button></div>
+              <select class="sel"><option value="" disabled selected>Seleccionar establecimiento</option><option>Granja San Miguel — Módulo Porcino 1</option><option>Granja San Miguel — Módulo Porcino 2</option></select></div>
+            <div class="field ft"><div class="flabel">Provincia</div>
+              <div class="disp-val">Córdoba</div></div>
+            <div class="field ft"><div class="flabel">Partido</div>
+              <div class="disp-val">Juárez Celman</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="srow">
+        <div class="tx-body-muted">Datos de la tropa</div>
+        <div class="sfields">
+          <div class="fgroup">
+            <div class="field ft"><div class="flabel">Cantidad <span class="req">*</span></div>
+              <div class="inp-suf"><input class="inp" id="cant1" placeholder="Ej: 120" oninput="checkReq1()"/><span class="suf">Cab.</span></div></div>
+            <div class="field ft"><div class="flabel">Categoría <span class="req">*</span> <button class="hlp" onclick="openCas(2)" title="Ver casuística"><span class="ms ms-16">help</span></button></div>
+              <select class="sel" id="cat1" onchange="checkReq1()">
+                <option value="" disabled selected>Seleccionar</option>
+                <option>Capón</option><option>Cerda</option><option>Lechón</option><option>Padrillo</option>
+              </select></div>
+            <div class="field ft"><div class="flabel">Peso <span class="req">*</span></div>
+              <div class="inp-suf"><input class="inp" id="peso1" placeholder="Ej: 110" oninput="checkReq1()"/><span class="suf">Kg</span></div></div>
+            <div class="field ft"><div class="flabel">Raza <span class="req">*</span> <button class="hlp" onclick="openCas(3)" title="Ver casuística"><span class="ms ms-16">help</span></button></div>
+              <select class="sel" id="raza1" onchange="checkReq1()">
+                <option value="" disabled selected>Seleccionar</option>
+                <option>Landrace</option><option>Duroc</option><option>Yorkshire</option><option>Pietrain</option><option>Cruza</option>
+              </select></div>
+          </div>
+          <div class="fgroup">
+            <div class="field fauto"><div class="flabel">Días de encierre <span class="req">*</span> <span class="tag-note">— siempre Feedlot</span> <button class="hlp" onclick="openCas(4)" title="Ver casuística"><span class="ms ms-16">help</span></button></div>
+              <div class="inp-suf"><input class="inp" id="dias1" placeholder="0" style="width:120px" oninput="checkReq1()"/><span class="suf">Días</span></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="cta-bar">
+      <button class="btn btn-next" id="btnSig1" disabled onclick="goTo('s6')">Siguiente</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ S6 — PASO 2 · CONDICIONES ══ -->
+<div class="screen" id="s6">
+  <div class="page">
+    <div class="page-title">Digitalización de Venta — Porcinos</div>
+    <div class="form-progress">
+      <div class="fp-left">
+        <div class="fp-steps"><div class="fp-step done"></div><div class="fp-step current"></div></div>
+        <span class="fp-label">Paso <strong>2 de 2</strong> · Condiciones de venta</span>
+      </div>
+      <div class="fp-nav">
+        <button class="btn btn-tertiary" onclick="goTo('s5')"><span class="ms ms-16">chevron_left</span>Anterior</button>
+        <button class="btn btn-tertiary" disabled>Siguiente <span class="ms ms-16">chevron_right</span></button>
+      </div>
+    </div>
+    <div class="lote-ctx" id="ctx6">
+      <div class="lote-num"></div>
+      <div class="flex1"><span class="lote-date"></span> <span class="lote-route"></span></div>
+      <div class="lote-ctx-dtes"></div>
+    </div>
+    <div class="pre-banner info" id="preBanner2">
+      <span class="ms ms-20">auto_awesome</span>
+      <span class="txt">Completamos estos datos a partir de tus DTEs. Revisalos antes de continuar.</span>
+    </div>
+    <div class="sum-bar">
+      <div style="display:flex;align-items:center;flex-wrap:wrap">
+        <span class="sp" id="sumCant">120</span><span class="sp cat" id="sumCat"> Capón</span>
+        <span class="ssep">|</span><span class="sp" id="sumPeso">110 Kg</span>
+        <span class="ssep">|</span><span class="sp" id="sumRaza">Landrace</span>
+        <span class="ssep">|</span><span class="sp">Feedlot</span>
+      </div>
+      <div class="tx-caption" style="display:flex;align-items:center;gap:5px">
+        <span class="ms ms-16">person_pin</span>Granja San Miguel S.A.
+      </div>
+    </div>
+    <div class="card">
+      <div class="srow">
+        <div class="tx-body-muted">Datos del comprador</div>
+        <div class="sfields">
+          <div class="fgroup">
+            <div class="field fh"><div class="flabel">Matrícula compradora <span class="req">*</span> <button class="hlp" onclick="openCas(5)" title="Ver casuística"><span class="ms ms-16">help</span></button></div>
+              <select class="sel"><option value="" disabled selected>Seleccionar</option><option>+ Crear nueva matrícula</option><option>Frigorífico Porcino del Sur S.A. (Matrícula 412)</option><option>Cooperativa Porcina Central (Matrícula 298)</option></select></div>
+            <div class="field fh"><div class="flabel">Establecimiento faenador <span class="req">*</span> <button class="hlp" onclick="openCas(6)" title="Ver casuística"><span class="ms ms-16">help</span></button></div>
+              <select class="sel"><option value="" disabled selected>Seleccionar</option><option>Frigorífico Porcino del Sur S.A.</option></select></div>
+          </div>
+        </div>
+      </div>
+      <div class="srow">
+        <div class="tx-body-muted">Condiciones pactadas</div>
+        <div class="sfields">
+          <div class="fgroup">
+            <div class="field fauto"><div class="flabel">Impuestos <span class="req">*</span></div>
+              <div class="tabsw" id="imp1"><button class="tabsw-item" onclick="selToggle(this,'imp1')">+ IVA</button><button class="tabsw-item" onclick="selToggle(this,'imp1')">Final</button></div></div>
+            <div class="field fauto"><div class="flabel">Tipo de precio <button class="hlp" onclick="openCas(7)" title="Ver casuística"><span class="ms ms-16">help</span></button></div>
+              <div class="disp-val"><span class="ms ms-16">lock</span>Kg Vivo</div></div>
+            <div class="field fauto"><div class="flabel">Transporte <button class="hlp" onclick="openCas(8)" title="Ver casuística"><span class="ms ms-16">help</span></button></div>
+              <div class="disp-val"><span class="ms ms-16">lock</span>En Planta</div></div>
+          </div>
+          <div>
+            <table class="ptable"><thead><tr><th>Precio</th><th>Categoría</th><th>Tipificación <span class="tag-note">(opcional)</span> <button class="hlp" onclick="openCas(9)" title="Ver casuística"><span class="ms ms-16">help</span></button></th><th style="width:32px"></th></tr></thead>
+              <tbody id="pr1"></tbody></table>
+            <div class="ptable-empty" id="pe1">Sin filas — agregá una fila por categoría acordada</div>
+            <button class="btn btn-tertiary" style="padding:var(--sp-sm) 0;margin-top:var(--sp-xs)" onclick="addRow('pr1','pe1')"><span class="ms ms-16">add</span>Agregar fila</button>
+          </div>
+          <div class="fgroup">
+            <div class="field fh"><div class="flabel">Plazo de Venta <span class="req">*</span></div>
+              <div class="inp-suf"><input class="inp" placeholder="" style="flex:1"/><span class="suf">Días</span></div></div>
+            <div class="field fh"><div class="flabel">A partir de la fecha de <span class="req">*</span></div>
+              <div class="tabsw" id="fecha1"><button class="tabsw-item" onclick="selToggle(this,'fecha1')">Faena</button><button class="tabsw-item" onclick="selToggle(this,'fecha1')">Otra Fecha</button></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="srow">
+        <div class="tx-body-muted">Datos de logística</div>
+        <div class="sfields">
+          <table class="jtable">
+            <thead><tr><th>Jaula</th><th>Tipo de jaula <button class="hlp" onclick="openCas(10)" title="Ver casuística"><span class="ms ms-16">help</span></button></th><th>Fecha de carga</th><th>Fecha de faena <span class="req">*</span></th></tr></thead>
+            <tbody>
+              <tr>
+                <td style="font-weight:var(--fw-bold);color:var(--content-secondary);padding-left:var(--sp-md)">Jaula 1</td>
+                <td><select class="sel" style="min-width:150px"><option value="" disabled selected>Seleccionar</option><option>Jaula simple</option><option>Jaula doble</option><option>Jaula triple</option></select></td>
+                <td><input class="inp" type="date" style="min-width:150px"/></td>
+                <td><input class="inp" type="date" required style="min-width:150px"/></td>
+              </tr>
+            </tbody>
+          </table>
+          <label style="display:flex;align-items:center;gap:var(--sp-sm);font-size:var(--fs-sub);color:var(--content-secondary);margin-top:var(--sp-xs);cursor:pointer">
+            <input type="checkbox" id="mismasFechas" onchange="toggleMismasFechas()"/> Las fechas de carga y de faena son iguales para todas las jaulas
+          </label>
+          <button class="btn btn-tertiary" style="padding:var(--sp-sm) 0" onclick="addJaula()"><span class="ms ms-16">add</span>Agregar jaula</button>
+          <div class="alert-info">
+            <span class="ms ms-16">info</span>
+            <span class="txt">El costo aproximado de <strong>1 jaula simple</strong> para los <strong>210 km</strong> hasta la planta faenadora es de <strong>$480.000</strong>.</span>
+          </div>
+          <div class="fgroup" style="margin-top:var(--sp-xs)">
+            <div class="field fauto"><div class="flabel">¿Querés que deCampoaCampo coordine el viaje?</div>
+              <div class="tabsw" id="flete1"><button class="tabsw-item on" onclick="selToggle(this,'flete1')">No</button><button class="tabsw-item" onclick="selToggle(this,'flete1')">Sí</button></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="cta-bar">
+      <button class="btn btn-tertiary" onclick="goTo('s5')"><span class="ms ms-16">chevron_left</span>Paso anterior</button>
+      <button class="btn btn-primary" onclick="goTo('s7')">Guardar y finalizar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ S7 — ÉXITO ══ -->
+<div class="screen" id="s7">
+  <div class="success-wrap">
+    <div class="success-icon"><span class="ms ms-32">check_circle</span></div>
+    <div class="success-title">Datos guardados correctamente</div>
+    <div class="success-sub">La venta de porcinos quedó registrada en Operaciones &gt; Faena &gt; Venta Porcinos &gt; A Cargar.</div>
+    <div class="success-actions">
+      <button class="btn btn-primary btn-block" onclick="goTo('s8')">Ir a Mis Operaciones</button>
+      <button class="btn btn-tertiary btn-block" onclick="goTo('s0')">Volver al inicio</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ S8 — MIS OPERACIONES — PORCINOS ══ -->
+<div class="screen" id="s8">
+  <div class="page">
+    <div class="page-title">Operaciones — Venta Porcinos</div>
+    <div class="tabs-bar">
+      <div class="tab">Pendientes de publicación <span class="cnt">0</span></div>
+      <div class="tab active">A cargar <span class="cnt">1</span></div>
+      <div class="tab">Operaciones con saldo <span class="cnt">0</span></div>
+      <div class="tab">Cerradas <span class="cnt">0</span></div>
+    </div>
+
+    <div class="op-card">
+      <div class="op-top">
+        <div class="op-desc">
+          <span class="seg-1">Jaula simple × 1</span>
+          <span class="seg-2">Capón</span>
+          <span class="divisor"></span><span class="seg-plain">110 Kg</span>
+          <span class="divisor"></span><span class="seg-plain">Landrace</span>
+          <span class="divisor"></span><span class="seg-muted">Feedlot</span>
+        </div>
+      </div>
+      <div class="op-sub">
+        <div class="grp">
+          <span class="soc"><span class="ms ms-16">apartment</span>Granja San Miguel S.A.</span>
+          <span class="dash"></span>
+          <span class="est"><span class="ms ms-16">location_on</span>Granja San Miguel</span>
+          <span class="loc">Marcos Juárez, Córdoba</span>
+        </div>
+        <div class="grp">
+          <span class="inf">Tropa <b>1</b></span>
+          <span class="dash"></span>
+          <span class="oid">#218840</span>
+        </div>
+      </div>
+      <div class="op-body">
+        <div class="op-left">
+          <div class="tile on">
+            <div class="ic"><span class="ms ms-24">handshake</span></div>
+            <div><div class="lbl">Canal Comercial</div><div class="val">Digitalización — Porcinos</div></div>
+          </div>
+          <div class="tile">
+            <div class="ic"><span class="ms ms-24">factory</span></div>
+            <div><div class="lbl">Matrícula Compradora</div><div class="val">Frigorífico Porcino del Sur S.A.</div></div>
+          </div>
+          <div class="tile">
+            <div class="ic"><span class="ms ms-24">calendar_month</span></div>
+            <div><div class="lbl">Fecha de Carga</div><div class="val">14/09/2026</div></div>
+          </div>
+        </div>
+        <div class="op-center">
+          <div class="ctitle">Condiciones de la venta</div>
+          <div class="op-cols">
+            <div class="op-subcol">
+              <div class="ib"><div class="t">Precio pactado</div><div class="v"><span class="dato">$ 1.850</span><span class="suf">/Kg Vivo</span></div></div>
+              <div class="ib-div"></div>
+              <div class="ib"><div class="t">Plazo de venta</div><div class="v"><span class="dato sm">15 días a partir de Faena</span></div></div>
+              <div class="ib-div"></div>
+              <div class="ib"><div class="t">Transporte</div><div class="v"><span class="dato sm">En Planta</span></div></div>
+            </div>
+            <div class="op-subcol">
+              <div class="ib"><div class="t">Establecimiento Faenador</div><div class="v"><span class="dato sm">Frigorífico Porcino del Sur S.A.</span></div></div>
+              <div class="ib-div"></div>
+              <div class="ib"><div class="t">Consignataria</div><div class="v"><span class="dato sm">Pedro Genta y Cía S.A.</span></div></div>
+              <div class="ib-div"></div>
+              <div class="ib"><div class="t">Cabezas</div><div class="v"><span class="dato">120</span><span class="suf">Cab.</span></div></div>
+            </div>
+          </div>
+        </div>
+        <div class="op-right">
+          <button class="macto ghost"><span class="ms ms-32">upload_file</span><span class="mact-txt"><span class="h2">Cargar</span><span class="h1">DTE</span></span></button>
+          <button class="macto"><span class="ms ms-32">task_alt</span><span class="mact-txt"><span class="h2">Ver</span><span class="h1">Legajo</span></span></button>
+        </div>
+      </div>
+      <div class="op-footer">
+        <div class="oper"><span class="avatar"><span class="ms ms-20">person</span></span>Atención al Cliente · deCampoaCampo</div>
+        <button class="btn-sm green"><span class="ms ms-16">chat</span>Contactar por WhatsApp</button>
+      </div>
+    </div>
+
+    <div class="op-empty">No hay más operaciones de porcinos en este estado todavía.</div>
+  </div>
+</div>
+
+<!-- ══ CASUÍSTICAS — panel flotante minimizable ══ -->
+<div class="cas-widget">
+  <div class="cas-panel" id="casPanel">
+    <div class="cas-top">
+      <span class="ms ms-20">construction</span>
+      <div>
+        <h2>Casuísticas a validar</h2>
+        <div class="sub">Prototipo — Venta Porcinos · no forma parte del producto</div>
+      </div>
+      <button class="cas-top-btn" onclick="minimizeCas()" title="Minimizar"><span class="ms ms-16">remove</span></button>
+    </div>
+    <div class="cas-sim">
+      <div class="cas-sim-label">Simular escenario</div>
+      <div class="cas-sim-row">
+        <span class="cas-sim-title">Carga de DTE</span>
+        <div class="cas-tabsw" id="simCargaGroup">
+          <button class="cas-tabsw-item on" onclick="setSimCarga(this,'none')">No cargó DTE</button>
+          <button class="cas-tabsw-item" onclick="setSimCarga(this,'single')">Cargó 1 DTE</button>
+          <button class="cas-tabsw-item" onclick="setSimCarga(this,'multi')">Cargó varios DTEs</button>
+        </div>
+      </div>
+      <div class="cas-sim-row disabled" id="simExtraccionRow">
+        <span class="cas-sim-title">Resultado de extracción</span>
+        <div class="cas-tabsw" id="simExtraccionGroup">
+          <button class="cas-tabsw-item on" onclick="setSimExtraccion(this,'success')">Se extrajo bien</button>
+          <button class="cas-tabsw-item" onclick="setSimExtraccion(this,'partial')">Extracción parcial</button>
+          <button class="cas-tabsw-item" onclick="setSimExtraccion(this,'failed')">Extracción falló</button>
+        </div>
+      </div>
+      <button class="cas-sim-btn" onclick="simulateScenario()"><span class="ms ms-16">play_arrow</span>Simular</button>
+    </div>
+    <div class="cas-body" id="casBody"></div>
+    <div class="cas-foot">Marcá un ítem como resuelto una vez que producto/negocio confirme la regla. Este panel es una capa de discovery para revisión interna.</div>
+  </div>
+  <div class="cas-fab" onclick="toggleCasPanel()" title="Casuísticas a validar">
+    <span class="ms ms-24">construction</span>
+    <span class="cas-count" id="casCount">15</span>
+  </div>
+</div>
+
+<script>
+/* ── NAV entre pantallas (solo por clicks reales de la UI — sin barra de debug) ── */
+function goTo(id){
+  document.querySelectorAll('.screen').forEach(el=>el.classList.toggle('on',el.id===id));
+  window.scrollTo(0,0);
+  closeDD();
+}
+let dteBackScreen='s1'; /* a dónde vuelve "Anterior" desde Paso 1 cuando se vino por DTE: subida (s3) o resumen de lotes (s-lotes) si hubo más de un lote */
+function goToPrevPaso1(){
+  goTo(viaDTE?dteBackScreen:'s1');
+}
+
+/* ── DROPDOWN "Operaciones → Nueva Operación → Faena → Venta Porcinos" ── */
+function toggleDD(e){
+  e.stopPropagation();
+  document.getElementById('ddOperaciones').classList.toggle('open');
+}
+function closeDD(){const dd=document.getElementById('ddOperaciones'); if(dd) dd.classList.remove('open');}
+document.addEventListener('click',e=>{
+  if(!e.target.closest('#navOperaciones')) closeDD();
+});
+
+/* ── TOGGLE tipo TabSwitcher ── */
+function selToggle(btn,groupId){
+  document.getElementById(groupId).querySelectorAll('.tabsw-item').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+}
+
+/* ── PRECARGA CON DTE ── */
+let viaDTE=false;
+const LOTE_FECHA='24/06/2026', LOTE_ORIGEN='Granja San Miguel — Módulo Porcino 1', LOTE_DESTINO='Frigorífico Porcino del Sur S.A.';
+const DTE_SIM=[{name:'DTE_041823310-1.pdf',jaula:'Jaula simple',cabezas:78},{name:'DTE_041823311-2.pdf',jaula:'Jaula doble',cabezas:72},{name:'DTE_041823312-3.pdf',jaula:'Jaula simple',cabezas:64}];
+let dteFiles=[];
+function addDte(){
+  const next=DTE_SIM[dteFiles.length]||{name:'DTE_0'+(400000+dteFiles.length)+'.pdf',jaula:'Jaula simple',cabezas:60};
+  dteFiles.push({...next});
+  renderDteArea();
+}
+function removeDte(i){dteFiles.splice(i,1);renderDteArea();}
+function renderDteArea(){
+  const area=document.getElementById('dteUploadArea');
+  let h=dteFiles.map((f,i)=>`<div class="file-chip"><span class="ms ms-16" style="color:var(--negative)">picture_as_pdf</span><span class="fn">${f.name}</span><button onclick="removeDte(${i})" style="background:none;border:none;cursor:pointer;color:var(--content-tertiary);display:flex"><span class="ms ms-16">close</span></button></div>`).join('');
+  h+=`<div class="upload-area" onclick="addDte()" style="justify-content:center;color:var(--brand);font-size:var(--fs-sub)"><span class="ms ms-16">add</span>Agregar otro DTE</div>`;
+  area.innerHTML=h;
+  document.getElementById('btnAnalizar').disabled=dteFiles.length===0;
+}
+function startProcessing(){
+  goTo('s4');
+  let pct=0;
+  const el=document.getElementById('procPct');
+  el.textContent='0%';
+  const timer=setInterval(()=>{
+    pct=Math.min(100,pct+Math.ceil(Math.random()*22)+12);
+    el.textContent=pct+'%';
+    if(pct>=100){
+      clearInterval(timer);
+      /* el resultado de la extracción real (Analizar DTEs) respeta el escenario elegido en
+         el simulador de casuísticas — así la elección modifica el comportamiento real del flujo,
+         no solo una vista previa */
+      setTimeout(afterExtraction,400);
+    }
+  },350);
+}
+function showDteError(){
+  document.getElementById('dteErrorRow').style.display='grid';
+  document.getElementById('btnManualFallback').style.display='inline-flex';
+}
+
+/* ── LOTES — agrupación de DTEs por origen/destino/fecha compartidos ──
+   Con 1 solo DTE no hay nada para agrupar: se abre directo. Con 2+ DTEs siempre se
+   muestra el Resumen de Lotes (aunque terminen agrupados en un único lote), igual que
+   en el flujo de referencia vacuno. Regla de armado (simulada): hasta 2 DTEs → 1 lote;
+   de 3 en adelante → los primeros 2 arman el Lote 1 (siempre "Extracción Exitosa", para
+   tener siempre al menos un lote sano de referencia) y el resto arma el Lote 2, que toma
+   el resultado de extracción elegido en el simulador. ── */
+let lotes=[];
+let activeLote=null;
+function buildLotes(){
+  lotes=[];
+  if(dteFiles.length===0) return;
+  if(dteFiles.length<=2){
+    lotes=[{id:1,fecha:LOTE_FECHA,origen:LOTE_ORIGEN,destino:LOTE_DESTINO,status:simExtraccion,dtes:dteFiles.map(f=>({...f}))}];
+  }else{
+    const g1=dteFiles.slice(0,2), g2=dteFiles.slice(2);
+    lotes=[
+      {id:1,fecha:LOTE_FECHA,origen:LOTE_ORIGEN,destino:LOTE_DESTINO,status:'success',dtes:g1.map(f=>({...f}))},
+      {id:2,fecha:LOTE_FECHA,origen:LOTE_ORIGEN,destino:LOTE_DESTINO,status:simExtraccion,dtes:g2.map(f=>({...f}))}
+    ];
+  }
+}
+function afterExtraction(){
+  buildLotes();
+  if(dteFiles.length<=1){
+    /* un solo DTE: no hay pantalla de lotes, se abre directo (o se corta en error, como antes) */
+    if(lotes[0]&&lotes[0].status==='failed'){goTo('s3');showDteError();return;}
+    if(lotes[0]) openLote(0,'s3');
+    return;
+  }
+  renderLotes();
+  goTo('s-lotes');
+}
+function renderLotes(){
+  const wrap=document.getElementById('lotesList');
+  const STATUS_LABEL={success:'Extracción Exitosa',partial:'Extracción Parcial',failed:'Extracción Fallida'};
+  let h=lotes.map((lote,li)=>{
+    const cabezas=lote.dtes.reduce((s,f)=>s+f.cabezas,0);
+    const canContinue=lote.status!=='failed';
+    const dtesHtml=lote.dtes.map((f,di)=>`
+      <div class="lote-dte-row">
+        <span class="ms ms-16" style="color:var(--negative)">picture_as_pdf</span>
+        <span class="fn" onclick="toggleDtePreview(event,'lp${li}-${di}')">DTE ${di+1} <span style="font-weight:var(--fw-regular);color:var(--content-tertiary);font-style:normal">${f.name}</span></span>
+        <span class="lote-dte-cab">${f.cabezas} Cabezas</span>
+        <div class="dte-pop-anchor">
+          <button class="lote-mover" onclick="toggleMover(event,${li},${di})">Mover<span class="ms ms-16">expand_more</span></button>
+          <div class="dte-preview-pop" id="mv${li}-${di}">
+            ${lotes.map((l2,li2)=>li2===li?'':`<button class="dte-chip-link" style="display:block;width:100%;text-align:left;padding:var(--sp-xs) 0" onclick="moverDte(${li},${di},${li2})">Mover a Lote ${l2.id}</button>`).join('')||'<span class="note">No hay otro lote todavía</span>'}
+          </div>
+        </div>
+        <button class="lote-del" onclick="deleteDteFromLote(event,${li},${di})" title="Eliminar DTE"><span class="ms ms-16">delete</span></button>
+        <div class="dte-preview-pop" id="lp${li}-${di}" style="right:auto;left:0">
+          <div class="fn"><span class="ms ms-16">picture_as_pdf</span>${f.name}</div>
+          <div class="note">Vista previa simulada — este prototipo no adjunta el documento real.</div>
+        </div>
+      </div>`).join('');
+    return `
+    <div class="lote-card ${lote.status==='failed'?'failed':''}">
+      <div class="lote-head">
+        <div class="lote-num">${lote.id}</div>
+        <div class="flex1"><span class="lote-date">${lote.fecha}</span> <span class="lote-route">(${lote.origen} → ${lote.destino})</span></div>
+        <div class="lote-status ${lote.status}"><span class="dot"></span>${STATUS_LABEL[lote.status]}</div>
+      </div>
+      <div class="lote-summary"><span>${cabezas} Capones</span><span>${lote.dtes.length} Jaula${lote.dtes.length>1?'s':''}</span><span>${lote.dtes.length} DTE${lote.dtes.length>1?'s':''}</span></div>
+      ${dtesHtml}
+      ${lote.status==='failed'
+        ?'<div class="lote-fail-note">No pudimos leer estos DTEs. Revisalos, reasigná sus documentos a otro lote o cargalos de nuevo.</div>'
+        :`<div class="lote-foot"><button class="btn btn-primary" onclick="openLote(${li},'s-lotes')">Continuar<span class="ms ms-16">chevron_right</span></button></div>`}
+    </div>`;
+  }).join('');
+  h+=`<div class="lote-add" onclick="addDteToLotes()"><span class="ms ms-16">add</span>Cargar nuevo DTE</div>`;
+  wrap.innerHTML=h;
+}
+function toggleMover(e,li,di){
+  e.stopPropagation();
+  document.querySelectorAll('.dte-preview-pop').forEach(p=>{if(p.id!=='mv'+li+'-'+di)p.classList.remove('open');});
+  document.getElementById('mv'+li+'-'+di).classList.toggle('open');
+}
+function toggleDtePreview(e,id){
+  e.stopPropagation();
+  document.querySelectorAll('.dte-preview-pop').forEach(p=>{if(p.id!==id)p.classList.remove('open');});
+  document.getElementById(id).classList.toggle('open');
+}
+document.addEventListener('click',()=>document.querySelectorAll('.dte-preview-pop.open').forEach(p=>p.classList.remove('open')));
+function moverDte(fromLi,di,toLi){
+  const [f]=lotes[fromLi].dtes.splice(di,1);
+  lotes[toLi].dtes.push(f);
+  if(lotes[fromLi].dtes.length===0) lotes.splice(fromLi,1);
+  renderLotes();
+}
+function deleteDteFromLote(e,li,di){
+  e.stopPropagation();
+  lotes[li].dtes.splice(di,1);
+  if(lotes[li].dtes.length===0) lotes.splice(li,1);
+  renderLotes();
+}
+function addDteToLotes(){
+  const next=DTE_SIM[dteFiles.length]||{name:'DTE_0'+(400000+dteFiles.length)+'.pdf',jaula:'Jaula simple',cabezas:60};
+  const f={...next};
+  dteFiles.push(f);
+  if(!lotes.length) lotes.push({id:1,fecha:LOTE_FECHA,origen:LOTE_ORIGEN,destino:LOTE_DESTINO,status:'success',dtes:[]});
+  lotes[lotes.length-1].dtes.push(f);
+  renderLotes();
+}
+function openLote(idx,backScreen){
+  activeLote=lotes[idx];
+  dteBackScreen=backScreen;
+  renderLoteCtx();
+  prefillFromDTE(activeLote.status==='partial');
+  goTo('s5');
+}
+function renderLoteCtx(){
+  ['ctx5','ctx6'].forEach(id=>{
+    const bar=document.getElementById(id);
+    if(!viaDTE||!activeLote){bar.classList.remove('on');return;}
+    bar.classList.add('on');
+    bar.querySelector('.lote-num').textContent=activeLote.id;
+    bar.querySelector('.lote-date').textContent=activeLote.fecha;
+    bar.querySelector('.lote-route').textContent=`(${activeLote.origen} → ${activeLote.destino})`;
+    bar.querySelector('.lote-ctx-dtes').innerHTML=activeLote.dtes.map((f,i)=>`
+      <div class="dte-pop-anchor">
+        <button class="dte-chip-link" onclick="toggleDtePreview(event,'${id}-p${i}')"><span class="ms ms-16">description</span>DTE ${i+1}</button>
+        <div class="dte-preview-pop" id="${id}-p${i}">
+          <div class="fn"><span class="ms ms-16">picture_as_pdf</span>${f.name}</div>
+          <div class="note">Vista previa simulada — este prototipo no adjunta el documento real.</div>
+        </div>
+      </div>`).join('');
+  });
+}
+function prefillFromDTE(partial){
+  const cant=activeLote.dtes.reduce((s,f)=>s+f.cabezas,0);
+  /* el Peso nunca viene en el DTE — no se precarga en ningún escenario, siempre se completa a mano */
+  const values={cant1:String(cant),cat1:'Capón',raza1:'Landrace',dias1:'90'};
+  const gotEnPartial=['cant1','raza1']; // lo único que la extracción parcial pudo leer
+  const cls=partial?'partial':'pre';
+  Object.keys(values).forEach(id=>{
+    const el=document.getElementById(id);
+    if(!partial||gotEnPartial.includes(id)){
+      el.value=values[id];
+      el.classList.remove('pre','partial');
+      el.classList.add(cls);
+    }else{
+      el.value='';
+      el.classList.remove('pre','partial');
+    }
+  });
+  checkReq1();
+  const b1=document.getElementById('preBanner1'), b2=document.getElementById('preBanner2');
+  if(partial){
+    b1.className='pre-banner warn'; b2.className='pre-banner warn';
+    b1.querySelector('.txt').textContent='Extrajimos parte de los datos de tus DTEs. Completá los campos faltantes antes de continuar.';
+    b2.querySelector('.txt').textContent='Revisá y completá los datos que no pudimos extraer de tus DTEs.';
+  }else{
+    b1.className='pre-banner info'; b2.className='pre-banner info';
+    b1.querySelector('.txt').textContent='Completamos estos datos a partir de tus DTEs. Revisalos antes de continuar.';
+    b2.querySelector('.txt').textContent='Completamos estos datos a partir de tus DTEs. Revisalos antes de continuar.';
+  }
+  b1.style.display='flex'; b2.style.display='flex';
+  const tbody=document.querySelector('#s6 .jtable tbody');
+  tbody.innerHTML='';
+  jaulaCount=0;
+  activeLote.dtes.forEach((f,idx)=>{
+    jaulaCount++;
+    const missingCarga=partial&&idx===activeLote.dtes.length-1;
+    const tr=document.createElement('tr');
+    tr.innerHTML=`
+      <td style="font-weight:var(--fw-bold);color:var(--content-secondary);padding-left:var(--sp-md)">Jaula ${jaulaCount}<div class="tx-caption" style="font-weight:var(--fw-regular)">${f.name}</div></td>
+      <td><select class="sel ${cls}" style="min-width:150px"><option selected>${f.jaula}</option></select></td>
+      <td>${missingCarga?'<input class="inp" type="date" style="min-width:150px"/>':`<input class="inp ${cls}" type="date" value="2026-06-24" style="min-width:150px"/>`}</td>
+      <td><input class="inp" type="date" required style="min-width:150px"/></td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+/* ── SIMULADOR DE ESCENARIOS — el panel de casuísticas deja de ser solo lectura:
+   elegir acá cambia el estado real del prototipo (campos, banners, lotes, tabla de jaulas)
+   y el resultado de extracción elegido también rige la próxima vez que se use
+   "Analizar DTEs" desde el flujo real de subida. ── */
+let simCarga='none', simExtraccion='success';
+const DEFAULT_JAULA_ROW=`<tr>
+  <td style="font-weight:var(--fw-bold);color:var(--content-secondary);padding-left:var(--sp-md)">Jaula 1</td>
+  <td><select class="sel" style="min-width:150px"><option value="" disabled selected>Seleccionar</option><option>Jaula simple</option><option>Jaula doble</option><option>Jaula triple</option></select></td>
+  <td><input class="inp" type="date" style="min-width:150px"/></td>
+  <td><input class="inp" type="date" required style="min-width:150px"/></td>
+</tr>`;
+function setSimCarga(btn,val){
+  simCarga=val;
+  document.querySelectorAll('#simCargaGroup .cas-tabsw-item').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  document.getElementById('simExtraccionRow').classList.toggle('disabled',val==='none');
+}
+function setSimExtraccion(btn,val){
+  simExtraccion=val;
+  document.querySelectorAll('#simExtraccionGroup .cas-tabsw-item').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+}
+function resetDteState(){
+  dteFiles=[];
+  lotes=[];
+  activeLote=null;
+  renderDteArea();
+  ['cant1','cat1','peso1','raza1','dias1'].forEach(id=>{
+    const el=document.getElementById(id);
+    el.value='';
+    el.classList.remove('pre','partial');
+  });
+  const b1=document.getElementById('preBanner1'), b2=document.getElementById('preBanner2');
+  b1.style.display='none'; b1.className='pre-banner info';
+  b2.style.display='none'; b2.className='pre-banner info';
+  document.getElementById('ctx5').classList.remove('on');
+  document.getElementById('ctx6').classList.remove('on');
+  document.getElementById('dteErrorRow').style.display='none';
+  document.getElementById('btnManualFallback').style.display='none';
+  document.querySelector('#s6 .jtable tbody').innerHTML=DEFAULT_JAULA_ROW;
+  jaulaCount=1;
+  checkReq1();
+}
+function simulateScenario(){
+  resetDteState();
+  if(simCarga==='none'){
+    viaDTE=false;
+    goTo('s5');
+    return;
+  }
+  viaDTE=true;
+  const n=simCarga==='multi'?3:1;
+  for(let i=0;i<n;i++) addDte();
+  afterExtraction();
+}
+function manualFallback(){
+  resetDteState();
+  viaDTE=false;
+  goTo('s5');
+}
+
+/* ── VALIDACIÓN PASO 1 ── */
+function checkReq1(){
+  const ids=['cant1','cat1','peso1','raza1','dias1'];
+  const ok=ids.every(id=>document.getElementById(id).value.trim()!=='');
+  document.getElementById('btnSig1').disabled=!ok;
+  if(ok){
+    document.getElementById('sumCant').textContent=document.getElementById('cant1').value;
+    document.getElementById('sumCat').textContent=' '+document.getElementById('cat1').value;
+    document.getElementById('sumPeso').textContent=document.getElementById('peso1').value+' Kg';
+    document.getElementById('sumRaza').textContent=document.getElementById('raza1').value;
+  }
+}
+
+/* ── TABLA DE PRECIOS (sin Desde/Hasta) ── */
+function addRow(tbodyId,emptyId){
+  document.getElementById(emptyId).style.display='none';
+  const tr=document.createElement('tr');
+  tr.innerHTML=`
+    <td><div class="inp-suf"><input class="inp" placeholder="0" style="width:90px"/><span class="suf">$/Kg</span></div></td>
+    <td><select class="sel" style="min-width:130px"><option value="" disabled selected>Categoría</option><option>Capón</option><option>Cerda</option><option>Lechón</option></select></td>
+    <td><select class="sel" style="min-width:120px"><option value="" selected>— (opcional)</option><option>Magra</option><option>Estándar</option></select></td>
+    <td><button class="del-btn" onclick="delRow(this,'${tbodyId}','${emptyId}')"><span class="ms ms-16">delete</span></button></td>`;
+  document.getElementById(tbodyId).appendChild(tr);
+}
+function delRow(btn,tbodyId,emptyId){
+  btn.closest('tr').remove();
+  if(!document.getElementById(tbodyId).children.length)
+    document.getElementById(emptyId).style.display='block';
+}
+
+/* ── AGREGAR JAULA ── */
+let jaulaCount=1;
+function addJaula(){
+  jaulaCount++;
+  const tbody=document.querySelector('#s6 .jtable tbody');
+  const tr=document.createElement('tr');
+  tr.innerHTML=`
+    <td style="font-weight:var(--fw-bold);color:var(--content-secondary);padding-left:var(--sp-md)">Jaula ${jaulaCount}</td>
+    <td><select class="sel" style="min-width:150px"><option value="" disabled selected>Seleccionar</option><option>Jaula simple</option><option>Jaula doble</option><option>Jaula triple</option></select></td>
+    <td><input class="inp" type="date" style="min-width:150px"/></td>
+    <td><input class="inp" type="date" required style="min-width:150px"/></td>`;
+  tbody.appendChild(tr);
+  toggleMismasFechas();
+}
+function toggleMismasFechas(){
+  const on=document.getElementById('mismasFechas').checked;
+  const rows=document.querySelectorAll('#s6 .jtable tbody tr');
+  rows.forEach((tr,i)=>{
+    if(i===0)return;
+    tr.querySelectorAll('input[type="date"]').forEach(inp=>{
+      inp.disabled=on;
+      inp.style.background=on?'var(--bg-2)':'var(--bg-1)';
+    });
+  });
+}
+
+/* ── CASUÍSTICAS — panel flotante minimizable ── */
+const CASUISTICAS=[
+  {paso:'Paso 1', desc:'Establecimiento: el selector debe listar únicamente establecimientos declarados como productores de porcinos, no todos los establecimientos de la sociedad.'},
+  {paso:'Paso 1', desc:'Categoría: definir la taxonomía oficial de categorías porcinas (ej. Lechón, Capón, Cerda, Padrillo) con negocio antes de fijar el listado.'},
+  {paso:'Paso 1', desc:'Raza: definir el listado oficial de razas porcinas (Landrace, Duroc, Yorkshire, Pietrain, Cruza, etc.) con negocio.'},
+  {paso:'Paso 1', desc:'Terminación: no se ofrece selector — la operación de porcinos es siempre Feedlot. Confirmar que "Días de encierre" queda como campo simple, sin condicionar su visibilidad.'},
+  {paso:'Paso 2', desc:'Matrícula compradora: el selector debe listar solo compradores de porcino con crédito habilitado (filtro combinado especie + estado de crédito).'},
+  {paso:'Paso 2', desc:'Establecimiento faenador: el selector debe listar solo plantas habilitadas para faenar cerdos.'},
+  {paso:'Paso 2', desc:'Tipo de precio: para porcinos siempre es Kg Vivo. Confirmar si el campo debe quedar fijo/bloqueado (como en este prototipo) o si igual debe mostrarse como opción seleccionable por consistencia con Faena vacuna.'},
+  {paso:'Paso 2', desc:'Transporte: para porcinos siempre es "En Planta". Confirmar si la opción "A retirar" debe eliminarse por completo del formulario o solo ocultarse.'},
+  {paso:'Paso 2', desc:'Tabla de precio por categoría: se quitaron las columnas Desde/Hasta (no aplican a porcinos). Confirmar si Tipificación es obligatoria u optativa — en este prototipo quedó optativa.'},
+  {paso:'Paso 2', desc:'Logística: el tipo de jaula debe incluir "Jaula triple" además de Simple y Doble, a diferencia del flujo de Faena vacuna.'},
+  {paso:'Navegación', desc:'Se agrega "Nueva Operación" dentro del menú "Operaciones" del header (Operaciones → Nueva Operación → Faena → Venta Porcinos). Confirmar con UX si esta jerarquía es la definitiva o si "Nueva Operación" debería ser un ítem de primer nivel.'},
+  {paso:'DTE', desc:'En vacuno el DTE debe tener a la consignataria Pedro Genta para habilitar la digitalización. Confirmar con negocio cuál es la validación equivalente para porcinos (planta faenadora habilitada, consignataria específica, u otra) antes de implementar la lectura automática.'},
+  {paso:'DTE', desc:'Agrupación en lotes: confirmado que porcinos sí necesita el Resumen de Lotes (igual que vacuno), implementado desde v0.6. La regla de agrupación (qué campos definen que dos DTEs van al mismo lote) está simulada en el prototipo — confirmar con negocio/CIMA cuál es la regla real para porcinos.'},
+  {paso:'DTE', desc:'Peso: confirmado que nunca viene en el DTE — a diferencia de Cantidad, Categoría, Raza y Días de encierre, no se precarga en ningún escenario de extracción. Siempre se completa a mano.'},
+];
+function renderCas(){
+  const body=document.getElementById('casBody');
+  body.innerHTML=CASUISTICAS.map((c,i)=>`
+    <div class="cas-item" id="casItem${i}" onclick="toggleCasDone(${i})">
+      <div class="cas-check"><span class="ms ms-16">check</span></div>
+      <div class="cas-txt"><div class="cas-step">${c.paso}</div><div class="cas-desc">${c.desc}</div></div>
+    </div>`).join('');
+  updateCasCount();
+}
+function toggleCasDone(i){
+  document.getElementById('casItem'+i).classList.toggle('done');
+  updateCasCount();
+}
+function updateCasCount(){
+  const open=document.querySelectorAll('.cas-item:not(.done)').length;
+  document.getElementById('casCount').textContent=open;
+}
+function toggleCasPanel(){
+  document.getElementById('casPanel').classList.toggle('open');
+}
+function minimizeCas(){
+  document.getElementById('casPanel').classList.remove('open');
+}
+function openCas(i){
+  document.getElementById('casPanel').classList.add('open');
+  document.querySelectorAll('.cas-item').forEach(el=>el.classList.remove('highlight'));
+  const idx=i-1;
+  const el=document.getElementById('casItem'+idx);
+  if(el){
+    el.classList.add('highlight');
+    el.scrollIntoView({block:'center',behavior:'smooth'});
+    setTimeout(()=>el.classList.remove('highlight'),2200);
+  }
+}
+renderCas();
+</script>
+</body>
+</html>
