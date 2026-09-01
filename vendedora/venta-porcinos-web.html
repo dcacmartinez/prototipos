@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Digitalización de Venta — Porcinos</title>
 <link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,400;0,700;0,900;1,400;1,700&display=swap" rel="stylesheet"/>
-<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20,300,0,0" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20,300,0,0" rel="stylesheet"/>
 <style>
 /* ══════════════════════════════════════════════════════════════
    TOKENS — v2, fieles al Figma y a la implementación real.
@@ -39,12 +39,21 @@
   --lh-title2:19px; --lh-title3:17px; --lh-body2:14px; --lh-caption:13px;
   --fw-regular:400; --fw-semibold:600; --fw-bold:700; --fw-heavy:800; --fw-black:900;
   --sp-xxs:2px; --sp-xs:4px; --sp-sm:8px; --sp-md:12px; --sp-lg:16px; --sp-xl:24px; --sp-xxl:32px; --sp-xxxl:40px;
-  --r4:4px; --r6:6px; --r8:8px; --r12:12px; --r16:16px; --r999:999px;
+  --r4:4px; --r6:6px; --r8:8px; --r12:12px; --r16:16px; --r20:20px; --r999:999px;
+  /* tokens propios del board de Mis Operaciones (mismos valores que arriba,
+     con los nombres que usa ese prototipo) */
+  --dcp:#1795D0; --sh:0 2px 16px rgba(0,0,0,.08);
+  --g100:#EDEDED; --g300:#C0C0C0; --g400:#A4A4A4; --g500:#888888; --g600:#777777; --g700:#666666; --g800:#555555;
+  --verde50:#E0EFD8; --verde100:#54A228; --verde200:#1E721E;
+  --rojo:#D25859; --rojo100:#E55050; --amar:#A3972A;
+  --t2:16px; --l2:19px; --t3:14px; --l3:17px;
+  --b1:13px; --lb1:16px; --b2:12px; --lb2:14px;
+  --cap:11px; --lcap:13px; --mic:10px;
   --h-input:46px; --h-btn:44px; --h-btn-lg:48px;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Lato',sans-serif;font-size:var(--fs-label);color:var(--content-primary);background:var(--bg-page);min-height:100vh}
-.ms{font-family:'Material Symbols Outlined';font-weight:300;font-style:normal;line-height:1;letter-spacing:normal;text-transform:none;display:inline-block;white-space:nowrap;word-wrap:normal;direction:ltr;vertical-align:middle}
+.ms{font-family:'Material Symbols Rounded';font-weight:300;font-style:normal;line-height:1;letter-spacing:normal;text-transform:none;display:inline-block;white-space:nowrap;word-wrap:normal;direction:ltr;vertical-align:middle}
 /* tamaños de ícono — únicamente escala documentada: 16 · 20 · 24 · 32 · 48 */
 .ms-16{font-size:16px!important}.ms-20{font-size:20px!important}.ms-24{font-size:24px!important}.ms-32{font-size:32px!important}.ms-48{font-size:48px!important}
 
@@ -60,14 +69,28 @@ body{font-family:'Lato',sans-serif;font-size:var(--fs-label);color:var(--content
 .tx-caption{font-size:var(--fs-caption);color:var(--content-tertiary)}
 
 /* ── Header web (BackHeader adaptado a navegación de escritorio: 60px, bg-1, borderBottom borderTertiary) ── */
-.hdr{background:var(--bg-1);border-bottom:1px solid var(--border-tertiary);height:60px;display:flex;align-items:center;padding:0 var(--sp-xl);position:relative;z-index:120}
-.logo{font-size:var(--fs-display);font-weight:var(--fw-bold);color:var(--brand);text-decoration:none;margin-right:var(--sp-xxl);white-space:nowrap}
-.hdr-links{display:flex;align-items:center;gap:var(--sp-xs);flex:1;height:100%}
-.hdr-item{position:relative;height:100%;display:flex;align-items:center;padding:0 var(--sp-md);cursor:pointer}
-.hdr-item .lbl{font-size:var(--fs-sub);font-weight:var(--fw-bold);color:var(--content-tertiary);text-transform:uppercase;letter-spacing:.05em;display:flex;align-items:center;gap:var(--sp-xxs)}
-.hdr-item .lbl .ms{color:var(--content-tertiary)}
+/* [F] Header-Desktop h100 = franja azul 20 + barra blanca 80, padding 0 100 */
+.franja{height:20px;background:var(--brand)}
+/* el Figma marca 100px de margen lateral; el nav de este prototipo es más ancho
+   que el de Mis Operaciones (5 ítems con dropdown), así que el margen cede
+   antes de que la barra desborde */
+.hdr{background:var(--bg-1);height:80px;display:flex;align-items:center;padding:0 clamp(20px,calc((100vw - 1240px) / 2),100px);gap:var(--sp-lg);position:relative;z-index:120}
+.logo{font-family:Georgia,'Times New Roman',serif;font-size:26px;font-weight:var(--fw-bold);color:var(--brand);text-decoration:none;letter-spacing:-.3px;white-space:nowrap}
+.hdr-links{display:flex;align-items:center;gap:0;flex:1;min-width:0;height:100%}
+/* padding chico: con el header a 100px de margen y 5 ítems de nav, 12px por
+   lado desbordaba a 1440 */
+.hdr-item{position:relative;height:100%;display:flex;align-items:center;padding:0 var(--sp-sm);cursor:pointer}
+.hdr-item .lbl{font-size:var(--fs-sub);font-weight:var(--fw-bold);color:var(--content-secondary);text-transform:uppercase;display:flex;align-items:center;gap:6px;white-space:nowrap}
+.hdr-item .lbl .ms{color:var(--content-secondary)}
 .hdr-item:hover .lbl,.hdr-item:hover .lbl .ms{color:var(--brand)}
-.hdr-actions{display:flex;align-items:center;gap:var(--sp-sm)}
+/* [F] botones del header: h32, radius 6, 14/600 — Cotizar en Verde 100 y
+   Pagos en Azul dCP. No usan el .btn del formulario, que es de 44px. */
+.hdr-actions{display:flex;align-items:center;gap:var(--sp-md);flex-shrink:0}
+.hbtn{height:32px;padding:0 var(--sp-lg);border:none;border-radius:var(--r6);color:#fff;font-family:inherit;font-size:var(--fs-label);font-weight:var(--fw-semibold);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:var(--sp-sm)}
+.hbtn .ms{color:#fff}
+.hbtn.comprar{background:var(--brand)}
+.hbtn.cotizar{background:var(--positive)}
+.hbtn.pagos{background:var(--brand-dcp);padding:0 var(--sp-lg) 0 var(--sp-md)}
 
 /* ── Btn — primary / secondary / tertiary × brand / destructive (Design_dCaC.md § Componentes › Btn) ── */
 /* Btn real del producto: 16px, radio 8, padding 10/20, alto 44 (48 en el CTA de bloque) */
@@ -141,6 +164,8 @@ body{font-family:'Lato',sans-serif;font-size:var(--fs-label);color:var(--content
 .tabsw-item.on{background:var(--brand-light);color:var(--brand-dark);font-weight:var(--fw-bold)}
 
 /* ── Valor bloqueado (campo fijo, no editable) ── */
+.fixval{min-height:var(--h-input);display:flex;align-items:center;font-size:var(--fs-field);
+  font-weight:var(--fw-bold);color:var(--content-secondary)}
 .disp-val{height:var(--h-input);border:1px solid var(--border-secondary);border-radius:var(--r8);padding:0 var(--sp-md);display:flex;align-items:center;gap:var(--sp-xs);font-size:var(--fs-field);color:var(--content-secondary);background:var(--bg-2);width:100%}
 .disp-val .ms{color:var(--content-tertiary)}
 
@@ -185,7 +210,7 @@ body{font-family:'Lato',sans-serif;font-size:var(--fs-label);color:var(--content
 .benefit-title{font-size:var(--fs-field);line-height:var(--lh-field);font-weight:var(--fw-bold);color:var(--content-primary);margin:var(--sp-md) 0 var(--sp-sm)}
 .benefit-list{list-style:none}
 .benefit-list li{color:var(--content-tertiary);font-size:var(--fs-label);padding:var(--sp-xxs) 0 var(--sp-xxs) 20px;position:relative;line-height:1.5}
-.benefit-list li::before{content:'check';font-family:'Material Symbols Outlined';font-weight:300;position:absolute;left:0;top:3px;font-size:14px;color:var(--positive)}
+.benefit-list li::before{content:'check';font-family:'Material Symbols Rounded';font-weight:300;position:absolute;left:0;top:3px;font-size:14px;color:var(--positive)}
 .legal-box{background:var(--bg-3);border:none;border-radius:var(--r8);padding:var(--sp-xxxl);margin-top:var(--sp-lg)}
 .legal-notes{list-style:disc;padding-left:20px}
 .legal-notes li{font-size:var(--fs-label);color:var(--content-secondary);margin-bottom:var(--sp-xs)}
@@ -223,10 +248,21 @@ body{font-family:'Lato',sans-serif;font-size:var(--fs-label);color:var(--content
 .pre-banner span.txt{font-size:var(--fs-sub);font-style:italic}
 
 /* ── DTE upload ── */
-.file-chip{background:var(--bg-2);border:1px solid var(--border-tertiary);border-radius:var(--r4);padding:var(--sp-sm) var(--sp-md);display:flex;align-items:center;gap:var(--sp-sm);font-size:var(--fs-sub);margin-bottom:var(--sp-sm)}
-.file-chip .fn{flex:1;font-weight:var(--fw-bold);color:var(--content-primary)}
-.upload-area{border:1px dashed var(--brand-mid);border-radius:var(--r8);padding:var(--sp-lg);display:flex;align-items:center;gap:var(--sp-md);cursor:pointer;background:var(--bg-1)}
+/* [F] DTE ya cargado: caja verde clara, título bold + cabezas debajo, "Eliminar" a la derecha */
+.file-chip{background:var(--positive-bg);border-radius:var(--r8);padding:var(--sp-md) var(--sp-lg);display:flex;align-items:center;gap:var(--sp-md);margin-bottom:var(--sp-md)}
+.file-chip>.ms{color:var(--positive-dark)}
+.file-chip .tx{flex:1;min-width:0}
+.file-chip .fn{display:block;font-size:var(--fs-label);font-weight:var(--fw-bold);color:var(--positive-dark)}
+.file-chip .sub{display:block;font-size:var(--fs-sub);font-style:italic;color:var(--positive-dark);opacity:.8;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.file-chip .del{background:none;border:none;cursor:pointer;font-family:inherit;font-size:var(--fs-sub);font-weight:var(--fw-bold);color:var(--positive-dark)}
+/* [F] dropzone: caja punteada azul con ícono + textos a la izquierda y botón "Seleccionar" a la derecha */
+.upload-area{border:1px dashed var(--brand-mid);border-radius:var(--r8);padding:var(--sp-md) var(--sp-lg);display:flex;align-items:center;gap:var(--sp-md);cursor:pointer;background:var(--brand-light-soft,#F4FAFD)}
 .upload-area .ms{color:var(--brand)}
+.upload-area .tx{flex:1}
+.upload-area .t1{display:block;font-size:var(--fs-label);font-weight:var(--fw-bold);color:var(--brand-dark)}
+.upload-area .t2{display:block;font-size:var(--fs-sub);font-style:italic;color:var(--content-tertiary)}
+.upload-area .pick{background:var(--brand);color:#fff;border:none;border-radius:6px;height:32px;padding:0 var(--sp-lg);
+  font-family:inherit;font-size:var(--fs-sub);font-weight:var(--fw-bold);cursor:pointer;flex-shrink:0}
 .upload-area:hover{background:var(--brand-light)}
 
 /* ── Procesando ── */
@@ -241,11 +277,19 @@ body{font-family:'Lato',sans-serif;font-size:var(--fs-label);color:var(--content
 .lote-num{width:28px;height:28px;border-radius:var(--r999);background:var(--bg-2);border:1px solid var(--border-secondary);display:flex;align-items:center;justify-content:center;font-size:var(--fs-sub);font-weight:var(--fw-bold);color:var(--content-secondary);flex-shrink:0}
 .lote-date{font-size:var(--fs-label);font-weight:var(--fw-bold);color:var(--brand)}
 .lote-route{font-size:var(--fs-label);font-weight:var(--fw-bold);font-style:italic;color:var(--content-secondary)}
-.lote-summary{background:var(--bg-2);padding:var(--sp-sm) var(--sp-lg);display:flex;gap:var(--sp-md);font-size:var(--fs-sub);font-weight:var(--fw-bold);color:var(--content-secondary);border-top:1px solid var(--border-tertiary);border-bottom:1px solid var(--border-tertiary)}
+.lote-summary{background:var(--bg-2);padding:var(--sp-sm) var(--sp-lg);display:flex;font-size:var(--fs-sub);color:var(--content-secondary);border-top:1px solid var(--border-tertiary);border-bottom:1px solid var(--border-tertiary)}
+/* [F] "56 Capones | 2 Jaulas | 2 DTEs": número en bold, etiqueta regular, separadores finos */
+.lote-summary span{padding:0 var(--sp-md)}
+.lote-summary span:first-child{padding-left:0}
+.lote-summary span+span{border-left:1px solid var(--border-secondary)}
+.lote-summary b{font-weight:var(--fw-bold);color:var(--content-secondary)}
 .lote-dte-row{display:flex;align-items:center;gap:var(--sp-sm);padding:var(--sp-md) var(--sp-lg);border-bottom:1px solid var(--border-tertiary)}
 .lote-dte-row:last-child{border-bottom:none}
-.lote-dte-row .fn{flex:1;font-weight:var(--fw-bold);font-style:italic;color:var(--brand);cursor:pointer}
-.lote-dte-row .fn:hover{text-decoration:underline}
+/* [F] "DTE 1" en gris regular + nombre del archivo en bold itálica */
+.lote-dte-row .dtn{font-size:var(--fs-sub);color:var(--content-secondary);width:52px;flex-shrink:0}
+.lote-dte-row .fn{flex:1;font-size:var(--fs-sub);font-weight:var(--fw-bold);font-style:italic;color:var(--content-secondary);cursor:pointer;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lote-dte-row .fn:hover{color:var(--brand)}
+.lote-dte-row>.ms{color:var(--content-tertiary)}
 .lote-dte-cab{font-size:var(--fs-sub);color:var(--content-secondary);margin-right:var(--sp-lg)}
 .lote-mover{background:none;border:none;color:var(--brand);font-size:var(--fs-sub);font-weight:var(--fw-bold);cursor:pointer;display:flex;align-items:center;gap:2px;font-family:inherit}
 .lote-del{background:none;border:none;color:var(--content-tertiary);cursor:pointer;display:flex;padding:var(--sp-xs);margin-left:var(--sp-xs)}
@@ -253,7 +297,14 @@ body{font-family:'Lato',sans-serif;font-size:var(--fs-label);color:var(--content
 .lote-card.failed{opacity:.9}
 .lote-fail-note{padding:0 var(--sp-lg) var(--sp-lg);font-size:var(--fs-sub);font-style:italic;color:var(--alert-neg-text)}
 .lote-foot{display:flex;justify-content:flex-end;padding:var(--sp-md) var(--sp-lg);border-top:1px solid var(--border-tertiary)}
-.lote-add{display:flex;align-items:center;justify-content:center;gap:var(--sp-xs);padding:var(--sp-md);color:var(--brand);font-size:var(--fs-sub);font-weight:var(--fw-bold);cursor:pointer;border:1px dashed var(--brand-mid);border-radius:var(--r12);background:var(--bg-1)}
+.mover-menu{min-width:150px;padding:var(--sp-xs) 0}
+.mover-menu button{display:block;width:100%;text-align:left;padding:var(--sp-sm) var(--sp-md);background:none;border:none;cursor:pointer;
+  font-family:inherit;font-size:var(--fs-sub);color:var(--content-secondary)}
+.mover-menu button:hover{background:var(--bg-2)}
+.mover-menu button.on{color:var(--brand);font-weight:var(--fw-bold)}
+.mover-menu button.nuevo{color:var(--brand);border-top:1px solid var(--border-tertiary);margin-top:var(--sp-xs);padding-top:var(--sp-sm)}
+/* footer único de la pantalla de lotes — en el Figma no hay un Continuar por lote */
+.lotes-cta{display:flex;justify-content:space-between;align-items:center;padding:var(--sp-xl) var(--sp-xxxl)}
 
 /* ── Estado de extracción (extensión del componente Badge — pill+dot+color semántico igual que Badge,
    pero con texto de dos palabras en sentence-case: el label de un proceso no es una única palabra corta
@@ -280,71 +331,328 @@ body{font-family:'Lato',sans-serif;font-size:var(--fs-label);color:var(--content
 .dte-preview-pop .note{font-size:var(--fs-caption);color:var(--content-tertiary);font-style:italic;line-height:1.4}
 .dte-pop-anchor{position:relative}
 
-/* ══ Mis Operaciones — patrón real del Figma "Mis Operaciones - Faena - Ventas" ══
-   Nav de estados : fila centrada, ítem padding 12/24, Lato 600 16/22, activo brand / inactivo #A4A4A4
-   op-card        : radio 12 · franja "Info Tropa" blanca 12/12/12/16 · franja "ID+Sociedad+Estab"
-                    bg-2 8/12/8/16 · cuerpo blanco padding 24 24 24 0 con gap 24 (la columna
-                    izquierda va al ras del borde) · footer bg-2 padding 12                       */
-.tabs-bar{display:flex;align-items:center;justify-content:center;margin-bottom:var(--sp-lg);flex-wrap:wrap}
-.tab{display:flex;align-items:flex-start;gap:2px;padding:12px 24px;color:var(--content-quaternary);font-size:var(--fs-heading);line-height:22px;font-weight:var(--fw-semibold);cursor:pointer;white-space:nowrap}
-.tab.active{color:var(--brand)}
-.tab .cnt{font-size:var(--fs-micro);line-height:16px;font-weight:var(--fw-bold)}
-.op-card{background:var(--bg-1);border-radius:var(--r12);overflow:hidden;margin-bottom:var(--sp-lg)}
-.op-top{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-lg);padding:12px 12px 12px 16px;background:var(--bg-1)}
-.op-desc{display:flex;align-items:center;gap:var(--sp-sm);flex-wrap:wrap}
-.op-desc .seg-1{font-size:var(--fs-heading);line-height:22px;font-weight:var(--fw-regular);color:var(--brand)}
-.op-desc .seg-2{font-size:var(--fs-heading);line-height:var(--lh-title2);font-weight:var(--fw-bold);color:var(--brand)}
-.op-desc .seg-plain{font-size:var(--fs-label);line-height:var(--lh-title3);color:var(--content-secondary)}
-.op-desc .seg-muted{font-size:var(--fs-label);line-height:var(--lh-title3);color:var(--content-quaternary)}
-/* el divisor real es un guion horizontal de 22px (#EDEDED), no una barra vertical */
-.op-desc .divisor{width:22px;height:0;border-top:1px solid var(--border-tertiary)}
-.op-sub{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-sm);padding:8px 12px 8px 16px;background:var(--bg-2);flex-wrap:wrap}
-.op-sub .grp{display:flex;align-items:center;gap:var(--sp-md);flex-wrap:wrap}
-.op-sub .soc{display:flex;align-items:center;gap:2px;font-size:var(--fs-body1);line-height:16px;font-weight:var(--fw-bold);color:var(--content-quaternary)}
-.op-sub .est{display:flex;align-items:center;gap:2px;font-size:var(--fs-label);line-height:var(--lh-title3);font-weight:var(--fw-bold);color:var(--content-quaternary)}
-.op-sub .loc{font-size:var(--fs-caption);line-height:var(--lh-caption);font-style:italic;color:var(--content-quaternary)}
-.op-sub .dash{width:17px;height:0;border-top:.75px solid var(--content-quaternary)}
-.op-sub .inf{font-size:var(--fs-sub);line-height:16px;color:var(--content-tertiary)}
-.op-sub .inf b{color:var(--content-secondary)}
-.op-sub .oid{font-size:var(--fs-body1);line-height:20px;color:var(--content-quaternary)}
-.op-sub .ms{color:var(--border-secondary)}
-.op-body{display:flex;align-items:stretch;gap:var(--sp-xl);padding:var(--sp-xl) var(--sp-xl) var(--sp-xl) 0;background:var(--bg-1)}
-.op-left{display:flex;flex-direction:column;gap:var(--sp-sm);width:286px;flex-shrink:0}
-.tile{display:flex;align-items:center;gap:var(--sp-lg);padding:var(--sp-lg) var(--sp-xl);background:var(--bg-2);border-radius:0 var(--r8) var(--r8) 0;position:relative;flex:1}
-.tile .ic{width:40px;height:40px;border-radius:var(--r999);background:var(--border-tertiary);display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.tile .ic .ms{color:var(--brand)}
-.tile.on .ic{background:var(--brand)}
-.tile.on .ic .ms{color:#fff}
-.tile .lbl{font-size:var(--fs-sub);line-height:var(--lh-body2);color:var(--content-quaternary)}
-.tile .val{font-size:var(--fs-label);line-height:var(--lh-title3);font-weight:var(--fw-bold);color:var(--content-secondary);margin-top:var(--sp-xs)}
-.tile .corner{position:absolute;top:0;right:0;background:var(--border-tertiary);border-radius:0 var(--r8) 0 var(--r8);padding:4px var(--sp-sm);font-size:var(--fs-caption);line-height:var(--lh-caption);font-weight:var(--fw-bold);color:var(--content-quaternary)}
-.op-center{flex:1;min-width:0;background:var(--bg-2);border-radius:var(--r8);padding:var(--sp-xl) var(--sp-xs) var(--sp-xs);display:flex;flex-direction:column;gap:var(--sp-xl)}
-.op-center .ctitle{text-align:center;font-size:var(--fs-label);line-height:var(--lh-title3);font-weight:var(--fw-heavy);color:var(--content-quaternary);text-transform:uppercase}
-.op-cols{display:flex;gap:var(--sp-xs);align-items:stretch;flex:1}
-.op-subcol{flex:1;min-width:0;background:var(--bg-1);border-radius:var(--r4);padding:var(--sp-lg);display:flex;flex-direction:column;gap:var(--sp-lg)}
-.ib{display:flex;flex-direction:column;gap:6px}
-.ib .t{font-size:var(--fs-sub);line-height:var(--lh-body2);color:var(--content-quaternary)}
-.ib .v{display:flex;align-items:flex-end;gap:var(--sp-sm);flex-wrap:wrap}
-.ib .v .dato{font-size:var(--fs-heading);line-height:var(--lh-title2);font-weight:var(--fw-bold);color:var(--content-secondary)}
-.ib .v .dato.sm{font-size:var(--fs-label);line-height:var(--lh-title3)}
-.ib .v .suf{font-size:var(--fs-caption);line-height:var(--lh-caption);font-weight:var(--fw-bold);color:var(--content-secondary);padding-bottom:1px}
-.ib-div{height:0;border-top:1px solid var(--bg-2)}
-.op-right{width:192px;flex-shrink:0;display:flex;flex-direction:column;gap:var(--sp-sm)}
-.macto{display:flex;align-items:center;gap:var(--sp-sm);padding:var(--sp-lg);min-height:72px;border-radius:var(--r8);background:var(--positive-bg);color:var(--positive-dark);border:none;cursor:pointer;font-family:inherit;text-align:left;width:100%}
-.macto .mact-txt{display:flex;flex-direction:column;gap:var(--sp-xs);min-width:0}
-.macto .ms{flex-shrink:0}
-.macto .h2{font-size:var(--fs-label);line-height:var(--lh-title3);font-weight:var(--fw-regular)}
-.macto .h1{font-size:var(--fs-heading);line-height:var(--lh-title2);font-weight:var(--fw-bold)}
-.macto.ghost{background:var(--bg-1);border:1px dashed var(--brand);color:var(--brand)}
-.macto.dcp{background:var(--brand-dcp);color:#fff}
-.op-footer{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-md);padding:var(--sp-md);background:var(--bg-2)}
-.op-footer .oper{display:flex;align-items:center;gap:var(--sp-sm);font-size:var(--fs-sub);line-height:var(--lh-body2);color:#777777}
-.op-footer .avatar{width:32px;height:32px;border-radius:var(--r999);background:var(--border-tertiary);display:flex;align-items:center;justify-content:center;color:var(--content-tertiary)}
-.btn-sm{display:inline-flex;align-items:center;justify-content:center;gap:var(--sp-sm);height:32px;min-height:32px;padding:0 var(--sp-lg) 0 var(--sp-md);border-radius:var(--r6);font-size:var(--fs-label);line-height:20px;font-weight:var(--fw-semibold);border:none;cursor:pointer;font-family:inherit}
-.btn-sm.green{background:var(--positive-bg);color:var(--positive)}
-.btn-sm.red{background:transparent;color:var(--negative)}
-.op-col-lbl{font-size:var(--fs-micro);font-weight:var(--fw-bold);text-transform:uppercase;letter-spacing:.08em;color:var(--content-tertiary);margin-bottom:var(--sp-sm)}
-.op-empty{background:var(--bg-1);border:1px dashed var(--border-secondary);border-radius:var(--r12);padding:var(--sp-xxl);text-align:center;color:var(--content-tertiary);font-size:var(--fs-sub)}
+/* ══════════════════════════════════════════════════════════════
+   MIS OPERACIONES — el board completo, tal cual quedó en el proyecto
+   mis-ops-venta-porcinos. Todo el bloque va scopeado bajo .mo para no
+   pisar los estilos del flujo de digitalización (.card, .tile, .tab…).
+   ══════════════════════════════════════════════════════════════ */
+/* ── Página. [F] contenido 1100px, H1 Lato SemiBold 32/38 color brand ── */
+.mo .page{max-width:1140px;margin:0 auto;padding:var(--sp-xxl) var(--sp-xl) 80px}
+.mo .ptop{display:flex;align-items:flex-start;gap:var(--sp-lg);margin-bottom:var(--sp-xl)}
+.mo .page-title{font-size:32px;line-height:38px;font-weight:600;color:var(--brand);flex:1}
+/* [F] "Entidad que Factura": tarjeta blanca con label + valor MAYÚSCULAS dCP + chevron */
+.mo .entidad{display:flex;align-items:center;gap:var(--sp-lg);background:var(--bg-1);border-radius:var(--r8);padding:10px var(--sp-lg);box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.mo .entidad .l{font-size:var(--cap);line-height:var(--lcap);color:var(--g500)}
+.mo .entidad .v{font-size:var(--t3);line-height:var(--l3);font-weight:700;color:var(--dcp);text-transform:uppercase;margin-top:2px}
+.mo .entidad .ms{color:var(--dcp)}
+
+/* ── Tabs [F] contador como SUPERÍNDICE, no apilado; subrayado sólo en la activa ── */
+.mo .tabs{display:flex;justify-content:center;gap:40px;margin-bottom:var(--sp-xl);flex-wrap:wrap}
+.mo .tab{display:inline-flex;align-items:flex-start;gap:3px;padding:0 0 6px;cursor:pointer;border-bottom:2px solid transparent;background:none;border-top:none;border-left:none;border-right:none;font-family:inherit}
+.mo .tab .nm{font-size:15px;line-height:18px;font-weight:400;color:var(--g500);white-space:nowrap}
+.mo .tab .cnt{font-size:var(--mic);line-height:1;color:var(--g400);font-weight:400}
+.mo .tab.active{border-bottom-color:var(--brand)}
+.mo .tab.active .nm{color:var(--brand);font-weight:700}
+.mo .tab.active .cnt{color:var(--brand)}
+
+/* ══ CARD [F] 1100px, blanco, radius 12 ══ */
+.mo .card{border:none;background:var(--bg-1);border-radius:var(--r12);overflow:hidden;margin-bottom:var(--sp-md);box-shadow:var(--sh)}
+/* Header [F] padding 12/12/12/16, h60 */
+.mo .c-head{padding:12px 12px 12px 16px;display:flex;align-items:center;gap:var(--sp-md);min-height:60px}
+.mo .c-desc{display:flex;align-items:center;gap:var(--sp-md);flex-wrap:wrap;flex:1}
+.mo .c-desc .s1{font-size:var(--t2);line-height:22px;font-weight:400;color:var(--brand)}      /* "J. Simple" */
+.mo .c-desc .s2{font-size:var(--t2);line-height:var(--l2);font-weight:700;color:var(--brand)} /* categoría */
+.mo .c-desc .s3{font-size:var(--t2);line-height:var(--l2);font-weight:700;color:var(--g700)}  /* Kg */
+.mo .c-desc .s4{font-size:var(--t3);line-height:var(--l3);font-weight:400;color:var(--g700)}  /* raza */
+.mo .c-desc .s5{font-size:var(--t3);line-height:var(--l3);font-weight:400;color:var(--g400)}  /* atenuado */
+.mo .c-desc .dv{width:1px;height:22px;background:var(--g100)}
+/* [F] Button/Ver-Video: bg Azul50, radius 8, 44×36 */
+.mo .btn-video{display:inline-flex;align-items:center;gap:var(--sp-sm);padding:var(--sp-sm);background:var(--brand-light);border:none;border-radius:var(--r8);cursor:pointer;color:var(--brand)}
+.mo .ic-info{color:var(--brand);cursor:pointer}
+/* Subheader [F] bg Gris50, padding 8/12/8/16, h36, Body1 Bold gris400 */
+.mo .c-sub{padding:8px 12px 8px 16px;background:var(--bg-2);display:flex;align-items:center;gap:var(--sp-sm);font-size:var(--b1);line-height:var(--lb1);font-weight:700;color:var(--g400)}
+.mo .c-sub .it{display:flex;align-items:center;gap:var(--sp-xs)}
+.mo .c-sub .it .ms{color:var(--g300)}
+.mo .c-sub .loc{font-weight:400;font-style:italic;font-size:var(--b2)}
+.mo .c-sub .dv{width:1px;height:16px;background:var(--g300)}
+.mo .c-sub .id{margin-left:auto;color:var(--g400);font-weight:400}
+
+/* Body [F] padding 24px 24px 24px 0 (sin padding izq: los bloques van a ras), gap 24 */
+.mo .c-body{display:grid;grid-template-columns:286px 1fr 192px;gap:var(--sp-xl);padding:var(--sp-xl) var(--sp-xl) var(--sp-xl) 0;align-items:start}
+.mo .c-body.wide2{grid-template-columns:286px 1fr 1fr 192px}
+
+/* ── Columna izquierda: panel continuo + bloques sueltos ── */
+.mo .lstack{display:flex;flex-direction:column;gap:var(--sp-sm)}
+.mo .lpanel{background:var(--bg-2);border-radius:var(--r8);padding:0 var(--sp-lg)}
+.mo .lpanel.rel{position:relative}
+.mo .lrow{display:flex;align-items:center;gap:var(--sp-md);padding:var(--sp-lg) 0;border-bottom:1px solid var(--g100)}
+.mo .lrow:last-child{border-bottom:none}
+/* [F] Icon 40×40 radius 20 — variante brand llena (dCaC) o gris con glifo azul */
+.mo .lrow .ic{width:40px;height:40px;flex-shrink:0;display:flex;align-items:center;justify-content:center;border-radius:var(--r20);background:var(--g100);color:var(--brand)}
+.mo .lrow .ic.fill{background:var(--brand-dark);color:#fff;font-size:12px;font-weight:900;letter-spacing:-.5px}
+.mo .lrow .ct{min-width:0;display:flex;flex-direction:column;gap:2px}
+.mo .lrow .l{font-size:var(--b2);line-height:var(--lb2);color:var(--g400);display:flex;align-items:center;gap:var(--sp-xs);flex-wrap:wrap}
+.mo .lrow .v{font-size:var(--t3);line-height:var(--l3);font-weight:700;color:var(--g700)}
+/* bloques sueltos (fechas, transporte) */
+.mo .lblk{background:var(--bg-2);border-radius:var(--r8);padding:var(--sp-lg);position:relative;display:flex;flex-direction:column;gap:var(--sp-md)}
+.mo .lblk>span:last-child{display:flex;flex-direction:column;gap:2px;min-width:0}
+.mo .lblk .l{display:block;font-size:var(--b2);line-height:var(--lb2);color:var(--g400)}
+.mo .lblk .l b{color:var(--g700);font-weight:700}
+.mo .lblk .v{display:block;font-size:var(--t3);line-height:var(--l3);font-weight:700;color:var(--g700)}
+.mo .lblk.off .ic,.mo .lblk.off .v{color:var(--g400)}
+.mo .lblk .ic{width:40px;height:40px;display:flex;align-items:center;justify-content:center;border-radius:var(--r20);background:var(--g100);color:var(--brand)}
+.mo .lblk.off .ic{color:var(--g400)}
+.mo .lrow2{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-sm)}
+/* [F] Badge de esquina: padding 4/8, bg Gris100, radius 0 8 (sup-der) */
+.mo .cbadge{position:absolute;top:0;right:0;padding:3px 8px;background:var(--g100);border-radius:0 var(--r8);font-size:var(--mic);font-weight:700;color:var(--g600)}
+.mo .cbadge b{color:var(--brand)}
+
+/* ── Paneles de datos [F] bg Gris50, radius 8, título MAYÚSCULAS 12/700 gris500 ── */
+.mo .panel{background:var(--bg-2);border-radius:var(--r8);padding:var(--sp-lg);height:100%}
+.mo .panel h3{font-size:var(--b2);line-height:var(--lb2);font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--g500);margin-bottom:var(--sp-lg)}
+.mo .prows{display:grid;gap:0}
+.mo .prows.two{grid-template-columns:1fr 1fr;column-gap:var(--sp-xl)}
+.mo .prow{padding:var(--sp-md) 0;border-bottom:1px solid var(--g100)}
+.mo .prow:last-child{border-bottom:none}
+.mo .prows.two .prow:nth-last-child(-n+2):nth-child(odd){border-bottom:none}
+.mo .prow .l{font-size:var(--b2);line-height:var(--lb2);color:var(--g500);display:flex;align-items:center;gap:var(--sp-xs);flex-wrap:wrap}
+.mo .prow .v{font-size:var(--t2);line-height:var(--l2);font-weight:700;color:var(--g800);margin-top:var(--sp-xs);display:flex;align-items:baseline;gap:var(--sp-xs);flex-wrap:wrap}
+.mo .prow .v .u{font-size:var(--cap);font-weight:400;color:var(--g500)}
+.mo .prow .sub{font-size:var(--cap);color:var(--g500);margin-top:2px}
+.mo .prow .pin{font-size:var(--cap);font-style:italic;color:var(--g500);font-weight:400;display:inline-flex;align-items:center;gap:2px}
+.mo .prow .pin .ms{color:var(--rojo)}
+/* chips dentro de panel [F] gris o verde */
+.mo .chips{display:flex;gap:var(--sp-xs);flex-wrap:wrap;margin-top:var(--sp-sm)}
+.mo .chip{display:inline-flex;align-items:center;gap:var(--sp-xs);padding:3px var(--sp-sm);border-radius:var(--r8);background:var(--g100);font-size:var(--cap);color:var(--g600)}
+.mo .chip.ok{background:var(--verde50);color:var(--verde200)}
+.mo .chip.ok .ms{color:var(--verde100)}
+/* empty state central [F] Cargadas */
+.mo .pempty{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:var(--sp-lg);min-height:180px;text-align:center}
+.mo .pempty .t{font-size:var(--t3);color:var(--g400)}
+
+/* ── Feature-Cards [F] Faenadas: ícono circular + label + valor ── */
+.mo .fgrid{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-sm)}
+/* En Faenadas la grilla del medio estira hasta igualar el alto de la columna
+   izquierda: el body pasa a stretch y las filas se reparten en partes iguales. */
+.mo .c-body.eq{align-items:stretch}
+.mo .c-body.eq .fgrid{height:100%;grid-auto-rows:1fr}
+.mo .fcard{background:var(--bg-2);border-radius:var(--r8);padding:var(--sp-lg);display:flex;align-items:center;gap:var(--sp-lg)}
+.mo .fcard.full{grid-column:1/-1}
+.mo .fcard .ic{width:48px;height:48px;flex-shrink:0;display:flex;align-items:center;justify-content:center;border-radius:var(--r20);background:var(--g100);color:var(--g500)}
+.mo .fcard>span:last-child{display:flex;flex-direction:column;gap:var(--sp-xs);min-width:0}
+.mo .fcard .l{font-size:var(--t3);line-height:var(--l3);color:var(--g500);display:flex;align-items:center;gap:var(--sp-xs);flex-wrap:wrap}
+.mo .fcard .v{display:block;font-size:20px;line-height:24px;font-weight:700;color:var(--g800)}
+.mo .fcard .v .u{font-size:var(--b2);font-weight:400;color:var(--g500)}
+
+/* ══ Tiles de acción [F] 192px, padding 16, gap 8, radius 8 — 3 variantes ══ */
+.mo .tiles{display:flex;flex-direction:column;gap:var(--sp-sm)}
+.mo .tile{display:flex;align-items:center;gap:var(--sp-md);padding:var(--sp-lg);border-radius:var(--r8);border:none;cursor:pointer;font-family:inherit;text-align:left;min-height:64px}
+.mo .tile .ms{flex-shrink:0}
+.mo .tile .tx{flex:1;min-width:0;overflow-wrap:break-word}
+.mo .tile .l{display:block;font-size:var(--t3);line-height:var(--l3);font-weight:400}
+.mo .tile .v{display:block;font-size:var(--t3);line-height:var(--l3);font-weight:700}
+/* verde lleno = documento disponible */
+.mo .tile.doc{background:var(--verde50);color:var(--verde200)}
+/* punteado azul + ícono de subida = carga pendiente. Texto en azul brand,
+   las dos líneas: así aparece en el Figma de A Cargar. */
+.mo .tile.add{background:transparent;border:1px dashed var(--brand);color:var(--brand)}
+.mo .tile.add .ms{color:var(--brand)}
+.mo .tile.add .v{color:var(--brand)}
+/* azul dCP lleno = acción de pagos */
+.mo .tile.dcp{background:var(--dcp);color:#fff}
+
+/* ── Footer [F] h56, padding 12/16 ── */
+.mo .c-foot{display:flex;align-items:center;gap:var(--sp-md);padding:var(--sp-md) var(--sp-lg);min-height:56px}
+/* [F] pastilla verde clara con ícono WhatsApp; debajo el nombre del operador */
+.mo .btn-wa{display:inline-flex;align-items:center;gap:var(--sp-md);padding:6px var(--sp-lg) 6px var(--sp-md);background:var(--bg-2);border:none;border-radius:var(--r8);cursor:pointer;font-family:inherit;text-align:left}
+.mo .btn-wa>.ms{color:var(--verde100)}
+.mo .btn-wa .t{font-size:15px;line-height:18px;font-weight:700;color:var(--verde100);white-space:nowrap}
+/* avatar del operador: círculo gris con silueta */
+.mo .btn-wa .av{width:30px;height:30px;flex-shrink:0;border-radius:var(--r999);background:var(--g100);display:flex;align-items:center;justify-content:center;color:var(--g400)}
+.mo .btn-wa .n{font-size:var(--t3);line-height:var(--l3);font-weight:400;color:var(--g700);white-space:nowrap}
+.mo .c-foot .btn-wa{margin-right:auto}
+/* ── Duplicar y Editar — acción secundaria al pie de la card.
+   Acá SÍ lleva al formulario de digitalización, que vive en este mismo prototipo. ── */
+.mo .btn-dup{display:inline-flex;align-items:center;gap:var(--sp-sm);height:34px;padding:0 var(--sp-md);
+  background:none;border:1px solid var(--brand-light);border-radius:var(--r8);cursor:pointer;font-family:inherit;
+  font-size:var(--t3);line-height:var(--l3);font-weight:700;color:var(--brand)}
+.mo .btn-dup:hover{background:var(--brand-light)}
+.mo .dupbox{margin:0 var(--sp-lg) var(--sp-lg);background:#F1F8FC;border:1px solid var(--brand-light);border-radius:var(--r8);
+  padding:var(--sp-md) var(--sp-lg);display:flex;align-items:center;gap:var(--sp-lg)}
+.mo .dupbox>.ms{color:var(--brand);flex-shrink:0}
+.mo .dupbox .tx{flex:1;min-width:0}
+.mo .dupbox b{display:block;font-size:var(--b1);line-height:var(--lb1);color:var(--g800)}
+.mo .dupbox p{font-size:var(--b2);line-height:1.5;color:var(--g600);margin-top:2px}
+.mo .dupbox .btn-dup{flex-shrink:0;background:var(--bg-1)}
+.mo .btn-ver{display:inline-flex;align-items:center;gap:var(--sp-xs);background:none;border:none;cursor:pointer;font-family:inherit;font-size:var(--t3);line-height:var(--l3);font-weight:700;color:var(--brand)}
+.mo .btn-ver .ms{transition:transform .18s ease}
+.mo .btn-ver.open .ms{transform:rotate(180deg)}
+
+/* ══ LEGAJO desplegado [F] ══
+   Se despliega desde el propio botón del footer (Ver / Ocultar Informe
+   Completo); cada sección tiene cabecera azul clara colapsable.                       */
+/* despliegue animado: la fila del grid pasa de 0fr a 1fr, así anima hasta la
+   altura natural del contenido sin tener que medirla por JS */
+.mo .legajo{display:grid;grid-template-rows:0fr;background:var(--g100);transition:grid-template-rows .32s ease}
+.mo .legajo.open{grid-template-rows:1fr}
+.mo .lg-inner{overflow:hidden;min-height:0}
+/* Contenedor de secciones: tarjeta blanca sobre el fondo gris del legajo */
+.mo .lg-body{background:var(--bg-1);border-radius:var(--r8);padding:var(--sp-lg);margin:var(--sp-xl);box-shadow:var(--sh)}
+.mo .lsec{margin-bottom:var(--sp-lg)}
+.mo .lsec:last-child{margin-bottom:0}
+/* [F] cabecera de sección: barra Azul 50 #DAEDF7, radius 8, título MAYÚSCULAS Azul 300 */
+.mo .lsec>h4{display:flex;align-items:center;gap:var(--sp-sm);background:var(--brand-light);border-radius:var(--r8);padding:var(--sp-md) var(--sp-lg);margin-bottom:var(--sp-md);cursor:pointer;
+  font-size:var(--b1);font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--brand-dark)}
+.mo .lsec>h4 .ms{margin-left:auto;color:var(--brand-dark);transition:transform .18s ease}
+.mo .lsec.closed>h4{margin-bottom:0}
+.mo .lsec.closed>h4 .ms{transform:rotate(180deg)}
+.mo .lsec.closed .lsec-b{display:none}
+.mo .lsec.empty>h4{background:var(--bg-2);color:var(--g400)}
+.mo .lsec.empty>h4 .ms{color:var(--g400)}
+.mo .lempty{font-size:var(--b2);font-style:italic;color:var(--g400);padding:0 var(--sp-lg)}
+.mo .lsec-b{padding:0 var(--sp-lg)}
+/* Sub-sección dentro de una sección: título gris chico + divisor arriba */
+.mo .lsub{font-size:var(--b2);font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--g500);
+  border-top:1px solid var(--g100);padding-top:var(--sp-lg);margin-top:var(--sp-lg);margin-bottom:var(--sp-md)}
+/* Feature-Card del legajo [F] bg Gris100, círculo Gris50 (invertido respecto al body) */
+.mo .bgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:var(--sp-sm)}
+.mo .bcard{padding:var(--sp-md) var(--sp-lg);background:var(--g100);border-radius:var(--r8);position:relative}
+.mo .bcard .ic{width:44px;height:44px;display:flex;align-items:center;justify-content:center;border-radius:var(--r999);background:var(--bg-2);color:var(--g500);margin-bottom:var(--sp-sm)}
+.mo .bcard .v{font-size:var(--t2);line-height:20px;font-weight:700;color:var(--g800)}
+.mo .bcard .v .u{font-size:var(--b2);font-weight:400;color:var(--g500)}
+.mo .bcard .l{font-size:var(--b2);line-height:var(--lb2);color:var(--g500);display:flex;align-items:center;gap:var(--sp-xs);flex-wrap:wrap}
+.mo .bcard.row{display:flex;align-items:center;gap:var(--sp-md)}
+.mo .bcard.row .ic{margin-bottom:0;flex-shrink:0}
+.mo .bcard .bdg{position:absolute;top:var(--sp-sm);right:var(--sp-sm);display:inline-flex;align-items:center;gap:var(--sp-xs);
+  background:var(--bg-2);border-radius:var(--r8);padding:2px var(--sp-sm);font-size:var(--cap);color:var(--g600)}
+.mo .bcard .bdg.ok{background:var(--verde50);color:var(--verde200)}
+.mo .bcard .bdg.info{background:var(--brand-light);color:var(--brand-dark)}
+/* Tabla con bordes visibles [F] */
+.mo .lt{width:100%;border-collapse:collapse;margin-top:var(--sp-sm);border:1px solid var(--g100);border-radius:var(--r8);overflow:hidden}
+.mo .lt th{text-align:center;font-size:var(--cap);font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--g500);padding:10px var(--sp-md);border:1px solid var(--g100);background:var(--bg-1)}
+/* Sólo la tabla de precio de Condiciones pactadas: rayado por COLUMNA, no por
+   fila — Valor sobre blanco, Categoría sobre gris. La fila de cierre vuelve a
+   blanco en las dos celdas. */
+.mo .lt.precio th:nth-child(2),.mo .lt.precio td:nth-child(2){background:var(--bg-2)}
+.mo .lt.precio th:first-child,.mo .lt.precio td:first-child{background:var(--bg-1)}
+.mo .lt.precio tr.tot td{background:var(--bg-1)}
+.mo .lt th:first-child{color:var(--g800);font-weight:900}
+.mo .lt td{font-size:var(--b2);color:var(--g700);padding:10px var(--sp-md);border:1px solid var(--g100);text-align:center}
+.mo .lt td.n{font-size:var(--t2);font-weight:700;color:var(--brand)}
+.mo .lt td.n .cur{font-size:var(--b2);font-weight:400}
+.mo .lt tr.tot td{font-weight:900;color:var(--g800)}
+.mo .lnote{background:var(--g100);border-radius:var(--r8);padding:var(--sp-md);margin-top:var(--sp-sm);font-size:var(--b2);color:var(--g700);line-height:1.6}
+.mo .lnote .h{font-weight:700;color:var(--g800);margin-bottom:var(--sp-xs)}
+.mo .lbtns{display:flex;gap:var(--sp-sm);margin-top:var(--sp-sm);flex-wrap:wrap}
+.mo .lbtn{display:inline-flex;align-items:center;gap:var(--sp-xs);padding:var(--sp-sm) var(--sp-md);border:1px dashed var(--brand);border-radius:var(--r8);background:none;cursor:pointer;font-family:inherit;font-size:var(--b2);font-weight:700;color:var(--brand)}
+.mo .lby{font-size:var(--cap);font-style:italic;color:var(--g400);margin-top:var(--sp-sm);text-align:right}
+.mo .ltiles{display:flex;gap:var(--sp-sm);flex-wrap:wrap;margin-top:var(--sp-sm)}
+.mo .ltiles .tile{width:auto;min-width:200px;flex:1 1 200px}
+.mo .lsub.first{border-top:none;padding-top:0;margin-top:0}
+.mo .bgrid.six{grid-template-columns:repeat(6,1fr)}
+.mo .bgrid.two{grid-template-columns:1fr 1fr}
+.mo .ltiles .tile{flex:0 0 auto;min-width:0;width:230px}
+/* ── Costeo de tropa [F] ── header de 2 líneas, sin bordes verticales,
+   y tira de totales como cards sueltas debajo de la tabla */
+.mo .costeo{width:100%;border-collapse:collapse;border-radius:var(--r8);overflow:hidden;margin-top:var(--sp-sm);background:var(--bg-1)}
+.mo .costeo th{background:var(--bg-2);padding:var(--sp-md) var(--sp-sm);text-align:center;vertical-align:top;
+  font-size:var(--b1);font-weight:700;text-transform:uppercase;letter-spacing:.02em;color:var(--g600);white-space:nowrap}
+.mo .costeo th span{display:block;margin-top:3px;font-size:var(--b2);font-weight:400;text-transform:none;letter-spacing:0;color:var(--g400)}
+.mo .costeo th .hd{display:inline-flex;align-items:center;gap:var(--sp-xs);margin-top:0;font-size:inherit;font-weight:inherit;text-transform:inherit;color:inherit}
+.mo .costeo td{padding:var(--sp-lg) var(--sp-sm);text-align:center;font-size:var(--b1);color:var(--g700);border-bottom:1px solid var(--bg-2)}
+.mo .costeo tbody tr:last-child td{border-bottom:none}
+.mo .costeo-tot{display:grid;grid-template-columns:repeat(7,1fr);gap:var(--sp-sm);margin-top:var(--sp-sm)}
+.mo .costeo-tot>div{background:var(--bg-2);border-radius:var(--r8);padding:var(--sp-md) var(--sp-sm);text-align:center}
+.mo .costeo-tot .l{display:block;font-size:var(--b2);text-transform:uppercase;letter-spacing:.02em;color:var(--g400);white-space:nowrap}
+.mo .costeo-tot .v{display:block;margin-top:var(--sp-xs);font-size:var(--t3);font-weight:700;color:var(--g700);white-space:nowrap}
+
+/* tile + tooltip al lado (el tooltip NO puede ir dentro del <button>) */
+.mo .df-top{display:grid;grid-template-columns:1fr 1.3fr 230px;gap:var(--sp-sm);align-items:stretch}
+.mo .df-top .tile{width:auto}
+
+/* Condiciones pactadas: tabla + columna de cards, y fila de números + tile */
+.mo .cp-top{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-lg);align-items:start}
+.mo .cp-side{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-sm)}
+.mo .cp-side .full{grid-column:1/-1}
+.mo .cp-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:var(--sp-sm);margin-top:var(--sp-sm)}
+.mo .cp-row .tile{width:auto}
+/* [F] card de número grande + label a la derecha, sin ícono */
+.mo .ncard{display:flex;align-items:center;gap:var(--sp-md);background:var(--g100);border-radius:var(--r8);padding:var(--sp-lg)}
+.mo .ncard .n{font-size:26px;line-height:28px;font-weight:700;color:var(--g800);white-space:nowrap}
+.mo .ncard .n .u{font-size:var(--t2);font-weight:400;margin-left:2px}
+.mo .ncard .l{font-size:var(--b2);line-height:var(--lb2);color:var(--g500)}
+/* [F] Datos de Faena: card partida — mitad ícono+label / mitad valor grande */
+.mo .scard{display:flex;align-items:stretch;background:var(--bg-2);border-radius:var(--r8);overflow:hidden}
+.mo .scard .lft{flex:0 0 42%;background:var(--g100);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:var(--sp-sm);padding:var(--sp-lg) var(--sp-md);text-align:center;color:var(--g500)}
+.mo .scard .lft .kg{font-size:var(--t2);font-weight:700;color:var(--g700)}
+.mo .scard .lft .l{font-size:var(--t3);line-height:var(--l3);color:var(--g700);display:flex;align-items:center;gap:var(--sp-xs);flex-wrap:wrap;justify-content:center}
+.mo .scard .rgt{flex:1;display:flex;align-items:center;justify-content:center;gap:var(--sp-xs);font-size:24px;font-weight:700;color:var(--g800)}
+.mo .scard .rgt .u{font-size:var(--t3);font-weight:400;color:var(--g500)}
+
+/* Tabla: fila de totales y semáforo de importes */
+.mo .lt.tot-strip{margin-top:var(--sp-sm)}
+.mo .lt td.pos{color:var(--verde200);font-weight:700}
+.mo .lt td.neg{color:var(--rojo);font-weight:700}
+/* Tabla de movimientos de Pagos: sin bordes verticales */
+.mo .lt.mov{border:none;margin-top:var(--sp-lg)}
+.mo .lt.mov th{border:none;border-bottom:1px solid var(--g100);background:var(--bg-2);font-size:var(--mic)}
+.mo .lt.mov td{border:none;border-bottom:1px solid var(--g100);font-size:var(--cap)}
+.mo .lt.mov td.tp{color:var(--g500);font-size:var(--cap)}
+
+/* Pagos: escalera Inicial → Actual */
+.mo .pg-top{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--sp-sm)}
+.mo .pgc{background:var(--g100);border-radius:var(--r8);padding:var(--sp-lg)}
+.mo .pgc .h{display:flex;align-items:center;gap:var(--sp-sm);font-size:var(--t3);font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--brand);margin-bottom:var(--sp-md)}
+.mo .pgc .lad{display:flex;gap:var(--sp-sm)}
+.mo .pgc .arm{width:12px;flex-shrink:0;border-left:1px solid var(--g300);border-bottom:1px solid var(--g300);margin:10px 0 18px 4px}
+.mo .pgc .rows{flex:1;min-width:0}
+.mo .pgc .r{display:flex;align-items:baseline;gap:var(--sp-sm);padding:var(--sp-xs) 0}
+.mo .pgc .r.ini{border-bottom:1px solid var(--g300);padding-bottom:var(--sp-sm)}
+.mo .pgc .r.act{padding-top:var(--sp-sm)}
+.mo .pgc .pill{font-size:var(--cap);font-weight:700;color:var(--g600);background:var(--bg-2);border-radius:var(--r999);padding:2px 10px;flex-shrink:0}
+.mo .pgc .pill.on{background:var(--g800);color:#fff}
+.mo .pgc .val{font-size:var(--t2);font-weight:700;color:var(--g400)}
+.mo .pgc .r.act .val{color:var(--g800);font-size:20px}
+.mo .pgc .val.big{font-size:22px}
+.mo .pgc .val .u{font-size:var(--b2);font-weight:400;color:var(--g500)}
+.mo .pg-foot{display:flex;gap:var(--sp-sm);align-items:stretch;margin-top:var(--sp-sm)}
+.mo .pg-neto{flex:1;display:flex;align-items:center;justify-content:space-between;gap:var(--sp-lg);background:var(--bg-2);border-radius:var(--r8);padding:var(--sp-lg);font-size:var(--t3);color:var(--g700);text-transform:uppercase;letter-spacing:.03em}
+.mo .pg-neto b{color:var(--g800);font-size:var(--t2)}
+.mo .pg-foot .tile{width:auto;min-width:230px}
+
+/* Empty state de Cargadas [F] título gris + cuerpo blanco + botón grande */
+.mo .panel.np{background:var(--bg-1);padding:0;overflow:hidden;border:1px solid var(--g100)}
+.mo .panel.np h3{background:var(--bg-2);padding:var(--sp-lg);margin:0}
+.mo .pempty{padding:var(--sp-lg)}
+/* [F] zona punteada de carga: borde dashed brand, "+" grande y texto en dos pesos */
+.mo .dropzone{width:100%;min-height:220px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:var(--sp-sm);
+  border:1px dashed var(--brand);border-radius:var(--r8);background:none;cursor:pointer;font-family:inherit;color:var(--brand)}
+.mo .dropzone .t{font-size:var(--t3);line-height:var(--l3);font-weight:400}
+.mo .dropzone .t b{font-weight:700}
+
+/* Buscador de tropas — Cerradas */
+.mo .buscador{display:flex;align-items:center;gap:var(--sp-sm);background:var(--bg-1);border-radius:var(--r8);padding:0 var(--sp-lg);height:48px;margin-bottom:var(--sp-md)}
+.mo .buscador .ms{color:var(--g400)}
+.mo .buscador input{flex:1;border:none;outline:none;font-family:inherit;font-size:var(--t3);color:var(--g800);background:none}
+.mo .buscador input::placeholder{color:var(--g400)}
+
+.mo .badge{display:inline-flex;align-items:center;gap:5px;border-radius:var(--r999);border:1px solid;padding:3px 10px;font-size:var(--mic);font-weight:700;text-transform:uppercase}
+.mo .badge .dot{width:6px;height:6px;border-radius:var(--r999)}
+.mo .badge-green{background:var(--verde50);border-color:#B7DDA0;color:var(--verde200)}
+.mo .badge-green .dot{background:var(--verde100)}
+.mo .badge-red{background:#FDEFEF;border-color:#F8CECE;color:#7F3536}
+.mo .badge-red .dot{background:var(--rojo)}
+
+.mo .state{display:none}.mo .state.on{display:block}
+.mo .empty{background:var(--bg-1);border-radius:var(--r12);padding:var(--sp-xl);text-align:center;color:var(--g400);font-size:var(--b2)}
+
+/* ══ Tooltip de incertidumbre — capa del prototipo, ajena al producto ══ */
+.mo .utip{position:relative;display:inline-flex;vertical-align:middle}
+.mo .utip>button{background:none;border:none;cursor:pointer;display:inline-flex;padding:0;color:var(--amar)}
+.mo .utip .pop{display:none;position:absolute;bottom:calc(100% + 8px);left:0;background:#1E2D3D;color:#fff;font-size:11px;font-weight:400;line-height:1.45;padding:var(--sp-sm) var(--sp-md);border-radius:var(--r8);width:264px;z-index:300;text-transform:none;letter-spacing:0;font-style:normal}
+.mo .utip .pop b{color:#E8B84B}
+.mo .utip .pop .tag{display:block;font-size:9px;font-weight:700;color:#E8B84B;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px}
+.mo .utip.open .pop,.mo .utip:hover .pop{display:block}
 
 /* ── Pantalla neutra (placeholder de la home actual — sin rediseñar) ── */
 .neutral-note{display:flex;align-items:center;justify-content:center;min-height:calc(100vh - 260px);flex-direction:column;gap:var(--sp-sm);text-align:center}
@@ -378,30 +686,21 @@ body{font-family:'Lato',sans-serif;font-size:var(--fs-label);color:var(--content
 .cas-sim-btn:hover{background:#c7ac10}
 .cas-sim-btn .ms{color:#1e2d3d}
 .cas-body{overflow-y:auto;padding:var(--sp-xs) 0;flex:1}
-.cas-item{padding:var(--sp-sm) var(--sp-md);display:flex;gap:var(--sp-sm);border-bottom:1px solid rgba(255,255,255,.06);cursor:pointer}
-.cas-item:hover{background:rgba(255,255,255,.04)}
-.cas-item.highlight{background:rgba(178,155,14,.2)}
-.cas-check{width:18px;height:18px;border-radius:var(--r4);border:1.5px solid #6c8299;flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center}
-.cas-item.done .cas-check{background:var(--positive);border-color:var(--positive)}
-.cas-item.done .cas-check .ms{font-size:13px!important;color:#fff;display:block}
-.cas-check .ms{display:none}
 .cas-txt{flex:1}
-.cas-step{font-size:9px;font-weight:var(--fw-bold);color:var(--warning);text-transform:uppercase;letter-spacing:.08em;margin-bottom:2px}
-.cas-desc{font-size:var(--fs-caption);color:#dfe8ef;line-height:1.4}
-.cas-item.done .cas-desc{color:#7c8ea0;text-decoration:line-through}
 .cas-foot{padding:var(--sp-sm) var(--sp-md);font-size:9px;color:#6c8299;border-top:1px solid rgba(255,255,255,.1);line-height:1.4}
 </style>
 </head>
 <body>
 
 <!-- ══ HEADER ══ -->
+<div class="franja"></div>
 <div class="hdr">
   <a class="logo" href="#" onclick="return false">deCampoaCampo</a>
   <div class="hdr-links">
     <div class="hdr-item" id="navOperaciones" onclick="toggleDD(event)">
       <span class="lbl">Operaciones <span class="ms ms-16">expand_more</span></span>
       <div class="dd" id="ddOperaciones">
-        <div class="dd-item disabled"><span style="display:flex;align-items:center;gap:8px"><span class="ms ms-16">list_alt</span>Mis Operaciones</span></div>
+        <div class="dd-item" onclick="event.stopPropagation();closeDD();goTo('s8')"><span style="display:flex;align-items:center;gap:8px"><span class="ms ms-16">list_alt</span>Mis Operaciones</span></div>
         <div class="dd-item has-sub">
           <span style="display:flex;align-items:center;gap:8px"><span class="ms ms-16">add_circle</span>Nueva Operación</span>
           <span class="ms ms-16">chevron_right</span>
@@ -425,9 +724,9 @@ body{font-family:'Lato',sans-serif;font-size:var(--fs-label);color:var(--content
     <div class="hdr-item"><span class="lbl">Clima</span></div>
   </div>
   <div class="hdr-actions">
-    <button class="btn btn-primary">Comprar</button>
-    <button class="btn btn-secondary">Cotizar</button>
-    <button class="btn btn-tertiary"><span class="ms ms-16">bolt</span>Pagos</button>
+    <button class="hbtn comprar">Comprar</button>
+    <button class="hbtn cotizar">Cotizar</button>
+    <button class="hbtn pagos"><span class="ms ms-16">bolt</span>Pagos</button>
   </div>
 </div>
 
@@ -513,13 +812,15 @@ body{font-family:'Lato',sans-serif;font-size:var(--fs-label);color:var(--content
           <p class="tx-body-muted">Subí un DTE por jaula. Leemos los documentos y pre-llenamos los campos con los datos detectados.</p>
           <div class="alert-info" style="margin-top:var(--sp-md)">
             <span class="ms ms-16">info</span>
-            <span class="txt">El DTE tiene que tener como destino una planta habilitada para faena de cerdos para poder digitalizar la venta y acceder a la liquidación. <button class="hlp" style="display:inline-flex" onclick="openCas(12)" title="Ver casuística"><span class="ms ms-16">help</span></button></span>
+            <span class="txt">El DTE tiene que tener como destino una planta habilitada para faena de cerdos para poder digitalizar la venta y acceder a la liquidación.</span>
           </div>
         </div>
         <div class="sfields" id="dteUploadArea">
           <div class="upload-area" onclick="addDte()">
-            <span class="ms ms-24">upload_file</span>
-            <span class="tx-body-muted"><strong style="color:var(--content-primary)">Subí un DTE</strong> — PDF, 1 por jaula</span>
+            <span class="ms ms-24">description</span>
+            <span class="tx"><span class="t1">Adjuntar DTE</span>
+              <span class="t2">También podés arrastrar tu archivo acá</span></span>
+            <button class="pick">Seleccionar</button>
           </div>
         </div>
       </div>
@@ -527,7 +828,7 @@ body{font-family:'Lato',sans-serif;font-size:var(--fs-label);color:var(--content
         <div></div>
         <div class="alert-neg" id="dteErrorAlert">
           <span class="ms ms-16">error</span>
-          <span class="txt">No pudimos leer tus DTEs. Revisá que sean los archivos correctos o cargá los datos manualmente. <button class="hlp" style="display:inline-flex" onclick="openCas(12)" title="Ver casuística"><span class="ms ms-16">help</span></button></span>
+          <span class="txt">No pudimos leer tus DTEs. Revisá que sean los archivos correctos o cargá los datos manualmente.</span>
         </div>
       </div>
     </div>
@@ -535,7 +836,7 @@ body{font-family:'Lato',sans-serif;font-size:var(--fs-label);color:var(--content
       <button class="btn btn-tertiary" onclick="goTo('s2')"><span class="ms ms-16">chevron_left</span>Anterior</button>
       <div style="display:flex;gap:var(--sp-md)">
         <button class="btn btn-tertiary" id="btnManualFallback" style="display:none" onclick="manualFallback()">Cargar datos manualmente</button>
-        <button class="btn btn-primary" id="btnAnalizar" disabled onclick="startProcessing()">Analizar DTEs</button>
+        <button class="btn btn-next" id="btnAnalizar" disabled onclick="startProcessing()">Analizar DTEs</button>
       </div>
     </div>
   </div>
@@ -558,12 +859,18 @@ body{font-family:'Lato',sans-serif;font-size:var(--fs-label);color:var(--content
 <div class="screen" id="s-lotes">
   <div class="page">
     <div class="page-title">Digitalización de Venta — Porcinos</div>
-    <div style="display:grid;grid-template-columns:200px 1fr;gap:var(--sp-xl)">
-      <div>
-        <div class="tx-label" style="margin-bottom:var(--sp-xs)">Revisá y reasigná si es necesario.</div>
-        <p class="tx-body-muted">Agrupamos los documentos que comparten <strong style="color:var(--content-primary)">origen</strong>, <strong style="color:var(--content-primary)">destino</strong> y <strong style="color:var(--content-primary)">fecha</strong>.</p>
+    <div class="card">
+      <div class="srow">
+        <div>
+          <div class="tx-heading" style="margin-bottom:var(--sp-sm)">Revisá y reasigná si es necesario</div>
+          <p class="tx-body-muted">Agrupamos los documentos que comparten <strong style="color:var(--content-primary)">origen</strong>, <strong style="color:var(--content-primary)">destino</strong> y <strong style="color:var(--content-primary)">fecha</strong>.</p>
+        </div>
+        <div id="lotesList"></div>
       </div>
-      <div id="lotesList"></div>
+      <div class="lotes-cta">
+        <button class="btn btn-tertiary" onclick="goTo('s3')"><span class="ms ms-16">chevron_left</span>Anterior</button>
+        <button class="btn btn-next" id="btnLotesCont" onclick="continuarLotes()">Continuar</button>
+      </div>
     </div>
   </div>
 </div>
@@ -598,11 +905,11 @@ body{font-family:'Lato',sans-serif;font-size:var(--fs-label);color:var(--content
         <div class="sfields">
           <div class="fgroup">
             <div class="field fw"><div class="flabel">Razón Social <span class="req">*</span></div>
-              <select class="sel"><option value="" disabled selected>Seleccionar sociedad</option><option>Granja San Miguel S.A.</option><option>Establecimiento Los Aromos SRL</option></select></div>
+              <select class="sel" id="soc1"><option value="" disabled selected>Seleccionar sociedad</option><option>Granja San Miguel S.A.</option><option>Establecimiento Los Aromos SRL</option></select></div>
           </div>
           <div class="fgroup">
-            <div class="field fh"><div class="flabel">Establecimiento <span class="req">*</span> <button class="hlp" onclick="openCas(1)" title="Ver casuística"><span class="ms ms-16">help</span></button></div>
-              <select class="sel"><option value="" disabled selected>Seleccionar establecimiento</option><option>Granja San Miguel — Módulo Porcino 1</option><option>Granja San Miguel — Módulo Porcino 2</option></select></div>
+            <div class="field fh"><div class="flabel">Establecimiento <span class="req">*</span></div>
+              <select class="sel" id="est1"><option value="" disabled selected>Seleccionar establecimiento</option><option>Granja San Miguel — Módulo Porcino 1</option><option>Granja San Miguel — Módulo Porcino 2</option></select></div>
             <div class="field ft"><div class="flabel">Provincia</div>
               <div class="disp-val">Córdoba</div></div>
             <div class="field ft"><div class="flabel">Partido</div>
@@ -616,21 +923,21 @@ body{font-family:'Lato',sans-serif;font-size:var(--fs-label);color:var(--content
           <div class="fgroup">
             <div class="field ft"><div class="flabel">Cantidad <span class="req">*</span></div>
               <div class="inp-suf"><input class="inp" id="cant1" placeholder="Ej: 120" oninput="checkReq1()"/><span class="suf">Cab.</span></div></div>
-            <div class="field ft"><div class="flabel">Categoría <span class="req">*</span> <button class="hlp" onclick="openCas(2)" title="Ver casuística"><span class="ms ms-16">help</span></button></div>
+            <div class="field ft"><div class="flabel">Categoría <span class="req">*</span></div>
               <select class="sel" id="cat1" onchange="checkReq1()">
                 <option value="" disabled selected>Seleccionar</option>
-                <option>Capón</option><option>Cerda</option><option>Lechón</option><option>Padrillo</option>
+                <option>Capón</option><option>MEI</option><option>Cerda / Chancha</option><option>Cachorra</option>
               </select></div>
             <div class="field ft"><div class="flabel">Peso <span class="req">*</span></div>
               <div class="inp-suf"><input class="inp" id="peso1" placeholder="Ej: 110" oninput="checkReq1()"/><span class="suf">Kg</span></div></div>
-            <div class="field ft"><div class="flabel">Raza <span class="req">*</span> <button class="hlp" onclick="openCas(3)" title="Ver casuística"><span class="ms ms-16">help</span></button></div>
+            <div class="field ft"><div class="flabel">Raza <span class="req">*</span></div>
               <select class="sel" id="raza1" onchange="checkReq1()">
                 <option value="" disabled selected>Seleccionar</option>
-                <option>Landrace</option><option>Duroc</option><option>Yorkshire</option><option>Pietrain</option><option>Cruza</option>
+                <option>Landrace</option><option>Yorkshire</option><option>Duroc</option><option>Pietrain</option><option>Hampshire</option><option>Spotted Poland</option><option>Cruza</option>
               </select></div>
           </div>
           <div class="fgroup">
-            <div class="field fauto"><div class="flabel">Días de encierre <span class="req">*</span> <span class="tag-note">— siempre Feedlot</span> <button class="hlp" onclick="openCas(4)" title="Ver casuística"><span class="ms ms-16">help</span></button></div>
+            <div class="field fauto"><div class="flabel">Días de encierre <span class="req">*</span> <span class="tag-note">— siempre Feedlot</span></div>
               <div class="inp-suf"><input class="inp" id="dias1" placeholder="0" style="width:120px" oninput="checkReq1()"/><span class="suf">Días</span></div></div>
           </div>
         </div>
@@ -681,10 +988,10 @@ body{font-family:'Lato',sans-serif;font-size:var(--fs-label);color:var(--content
         <div class="tx-body-muted">Datos del comprador</div>
         <div class="sfields">
           <div class="fgroup">
-            <div class="field fh"><div class="flabel">Matrícula compradora <span class="req">*</span> <button class="hlp" onclick="openCas(5)" title="Ver casuística"><span class="ms ms-16">help</span></button></div>
-              <select class="sel"><option value="" disabled selected>Seleccionar</option><option>+ Crear nueva matrícula</option><option>Frigorífico Porcino del Sur S.A. (Matrícula 412)</option><option>Cooperativa Porcina Central (Matrícula 298)</option></select></div>
-            <div class="field fh"><div class="flabel">Establecimiento faenador <span class="req">*</span> <button class="hlp" onclick="openCas(6)" title="Ver casuística"><span class="ms ms-16">help</span></button></div>
-              <select class="sel"><option value="" disabled selected>Seleccionar</option><option>Frigorífico Porcino del Sur S.A.</option></select></div>
+            <div class="field fh"><div class="flabel">Matrícula compradora <span class="req">*</span></div>
+              <select class="sel" id="matri1"><option value="" disabled selected>Seleccionar</option><option>+ Crear nueva matrícula</option><option>Frigorífico Porcino del Sur S.A. (Matrícula 412)</option><option>Cooperativa Porcina Central (Matrícula 298)</option></select></div>
+            <div class="field fh"><div class="flabel">Establecimiento faenador <span class="req">*</span></div>
+              <select class="sel" id="faen1"><option value="" disabled selected>Seleccionar</option><option>Frigorífico Porcino del Sur S.A.</option></select></div>
           </div>
         </div>
       </div>
@@ -694,20 +1001,21 @@ body{font-family:'Lato',sans-serif;font-size:var(--fs-label);color:var(--content
           <div class="fgroup">
             <div class="field fauto"><div class="flabel">Impuestos <span class="req">*</span></div>
               <div class="tabsw" id="imp1"><button class="tabsw-item" onclick="selToggle(this,'imp1')">+ IVA</button><button class="tabsw-item" onclick="selToggle(this,'imp1')">Final</button></div></div>
-            <div class="field fauto"><div class="flabel">Tipo de precio <button class="hlp" onclick="openCas(7)" title="Ver casuística"><span class="ms ms-16">help</span></button></div>
-              <div class="disp-val"><span class="ms ms-16">lock</span>Kg Vivo</div></div>
-            <div class="field fauto"><div class="flabel">Transporte <button class="hlp" onclick="openCas(8)" title="Ver casuística"><span class="ms ms-16">help</span></button></div>
-              <div class="disp-val"><span class="ms ms-16">lock</span>En Planta</div></div>
+            <!-- No se eligen en porcinos: van como dato, no como campo -->
+            <div class="field fauto"><div class="flabel">Tipo de precio</div>
+              <div class="fixval">Kg Vivo</div></div>
+            <div class="field fauto"><div class="flabel">Transporte</div>
+              <div class="fixval">En Planta</div></div>
           </div>
           <div>
-            <table class="ptable"><thead><tr><th>Precio</th><th>Categoría</th><th>Tipificación <span class="tag-note">(opcional)</span> <button class="hlp" onclick="openCas(9)" title="Ver casuística"><span class="ms ms-16">help</span></button></th><th style="width:32px"></th></tr></thead>
+            <table class="ptable"><thead><tr><th>Precio</th><th>Categoría</th><th style="width:32px"></th></tr></thead>
               <tbody id="pr1"></tbody></table>
             <div class="ptable-empty" id="pe1">Sin filas — agregá una fila por categoría acordada</div>
             <button class="btn btn-tertiary" style="padding:var(--sp-sm) 0;margin-top:var(--sp-xs)" onclick="addRow('pr1','pe1')"><span class="ms ms-16">add</span>Agregar fila</button>
           </div>
           <div class="fgroup">
             <div class="field fh"><div class="flabel">Plazo de Venta <span class="req">*</span></div>
-              <div class="inp-suf"><input class="inp" placeholder="" style="flex:1"/><span class="suf">Días</span></div></div>
+              <div class="inp-suf"><input class="inp" id="plazo1" placeholder="" style="flex:1"/><span class="suf">Días</span></div></div>
             <div class="field fh"><div class="flabel">A partir de la fecha de <span class="req">*</span></div>
               <div class="tabsw" id="fecha1"><button class="tabsw-item" onclick="selToggle(this,'fecha1')">Faena</button><button class="tabsw-item" onclick="selToggle(this,'fecha1')">Otra Fecha</button></div></div>
           </div>
@@ -717,7 +1025,7 @@ body{font-family:'Lato',sans-serif;font-size:var(--fs-label);color:var(--content
         <div class="tx-body-muted">Datos de logística</div>
         <div class="sfields">
           <table class="jtable">
-            <thead><tr><th>Jaula</th><th>Tipo de jaula <button class="hlp" onclick="openCas(10)" title="Ver casuística"><span class="ms ms-16">help</span></button></th><th>Fecha de carga</th><th>Fecha de faena <span class="req">*</span></th></tr></thead>
+            <thead><tr><th>Jaula</th><th>Tipo de jaula</th><th>Fecha de carga</th><th>Fecha de faena <span class="req">*</span></th></tr></thead>
             <tbody>
               <tr>
                 <td style="font-weight:var(--fw-bold);color:var(--content-secondary);padding-left:var(--sp-md)">Jaula 1</td>
@@ -754,7 +1062,7 @@ body{font-family:'Lato',sans-serif;font-size:var(--fs-label);color:var(--content
   <div class="success-wrap">
     <div class="success-icon"><span class="ms ms-32">check_circle</span></div>
     <div class="success-title">Datos guardados correctamente</div>
-    <div class="success-sub">La venta de porcinos quedó registrada en Operaciones &gt; Faena &gt; Venta Porcinos &gt; A Cargar.</div>
+    <div class="success-sub">La venta de porcinos quedó registrada en Operaciones &gt; Faena &gt; Venta Porcinos &gt; Vendidas.</div>
     <div class="success-actions">
       <button class="btn btn-primary btn-block" onclick="goTo('s8')">Ir a Mis Operaciones</button>
       <button class="btn btn-tertiary btn-block" onclick="goTo('s0')">Volver al inicio</button>
@@ -764,85 +1072,33 @@ body{font-family:'Lato',sans-serif;font-size:var(--fs-label);color:var(--content
 
 <!-- ══ S8 — MIS OPERACIONES — PORCINOS ══ -->
 <div class="screen" id="s8">
+ <div class="mo">
   <div class="page">
-    <div class="page-title">Operaciones — Venta Porcinos</div>
-    <div class="tabs-bar">
-      <div class="tab">Pendientes de publicación <span class="cnt">0</span></div>
-      <div class="tab active">A cargar <span class="cnt">1</span></div>
-      <div class="tab">Operaciones con saldo <span class="cnt">0</span></div>
-      <div class="tab">Cerradas <span class="cnt">0</span></div>
-    </div>
-
-    <div class="op-card">
-      <div class="op-top">
-        <div class="op-desc">
-          <span class="seg-1">Jaula simple × 1</span>
-          <span class="seg-2">Capón</span>
-          <span class="divisor"></span><span class="seg-plain">110 Kg</span>
-          <span class="divisor"></span><span class="seg-plain">Landrace</span>
-          <span class="divisor"></span><span class="seg-muted">Feedlot</span>
-        </div>
-      </div>
-      <div class="op-sub">
-        <div class="grp">
-          <span class="soc"><span class="ms ms-16">apartment</span>Granja San Miguel S.A.</span>
-          <span class="dash"></span>
-          <span class="est"><span class="ms ms-16">location_on</span>Granja San Miguel</span>
-          <span class="loc">Marcos Juárez, Córdoba</span>
-        </div>
-        <div class="grp">
-          <span class="inf">Tropa <b>1</b></span>
-          <span class="dash"></span>
-          <span class="oid">#218840</span>
-        </div>
-      </div>
-      <div class="op-body">
-        <div class="op-left">
-          <div class="tile on">
-            <div class="ic"><span class="ms ms-24">handshake</span></div>
-            <div><div class="lbl">Canal Comercial</div><div class="val">Digitalización — Porcinos</div></div>
-          </div>
-          <div class="tile">
-            <div class="ic"><span class="ms ms-24">factory</span></div>
-            <div><div class="lbl">Matrícula Compradora</div><div class="val">Frigorífico Porcino del Sur S.A.</div></div>
-          </div>
-          <div class="tile">
-            <div class="ic"><span class="ms ms-24">calendar_month</span></div>
-            <div><div class="lbl">Fecha de Carga</div><div class="val">14/09/2026</div></div>
-          </div>
-        </div>
-        <div class="op-center">
-          <div class="ctitle">Condiciones de la venta</div>
-          <div class="op-cols">
-            <div class="op-subcol">
-              <div class="ib"><div class="t">Precio pactado</div><div class="v"><span class="dato">$ 1.850</span><span class="suf">/Kg Vivo</span></div></div>
-              <div class="ib-div"></div>
-              <div class="ib"><div class="t">Plazo de venta</div><div class="v"><span class="dato sm">15 días a partir de Faena</span></div></div>
-              <div class="ib-div"></div>
-              <div class="ib"><div class="t">Transporte</div><div class="v"><span class="dato sm">En Planta</span></div></div>
-            </div>
-            <div class="op-subcol">
-              <div class="ib"><div class="t">Establecimiento Faenador</div><div class="v"><span class="dato sm">Frigorífico Porcino del Sur S.A.</span></div></div>
-              <div class="ib-div"></div>
-              <div class="ib"><div class="t">Consignataria</div><div class="v"><span class="dato sm">Pedro Genta y Cía S.A.</span></div></div>
-              <div class="ib-div"></div>
-              <div class="ib"><div class="t">Cabezas</div><div class="v"><span class="dato">120</span><span class="suf">Cab.</span></div></div>
-            </div>
-          </div>
-        </div>
-        <div class="op-right">
-          <button class="macto ghost"><span class="ms ms-32">upload_file</span><span class="mact-txt"><span class="h2">Cargar</span><span class="h1">DTE</span></span></button>
-          <button class="macto"><span class="ms ms-32">task_alt</span><span class="mact-txt"><span class="h2">Ver</span><span class="h1">Legajo</span></span></button>
-        </div>
-      </div>
-      <div class="op-footer">
-        <div class="oper"><span class="avatar"><span class="ms ms-20">person</span></span>Atención al Cliente · deCampoaCampo</div>
-        <button class="btn-sm green"><span class="ms ms-16">chat</span>Contactar por WhatsApp</button>
+    <div class="ptop">
+      <div class="page-title">Operaciones - Ventas para Porcinos</div>
+      <div class="entidad">
+        <div><div class="l">Entidad que Factura</div><div class="v">La Ponderosa y Hnos SA</div></div>
+        <span class="ms ms-24">expand_more</span>
       </div>
     </div>
 
-    <div class="op-empty">No hay más operaciones de porcinos en este estado todavía.</div>
+    <div class="tabs" id="moTabs">
+      <button class="tab active" data-s="vendidas"><span class="nm">Vendidas</span><span class="cnt">3</span></button>
+      <button class="tab" data-s="acargar"><span class="nm">A Cargar</span><span class="cnt">3</span></button>
+      <button class="tab" data-s="cargadas"><span class="nm">Cargadas</span><span class="cnt">2</span></button>
+      <button class="tab" data-s="faenadas"><span class="nm">Faenadas</span><span class="cnt">3</span></button>
+      <button class="tab" data-s="saldo"><span class="nm">Operaciones con saldo</span><span class="cnt">2</span></button>
+      <button class="tab" data-s="cerradas"><span class="nm">Cerradas</span><span class="cnt">3</span></button>
+    </div>
+
+    <div class="state on" id="st-vendidas"></div>
+    <div class="state" id="st-acargar"></div>
+    <div class="state" id="st-cargadas"></div>
+    <div class="state" id="st-faenadas"></div>
+    <div class="state" id="st-saldo"></div>
+    <div class="state" id="st-cerradas"></div>
   </div>
+ </div>
 </div>
 
 <!-- ══ CASUÍSTICAS — panel flotante minimizable ══ -->
@@ -851,13 +1107,12 @@ body{font-family:'Lato',sans-serif;font-size:var(--fs-label);color:var(--content
     <div class="cas-top">
       <span class="ms ms-20">construction</span>
       <div>
-        <h2>Casuísticas a validar</h2>
-        <div class="sub">Prototipo — Venta Porcinos · no forma parte del producto</div>
+        <h2>Simulador de escenarios</h2>
+        <div class="sub">Cambiá el escenario de carga y extracción de DTEs</div>
       </div>
       <button class="cas-top-btn" onclick="minimizeCas()" title="Minimizar"><span class="ms ms-16">remove</span></button>
     </div>
     <div class="cas-sim">
-      <div class="cas-sim-label">Simular escenario</div>
       <div class="cas-sim-row">
         <span class="cas-sim-title">Carga de DTE</span>
         <div class="cas-tabsw" id="simCargaGroup">
@@ -876,12 +1131,9 @@ body{font-family:'Lato',sans-serif;font-size:var(--fs-label);color:var(--content
       </div>
       <button class="cas-sim-btn" onclick="simulateScenario()"><span class="ms ms-16">play_arrow</span>Simular</button>
     </div>
-    <div class="cas-body" id="casBody"></div>
-    <div class="cas-foot">Marcá un ítem como resuelto una vez que producto/negocio confirme la regla. Este panel es una capa de discovery para revisión interna.</div>
   </div>
-  <div class="cas-fab" onclick="toggleCasPanel()" title="Casuísticas a validar">
+  <div class="cas-fab" onclick="toggleCasPanel()" title="Simulador de escenarios">
     <span class="ms ms-24">construction</span>
-    <span class="cas-count" id="casCount">15</span>
   </div>
 </div>
 
@@ -916,7 +1168,14 @@ function selToggle(btn,groupId){
 /* ── PRECARGA CON DTE ── */
 let viaDTE=false;
 const LOTE_FECHA='24/06/2026', LOTE_ORIGEN='Granja San Miguel — Módulo Porcino 1', LOTE_DESTINO='Frigorífico Porcino del Sur S.A.';
-const DTE_SIM=[{name:'DTE_041823310-1.pdf',jaula:'Jaula simple',cabezas:78},{name:'DTE_041823311-2.pdf',jaula:'Jaula doble',cabezas:72},{name:'DTE_041823312-3.pdf',jaula:'Jaula simple',cabezas:64}];
+/* Cada DTE trae origen, destino y fecha: son los tres datos con los que se
+   arma la agrupación automática en lotes. Los dos primeros comparten los tres
+   → van al mismo lote; el tercero sale de otro establecimiento y otra fecha. */
+const DTE_SIM=[
+  {name:'DTE_041823310-1.pdf',jaula:'Jaula simple',cabezas:78,fecha:'24/06/2026',origen:'Granja San Miguel — Módulo Porcino 1',destino:'Frigorífico Porcino del Sur S.A.'},
+  {name:'DTE_041823311-2.pdf',jaula:'Jaula doble', cabezas:72,fecha:'24/06/2026',origen:'Granja San Miguel — Módulo Porcino 1',destino:'Frigorífico Porcino del Sur S.A.'},
+  {name:'DTE_041823312-3.pdf',jaula:'Jaula simple',cabezas:64,fecha:'25/06/2026',origen:'Granja San Miguel — Módulo Porcino 2',destino:'Frigorífico Porcino del Sur S.A.'}
+];
 let dteFiles=[];
 function addDte(){
   const next=DTE_SIM[dteFiles.length]||{name:'DTE_0'+(400000+dteFiles.length)+'.pdf',jaula:'Jaula simple',cabezas:60};
@@ -924,10 +1183,22 @@ function addDte(){
   renderDteArea();
 }
 function removeDte(i){dteFiles.splice(i,1);renderDteArea();}
+/* [F] cada DTE cargado es una caja verde con "DTE Cargado", las cabezas leídas
+   y el link Eliminar; la zona de carga queda siempre debajo, para sumar el próximo. */
 function renderDteArea(){
   const area=document.getElementById('dteUploadArea');
-  let h=dteFiles.map((f,i)=>`<div class="file-chip"><span class="ms ms-16" style="color:var(--negative)">picture_as_pdf</span><span class="fn">${f.name}</span><button onclick="removeDte(${i})" style="background:none;border:none;cursor:pointer;color:var(--content-tertiary);display:flex"><span class="ms ms-16">close</span></button></div>`).join('');
-  h+=`<div class="upload-area" onclick="addDte()" style="justify-content:center;color:var(--brand);font-size:var(--fs-sub)"><span class="ms ms-16">add</span>Agregar otro DTE</div>`;
+  let h=dteFiles.map((f,i)=>`<div class="file-chip">
+      <span class="ms ms-24">description</span>
+      <span class="tx"><span class="fn">DTE Cargado</span>
+        <span class="sub">${f.cabezas} cabezas · ${f.name}</span></span>
+      <button class="del" onclick="removeDte(${i})">Eliminar</button>
+    </div>`).join('');
+  h+=`<div class="upload-area" onclick="addDte()">
+      <span class="ms ms-24">description</span>
+      <span class="tx"><span class="t1">Adjuntar DTE</span>
+        <span class="t2">También podés arrastrar tu archivo acá</span></span>
+      <button class="pick">Seleccionar</button>
+    </div>`;
   area.innerHTML=h;
   document.getElementById('btnAnalizar').disabled=dteFiles.length===0;
 }
@@ -962,18 +1233,25 @@ function showDteError(){
    el resultado de extracción elegido en el simulador. ── */
 let lotes=[];
 let activeLote=null;
+/* Los DTEs se asignan SOLOS a un lote: comparten lote los que comparten
+   origen, destino y fecha. Después el usuario puede reasignar con "Mover". */
+const claveLote=f=>`${f.origen||LOTE_ORIGEN}|${f.destino||LOTE_DESTINO}|${f.fecha||LOTE_FECHA}`;
+const renumerarLotes=()=>lotes.forEach((l,i)=>l.id=i+1);
 function buildLotes(){
   lotes=[];
   if(dteFiles.length===0) return;
-  if(dteFiles.length<=2){
-    lotes=[{id:1,fecha:LOTE_FECHA,origen:LOTE_ORIGEN,destino:LOTE_DESTINO,status:simExtraccion,dtes:dteFiles.map(f=>({...f}))}];
-  }else{
-    const g1=dteFiles.slice(0,2), g2=dteFiles.slice(2);
-    lotes=[
-      {id:1,fecha:LOTE_FECHA,origen:LOTE_ORIGEN,destino:LOTE_DESTINO,status:'success',dtes:g1.map(f=>({...f}))},
-      {id:2,fecha:LOTE_FECHA,origen:LOTE_ORIGEN,destino:LOTE_DESTINO,status:simExtraccion,dtes:g2.map(f=>({...f}))}
-    ];
-  }
+  dteFiles.forEach(f=>{
+    const k=claveLote(f);
+    let l=lotes.find(x=>x.key===k);
+    if(!l){
+      l={id:lotes.length+1,key:k,fecha:f.fecha||LOTE_FECHA,origen:f.origen||LOTE_ORIGEN,
+         destino:f.destino||LOTE_DESTINO,status:'success',dtes:[]};
+      lotes.push(l);
+    }
+    l.dtes.push({...f});
+  });
+  /* el escenario elegido en el simulador de casuísticas aplica al último lote */
+  lotes[lotes.length-1].status=simExtraccion;
 }
 function afterExtraction(){
   buildLotes();
@@ -989,21 +1267,22 @@ function afterExtraction(){
 function renderLotes(){
   const wrap=document.getElementById('lotesList');
   const STATUS_LABEL={success:'Extracción Exitosa',partial:'Extracción Parcial',failed:'Extracción Fallida'};
-  let h=lotes.map((lote,li)=>{
+  const wrapText=t=>t.length>28?t.slice(0,27)+'…':t;
+  wrap.innerHTML=lotes.map((lote,li)=>{
     const cabezas=lote.dtes.reduce((s,f)=>s+f.cabezas,0);
-    const canContinue=lote.status!=='failed';
     const dtesHtml=lote.dtes.map((f,di)=>`
       <div class="lote-dte-row">
-        <span class="ms ms-16" style="color:var(--negative)">picture_as_pdf</span>
-        <span class="fn" onclick="toggleDtePreview(event,'lp${li}-${di}')">DTE ${di+1} <span style="font-weight:var(--fw-regular);color:var(--content-tertiary);font-style:normal">${f.name}</span></span>
+        <span class="ms ms-16">description</span>
+        <span class="dtn">DTE ${di+1}</span>
+        <span class="fn" onclick="toggleDtePreview(event,'lp${li}-${di}')">${wrapText(f.name)}</span>
         <span class="lote-dte-cab">${f.cabezas} Cabezas</span>
         <div class="dte-pop-anchor">
           <button class="lote-mover" onclick="toggleMover(event,${li},${di})">Mover<span class="ms ms-16">expand_more</span></button>
-          <div class="dte-preview-pop" id="mv${li}-${di}">
-            ${lotes.map((l2,li2)=>li2===li?'':`<button class="dte-chip-link" style="display:block;width:100%;text-align:left;padding:var(--sp-xs) 0" onclick="moverDte(${li},${di},${li2})">Mover a Lote ${l2.id}</button>`).join('')||'<span class="note">No hay otro lote todavía</span>'}
+          <div class="dte-preview-pop mover-menu" id="mv${li}-${di}">
+            ${lotes.map((l2,li2)=>`<button class="${li2===li?'on':''}" onclick="moverDte(${li},${di},${li2})">Lote ${l2.id}</button>`).join('')}
+            <button class="nuevo" onclick="moverDte(${li},${di},-1)">Lote ${lotes.length+1} <em>(nuevo)</em></button>
           </div>
         </div>
-        <button class="lote-del" onclick="deleteDteFromLote(event,${li},${di})" title="Eliminar DTE"><span class="ms ms-16">delete</span></button>
         <div class="dte-preview-pop" id="lp${li}-${di}" style="right:auto;left:0">
           <div class="fn"><span class="ms ms-16">picture_as_pdf</span>${f.name}</div>
           <div class="note">Vista previa simulada — este prototipo no adjunta el documento real.</div>
@@ -1016,15 +1295,21 @@ function renderLotes(){
         <div class="flex1"><span class="lote-date">${lote.fecha}</span> <span class="lote-route">(${lote.origen} → ${lote.destino})</span></div>
         <div class="lote-status ${lote.status}"><span class="dot"></span>${STATUS_LABEL[lote.status]}</div>
       </div>
-      <div class="lote-summary"><span>${cabezas} Capones</span><span>${lote.dtes.length} Jaula${lote.dtes.length>1?'s':''}</span><span>${lote.dtes.length} DTE${lote.dtes.length>1?'s':''}</span></div>
+      <div class="lote-summary"><span><b>${cabezas}</b> Capones</span><span><b>${lote.dtes.length}</b> Jaula${lote.dtes.length>1?'s':''}</span><span><b>${lote.dtes.length}</b> DTE${lote.dtes.length>1?'s':''}</span></div>
       ${dtesHtml}
       ${lote.status==='failed'
-        ?'<div class="lote-fail-note">No pudimos leer estos DTEs. Revisalos, reasigná sus documentos a otro lote o cargalos de nuevo.</div>'
-        :`<div class="lote-foot"><button class="btn btn-primary" onclick="openLote(${li},'s-lotes')">Continuar<span class="ms ms-16">chevron_right</span></button></div>`}
+        ?'<div class="lote-fail-note">No pudimos leer estos DTEs. Revisalos, reasigná sus documentos a otro lote o cargalos de nuevo.</div>':''}
     </div>`;
   }).join('');
-  h+=`<div class="lote-add" onclick="addDteToLotes()"><span class="ms ms-16">add</span>Cargar nuevo DTE</div>`;
-  wrap.innerHTML=h;
+  const btn=document.getElementById('btnLotesCont');
+  if(btn) btn.disabled=!lotes.some(l=>l.status!=='failed');
+}
+
+/* Un solo Continuar para toda la pantalla, como en el Figma: abre el primer
+   lote que se pueda completar. Los demás se completan al volver acá. */
+function continuarLotes(){
+  const i=lotes.findIndex(l=>l.status!=='failed');
+  if(i>=0) openLote(i,'s-lotes');
 }
 function toggleMover(e,li,di){
   e.stopPropagation();
@@ -1037,26 +1322,24 @@ function toggleDtePreview(e,id){
   document.getElementById(id).classList.toggle('open');
 }
 document.addEventListener('click',()=>document.querySelectorAll('.dte-preview-pop.open').forEach(p=>p.classList.remove('open')));
+/* toLi === -1 → el usuario eligió el "Lote n+1 (nuevo)": se crea un lote más
+   con ese DTE solo. Si el lote de origen se queda vacío desaparece, y los
+   números se recalculan para que sigan siendo 1..n. */
 function moverDte(fromLi,di,toLi){
+  if(toLi===fromLi){renderLotes();return;}
   const [f]=lotes[fromLi].dtes.splice(di,1);
-  lotes[toLi].dtes.push(f);
+  if(toLi===-1){
+    lotes.push({id:lotes.length+1,key:'manual-'+Date.now(),fecha:f.fecha||LOTE_FECHA,
+      origen:f.origen||LOTE_ORIGEN,destino:f.destino||LOTE_DESTINO,status:'success',dtes:[f]});
+  }else{
+    lotes[toLi].dtes.push(f);
+  }
   if(lotes[fromLi].dtes.length===0) lotes.splice(fromLi,1);
+  renumerarLotes();
   renderLotes();
 }
-function deleteDteFromLote(e,li,di){
-  e.stopPropagation();
-  lotes[li].dtes.splice(di,1);
-  if(lotes[li].dtes.length===0) lotes.splice(li,1);
-  renderLotes();
-}
-function addDteToLotes(){
-  const next=DTE_SIM[dteFiles.length]||{name:'DTE_0'+(400000+dteFiles.length)+'.pdf',jaula:'Jaula simple',cabezas:60};
-  const f={...next};
-  dteFiles.push(f);
-  if(!lotes.length) lotes.push({id:1,fecha:LOTE_FECHA,origen:LOTE_ORIGEN,destino:LOTE_DESTINO,status:'success',dtes:[]});
-  lotes[lotes.length-1].dtes.push(f);
-  renderLotes();
-}
+/* Adjuntar un DTE nuevo desde esta pantalla se sacó: los documentos se suben
+   en la pantalla anterior, y acá sólo se revisa y reasigna. */
 function openLote(idx,backScreen){
   activeLote=lotes[idx];
   dteBackScreen=backScreen;
@@ -1207,8 +1490,7 @@ function addRow(tbodyId,emptyId){
   const tr=document.createElement('tr');
   tr.innerHTML=`
     <td><div class="inp-suf"><input class="inp" placeholder="0" style="width:90px"/><span class="suf">$/Kg</span></div></td>
-    <td><select class="sel" style="min-width:130px"><option value="" disabled selected>Categoría</option><option>Capón</option><option>Cerda</option><option>Lechón</option></select></td>
-    <td><select class="sel" style="min-width:120px"><option value="" selected>— (opcional)</option><option>Magra</option><option>Estándar</option></select></td>
+    <td><select class="sel" style="min-width:130px"><option value="" disabled selected>Categoría</option><option>Capón</option><option>MEI</option><option>Cerda / Chancha</option><option>Cachorra</option></select></td>
     <td><button class="del-btn" onclick="delRow(this,'${tbodyId}','${emptyId}')"><span class="ms ms-16">delete</span></button></td>`;
   document.getElementById(tbodyId).appendChild(tr);
 }
@@ -1245,57 +1527,563 @@ function toggleMismasFechas(){
 }
 
 /* ── CASUÍSTICAS — panel flotante minimizable ── */
-const CASUISTICAS=[
-  {paso:'Paso 1', desc:'Establecimiento: el selector debe listar únicamente establecimientos declarados como productores de porcinos, no todos los establecimientos de la sociedad.'},
-  {paso:'Paso 1', desc:'Categoría: definir la taxonomía oficial de categorías porcinas (ej. Lechón, Capón, Cerda, Padrillo) con negocio antes de fijar el listado.'},
-  {paso:'Paso 1', desc:'Raza: definir el listado oficial de razas porcinas (Landrace, Duroc, Yorkshire, Pietrain, Cruza, etc.) con negocio.'},
-  {paso:'Paso 1', desc:'Terminación: no se ofrece selector — la operación de porcinos es siempre Feedlot. Confirmar que "Días de encierre" queda como campo simple, sin condicionar su visibilidad.'},
-  {paso:'Paso 2', desc:'Matrícula compradora: el selector debe listar solo compradores de porcino con crédito habilitado (filtro combinado especie + estado de crédito).'},
-  {paso:'Paso 2', desc:'Establecimiento faenador: el selector debe listar solo plantas habilitadas para faenar cerdos.'},
-  {paso:'Paso 2', desc:'Tipo de precio: para porcinos siempre es Kg Vivo. Confirmar si el campo debe quedar fijo/bloqueado (como en este prototipo) o si igual debe mostrarse como opción seleccionable por consistencia con Faena vacuna.'},
-  {paso:'Paso 2', desc:'Transporte: para porcinos siempre es "En Planta". Confirmar si la opción "A retirar" debe eliminarse por completo del formulario o solo ocultarse.'},
-  {paso:'Paso 2', desc:'Tabla de precio por categoría: se quitaron las columnas Desde/Hasta (no aplican a porcinos). Confirmar si Tipificación es obligatoria u optativa — en este prototipo quedó optativa.'},
-  {paso:'Paso 2', desc:'Logística: el tipo de jaula debe incluir "Jaula triple" además de Simple y Doble, a diferencia del flujo de Faena vacuna.'},
-  {paso:'Navegación', desc:'Se agrega "Nueva Operación" dentro del menú "Operaciones" del header (Operaciones → Nueva Operación → Faena → Venta Porcinos). Confirmar con UX si esta jerarquía es la definitiva o si "Nueva Operación" debería ser un ítem de primer nivel.'},
-  {paso:'DTE', desc:'En vacuno el DTE debe tener a la consignataria Pedro Genta para habilitar la digitalización. Confirmar con negocio cuál es la validación equivalente para porcinos (planta faenadora habilitada, consignataria específica, u otra) antes de implementar la lectura automática.'},
-  {paso:'DTE', desc:'Agrupación en lotes: confirmado que porcinos sí necesita el Resumen de Lotes (igual que vacuno), implementado desde v0.6. La regla de agrupación (qué campos definen que dos DTEs van al mismo lote) está simulada en el prototipo — confirmar con negocio/CIMA cuál es la regla real para porcinos.'},
-  {paso:'DTE', desc:'Peso: confirmado que nunca viene en el DTE — a diferencia de Cantidad, Categoría, Raza y Días de encierre, no se precarga en ningún escenario de extracción. Siempre se completa a mano.'},
-];
-function renderCas(){
-  const body=document.getElementById('casBody');
-  body.innerHTML=CASUISTICAS.map((c,i)=>`
-    <div class="cas-item" id="casItem${i}" onclick="toggleCasDone(${i})">
-      <div class="cas-check"><span class="ms ms-16">check</span></div>
-      <div class="cas-txt"><div class="cas-step">${c.paso}</div><div class="cas-desc">${c.desc}</div></div>
-    </div>`).join('');
-  updateCasCount();
-}
-function toggleCasDone(i){
-  document.getElementById('casItem'+i).classList.toggle('done');
-  updateCasCount();
-}
-function updateCasCount(){
-  const open=document.querySelectorAll('.cas-item:not(.done)').length;
-  document.getElementById('casCount').textContent=open;
-}
 function toggleCasPanel(){
   document.getElementById('casPanel').classList.toggle('open');
 }
 function minimizeCas(){
   document.getElementById('casPanel').classList.remove('open');
 }
-function openCas(i){
-  document.getElementById('casPanel').classList.add('open');
-  document.querySelectorAll('.cas-item').forEach(el=>el.classList.remove('highlight'));
-  const idx=i-1;
-  const el=document.getElementById('casItem'+idx);
-  if(el){
-    el.classList.add('highlight');
-    el.scrollIntoView({block:'center',behavior:'smooth'});
-    setTimeout(()=>el.classList.remove('highlight'),2200);
-  }
+
+
+/* ══════════════════════════════════════════════════════════════
+   MIS OPERACIONES — board portado de mis-ops-venta-porcinos.
+   Va dentro de una IIFE: sólo tgL y tgSec salen a window porque los
+   llaman los onclick del markup generado.
+   ══════════════════════════════════════════════════════════════ */
+(function(){
+
+/* CUIT por sociedad vendedora — va como línea chica bajo "Datos de Faena" */
+const CUIT_SOC={'Granja San Miguel':'30-71455892-4','Est. Los Aromos':'30-70988431-7',
+  'Cabaña El Ceibo':'30-71203344-9','Agropecuaria Santa Fe':'30-70455120-2'};
+/* Todos los campos que estaban marcados como inciertos quedaron validados con
+   negocio. Se deja el mecanismo listo para marcar nuevas dudas: alcanza con
+   sumar una entrada acá y llamar a tip('clave') donde corresponda. */
+const TIPS={};
+const tip=k=>TIPS[k]?`<span class="utip"><button onclick="tg(event,this)"><span class="ms ms-16">help</span></button><span class="pop"><span class="tag">Campo incierto</span>${TIPS[k]}</span></span>`:'';
+
+/* ══════════════════════════════════════════════════════════════
+   TROPAS — 2-3 por estado. Categorías y razas reales del relevamiento
+   2026-08-14. "Feedlot" no se muestra: en porcinos siempre lo es.
+   ══════════════════════════════════════════════════════════════ */
+const D={
+vendidas:[
+ {jaula:'J. Simple',cat:'Capón',kg:'110 Kg',raza:'Landrace',soc:'Granja San Miguel',est:'Módulo Porcino 1',loc:'Juárez Celman, Córdoba',id:'71895',oper:'González, Lucía',
+  faenador:'Frigorífico Porcino del Sur',faenLoc:'Río Cuarto, Córdoba',consig:'Pedro Genta y Cía SA',consigCuit:'30-52655456-2',comprador:'Frigorífico Porcino del Sur',
+  fCarga:'14/09/2026',fFaena:'15/09/2026',precio:'1.850',plazo:'15 días',gastos:'1 %',video:true,first:true},
+ {jaula:'J. Doble',cat:'Cachorra',kg:'95 Kg',raza:'Yorkshire',soc:'Est. Los Aromos',est:'Los Aromos — Sitio 3',loc:'Marcos Juárez, Córdoba',id:'71896',oper:'Sosa, Axel',
+  faenador:'Cooperativa Porcina Central',faenLoc:'Rafaela, Santa Fe',consig:'Pedro Genta y Cía SA',consigCuit:'30-52655456-2',comprador:'Cooperativa Porcina Central',
+  fCarga:'16/09/2026',fFaena:'17/09/2026',precio:'1.880',plazo:'10 días',gastos:'1 %',encierre:'Tarde anterior',sinAguaComida:true},
+ {jaula:'J. Simple',cat:'MEI',kg:'118 Kg',raza:'Duroc',soc:'Cabaña El Ceibo',est:'El Ceibo — Núcleo',loc:'Rojas, Buenos Aires',id:'71897',oper:'González, Lucía',
+  faenador:'Frigorífico Porcino del Sur',faenLoc:'Río Cuarto, Córdoba',consig:'Pedro Genta y Cía SA',consigCuit:'30-52655456-2',comprador:'Frigorífico Porcino del Sur',
+  fCarga:'18/09/2026',fFaena:'19/09/2026',precio:'1.900',plazo:'20 días',gastos:'1 %'}
+],
+acargar:[
+ {jaula:'J. Simple',cat:'Capón',kg:'110 Kg',raza:'Pietrain',soc:'Granja San Miguel',est:'Módulo Porcino 1',loc:'Juárez Celman, Córdoba',id:'71898',oper:'González, Lucía',
+  faenador:'Frigorífico Porcino del Sur',faenLoc:'Río Cuarto, Córdoba',renspa:'04.014.0.00392/01',consig:'Pedro Genta y Cía SA',consigCuit:'30-52655456-2',comprador:'Frigorífico Porcino del Sur',
+  fCarga:'14/09/2026',fFaena:'15/09/2026',balanza:'Pública',desbaste:'—',video:true,first:true,sinDatos:true},
+ {jaula:'J. Triple',cat:'Cerda / Chancha',kg:'145 Kg',raza:'Hampshire',soc:'Agropecuaria Santa Fe',est:'Santa Fe — Granja 2',loc:'Las Colonias, Santa Fe',id:'71899',oper:'Sosa, Axel',
+  faenador:'Cooperativa Porcina Central',faenLoc:'Rafaela, Santa Fe',renspa:'04.021.0.00118/02',consig:'Pedro Genta y Cía SA',consigCuit:'30-52655456-2',comprador:'Cooperativa Porcina Central',
+  fCarga:'15/09/2026',fFaena:'16/09/2026',balanza:'Pública',desbaste:'—',sinDatos:true,dteOk:true,encierre:'Tarde anterior',sinAguaComida:true},
+ {jaula:'J. Doble',cat:'MEI',kg:'118 Kg',raza:'Spotted Poland',soc:'Est. Los Aromos',est:'Los Aromos — Sitio 3',loc:'Marcos Juárez, Córdoba',id:'71900',oper:'González, Lucía',
+  faenador:'Frigorífico Porcino del Sur',faenLoc:'Río Cuarto, Córdoba',renspa:'04.014.0.00392/01',consig:'Pedro Genta y Cía SA',consigCuit:'30-52655456-2',comprador:'Frigorífico Porcino del Sur',
+  fCarga:'17/09/2026',fFaena:'18/09/2026',balanza:'Pública',desbaste:'—',dteOk:true}
+],
+cargadas:[
+ {jaula:'J. Simple',cat:'Capón',kg:'110 Kg',raza:'Cruza',soc:'Granja San Miguel',est:'Módulo Porcino 1',loc:'Juárez Celman, Córdoba',id:'71901',oper:'González, Lucía',
+  faenador:'Frigorífico Porcino del Sur',faenLoc:'Río Cuarto, Córdoba',consig:'Pedro Genta y Cía SA',comprador:'Frigorífico Porcino del Sur',
+  fCarga:'14/09/2026',fFaena:'15/09/2026',sinDatos:true,video:true,first:true},
+ {cab:'120',cat:'Capón',kg:'110 Kg',raza:'Landrace',soc:'Granja San Miguel',est:'Módulo Porcino 1',loc:'Juárez Celman, Córdoba',id:'71902',oper:'González, Lucía',
+  faenador:'Frigorífico Porcino del Sur',faenLoc:'Río Cuarto, Córdoba',consig:'Pedro Genta y Cía SA',comprador:'Frigorífico Porcino del Sur',
+  fCarga:'14/09/2026',fFaena:'15/09/2026',cant:'120',bruto:'13.400 Kg',neto:'13.400 Kg',desbaste:'—',hPesada:'07:10',hCarga:'07:30',dteOk:true,video:true}
+],
+faenadas:[
+ {jaula:'J. Simple',cat:'Capón',kg:'110 Kg',raza:'Yorkshire',soc:'Granja San Miguel',est:'Módulo Porcino 1',loc:'Juárez Celman, Córdoba',id:'71903',oper:'González, Lucía',
+  faenador:'Frigorífico Porcino del Sur',faenLoc:'Río Cuarto, Córdoba',consig:'Pedro Genta y Cía SA',comprador:'Frigorífico Porcino del Sur',
+  fCarga:'14/09/2026',fFaena:'15/09/2026',hCarga:'07:30',hFaena:'08:30',neto:'13.400 Kg',carne:'10.988 Kg',magro:58,video:true,first:true},
+ {jaula:'J. Triple',cat:'Cerda / Chancha',kg:'146 Kg',raza:'Duroc',soc:'Agropecuaria Santa Fe',est:'Santa Fe — Granja 2',loc:'Las Colonias, Santa Fe',id:'71904',oper:'Sosa, Axel',
+  faenador:'Cooperativa Porcina Central',faenLoc:'Rafaela, Santa Fe',consig:'Pedro Genta y Cía SA',comprador:'Cooperativa Porcina Central',
+  fCarga:'15/09/2026',fFaena:'16/09/2026',hCarga:'06:40',hFaena:'09:15',neto:'31.646 Kg',carne:'25.633 Kg',magro:53},
+ {jaula:'J. Doble',cat:'MEI',kg:'119 Kg',raza:'Pietrain',soc:'Cabaña El Ceibo',est:'El Ceibo — Núcleo',loc:'Rojas, Buenos Aires',id:'71905',oper:'González, Lucía',
+  faenador:'Frigorífico Porcino del Sur',faenLoc:'Río Cuarto, Córdoba',consig:'Pedro Genta y Cía SA',comprador:'Frigorífico Porcino del Sur',
+  fCarga:'18/09/2026',fFaena:'19/09/2026',hCarga:'07:00',hFaena:'08:00',cant:'120',neto:'14.280 Kg',carne:'11.852 Kg',magro:61}
+],
+saldo:[
+ {jaula:'J. Simple',cat:'Capón',kg:'110 Kg',raza:'Hampshire',soc:'Granja San Miguel',est:'Módulo Porcino 1',loc:'Juárez Celman, Córdoba',id:'71906',oper:'González, Lucía',
+  faenador:'Frigorífico Porcino del Sur',faenLoc:'Río Cuarto, Córdoba',consig:'Pedro Genta y Cía SA',comprador:'Frigorífico Porcino del Sur',
+  fCarga:'14/09/2026',fFaena:'15/09/2026',precio:'1.870',plazo:'15 días',venc:'30/09/2026',saldo:'12.328.760',factura:'11-122132',magro:58,
+  cant:'120',bruto:'13.400 Kg',neto:'13.400 Kg',carne:'10.988 Kg',hPesada:'07:10',hCarga:'07:30',video:true,legajo:true,first:true},
+ {jaula:'J. Doble',cat:'Cachorra',kg:'96 Kg',raza:'Spotted Poland',soc:'Est. Los Aromos',est:'Los Aromos — Sitio 3',loc:'Marcos Juárez, Córdoba',id:'71907',oper:'Sosa, Axel',
+  faenador:'Cooperativa Porcina Central',faenLoc:'Rafaela, Santa Fe',consig:'Pedro Genta y Cía SA',comprador:'Cooperativa Porcina Central',
+  fCarga:'16/09/2026',fFaena:'17/09/2026',precio:'1.900',plazo:'10 días',venc:'26/09/2026',saldo:'19.104.000',factura:'11-122133',magro:60,cant:'210',neto:'20.160 Kg',carne:'16.531 Kg',hPesada:'08:00',hCarga:'08:10'}
+],
+cerradas:[
+ {jaula:'J. Simple',cat:'Capón',kg:'110 Kg',raza:'Cruza',soc:'Granja San Miguel',est:'Módulo Porcino 1',loc:'Juárez Celman, Córdoba',id:'71908',oper:'González, Lucía',
+  faenador:'Frigorífico Porcino del Sur',faenLoc:'Río Cuarto, Córdoba',consig:'Pedro Genta y Cía SA',comprador:'Frigorífico Porcino del Sur',
+  fFaena:'15/09/2026',precio:'1.870',plazo:'15 días',importe:'12.328.760',factura:'11-122132',magro:58,ajuste:'807,29',cant:'120',neto:'13.400 Kg',carne:'10.988 Kg',hPesada:'07:10',hCarga:'07:30',video:true,first:true},
+ {jaula:'J. Doble',cat:'Cachorra',kg:'96 Kg',raza:'Landrace',soc:'Est. Los Aromos',est:'Los Aromos — Sitio 3',loc:'Marcos Juárez, Córdoba',id:'71909',oper:'Sosa, Axel',
+  faenador:'Cooperativa Porcina Central',faenLoc:'Rafaela, Santa Fe',consig:'Pedro Genta y Cía SA',comprador:'Cooperativa Porcina Central',
+  fFaena:'17/09/2026',precio:'1.900',plazo:'10 días',importe:'19.104.000',factura:'11-122133',magro:60,cant:'210',neto:'20.160 Kg',carne:'16.531 Kg',hPesada:'08:00',hCarga:'08:10',pago:true},
+ {jaula:'J. Triple',cat:'Cerda / Chancha',kg:'146 Kg',raza:'Duroc',soc:'Agropecuaria Santa Fe',est:'Santa Fe — Granja 2',loc:'Las Colonias, Santa Fe',id:'71910',oper:'Sosa, Axel',
+  faenador:'Cooperativa Porcina Central',faenLoc:'Rafaela, Santa Fe',consig:'Pedro Genta y Cía SA',comprador:'Cooperativa Porcina Central',
+  fFaena:'16/09/2026',precio:'1.760',plazo:'15 días',importe:'27.912.400',factura:'11-122134',magro:52,cant:'218',neto:'31.646 Kg',carne:'25.633 Kg',hPesada:'06:20',hCarga:'06:40'}
+]};
+
+/* ── Partes de la card ── */
+const head=t=>`<div class="c-head"><div class="c-desc">
+  ${t.cab?`<span class="s3">${t.cab}</span>`:`<span class="s1">${t.jaula}</span>`}<span class="s2">${t.cat}</span>
+  <span class="dv"></span><span class="s3">${t.kg}</span>
+  <span class="dv"></span><span class="s4">${t.raza}</span>
+  </div>
+  ${t.video?'<button class="btn-video"><span class="ms ms-20">play_circle</span></button>':'<span class="ic-info ms ms-24">info</span>'}
+</div>
+<div class="c-sub">
+  <span class="it"><span class="ms ms-16">sell</span>${t.soc}</span>
+  <span class="dv"></span>
+  <span class="it"><span class="ms ms-16">location_on</span>${t.est}<span class="loc">${t.loc}</span></span>
+  <span class="id">#${t.id}</span>
+</div>`;
+
+const lrow=(ic,l,v,fill,tk)=>`<div class="lrow">
+  <span class="ic${fill?' fill':''}">${fill?'dCaC':`<span class="ms ms-24">${ic}</span>`}</span>
+  <span class="ct"><span class="l">${l}${tk?' '+tip(tk):''}</span><span class="v">${v}</span></span></div>`;
+
+/* Panel de una sola fila, con la misma anatomía que las filas de arriba:
+   círculo + label + valor en horizontal. Es el cierre de la columna izquierda
+   en Cargadas, Operaciones con Saldo y Cerradas. */
+const lone=(ic,l,v,badge)=>`<div class="lpanel${badge?' rel':''}">${badge?`<span class="cbadge">${badge}</span>`:''}${lrow(ic,l,v)}</div>`;
+
+const lblk=(ic,l,v,badge,off)=>`<div class="lblk${off?' off':''}">${badge?`<span class="cbadge">${badge}</span>`:''}
+  <span class="ic"><span class="ms ms-24">${ic}</span></span>
+  <span><span class="l">${l}</span><span class="v">${v}</span></span></div>`;
+
+const prow=(l,v,u,sub,tk)=>`<div class="prow"><div class="l">${l}${tk?' '+tip(tk):''}</div>
+  <div class="v">${v}${u?`<span class="u">${u}</span>`:''}</div>${sub?`<div class="sub">${sub}</div>`:''}</div>`;
+
+const tile=(kind,ic,l,v)=>`<button class="tile ${kind}">
+  <span class="ms ms-24">${ic}</span><span class="tx">${l?`<span class="l">${l}</span>`:''}<span class="v">${v}</span></span></button>`;
+
+/* Columna de acciones de A Cargar y Cargadas.
+   · Confirmación de Venta: siempre.
+   · DTE: sólo mientras está sin cargar. Una vez cargado se mira desde
+     Datos de origen, no desde acá.
+   · Ticket de Pesada: siempre — punteado si falta, verde si ya está. */
+const acciones=t=>`${tile('doc','task','Confirmación de','Venta')}
+  ${t.dteOk?'':tile('add','upload_file','Cargar','DTE')}
+  ${t.sinDatos?tile('add','upload_file','Cargar','Ticket de Pesada'):tile('doc','receipt','Ticket de','Pesada')}`;
+
+/* "Responsable de Carga" sólo en A Cargar y Cargadas; en el resto, "Operador" */
+/* ── Duplicar y Editar ───────────────────────────────────────────
+   Acción secundaria de todas las tropas: abre el formulario de
+   digitalización con los datos de la tropa ya cargados. Vive en el footer,
+   la única fila que existe igual en los seis estados. En Cerradas viaja
+   dentro del aviso que explica el beneficio. */
+const btnDup=(t,st)=>`<button class="btn-dup" onclick="duplicarTropa('${st}','${t.id}')">
+  <span class="ms ms-20">content_copy</span>Duplicar y Editar</button>`;
+
+const dupBox=t=>`<div class="dupbox"><span class="ms ms-24">content_copy</span>
+  <div class="tx"><b>¿Volvés a vender lo mismo?</b>
+    <p>Duplicá esta tropa y digitalizá la próxima operación con el comprador, la categoría, las condiciones y el flete ya cargados. Después editás sólo lo que cambie.</p></div>
+  ${btnDup(t,'cerradas')}</div>`;
+
+const foot=(t,st)=>`<div class="c-foot">
+  <button class="btn-wa"><span class="ms ms-20">chat</span>
+    <span class="t">Contactar ${st==='acargar'||st==='cargadas'?'Responsable de Carga':'Operador'}</span>
+    <span class="av"><span class="ms ms-20">person</span></span>
+    <span class="n">${t.oper}</span></button>
+  ${st==='cerradas'?'':btnDup(t,st)}
+  <button class="btn-ver" onclick="tgL(this)"><span class="txt">Ver Informe Completo</span><span class="ms ms-24">expand_more</span></button>
+</div>`;
+
+/* sinMatricula: en Vendidas el panel de arriba trae sólo Canal Comercial y
+   Consignataria operadora (así está en el Figma de ese estado). */
+const lcol=(t,extra,sinMatricula)=>`<div class="lstack">
+  <div class="lpanel">
+    ${lrow('','Canal Comercial','Digitalización de venta',true)}
+    ${lrow('how_to_reg','Consignataria operadora',t.consig)}
+    ${sinMatricula?'':lrow('local_offer','Matrícula Compradora',t.comprador)}
+  </div>
+  ${extra||`<div class="lrow2">
+    ${lblk('event_available','Fecha de <b>Carga</b>',t.fCarga,t.hCarga||'')}
+    ${lblk('event','Fecha de <b>Faena</b>',t.fFaena,t.hFaena||'')}
+  </div>
+  ${lblk('local_shipping','Transporte','En Planta','A Cargo de <b>dCaC</b>')}`}
+</div>`;
+
+/* ══════════════════════════════════════════════════════════════
+   LEGAJO — reconstruido contra las capturas del Figma.
+   El control es el botón del footer: no hay barra propia dentro del informe.
+   Secciones por estado (ver PROTOTYPE_NOTES § 2.2).
+   ══════════════════════════════════════════════════════════════ */
+/* Feature-card horizontal: círculo + label + valor, con badge de esquina */
+const fcr=(ic,l,v,u,bdg,bdgK)=>`<div class="bcard row">${bdg?`<span class="bdg${bdgK?' '+bdgK:''}">${bdg}</span>`:''}
+  <span class="ic"><span class="ms ms-24">${ic}</span></span>
+  <span><div class="l">${l}</div><div class="v">${v}${u?`<span class="u">${u}</span>`:''}</div></span></div>`;
+/* Feature-card vertical: círculo arriba, label, valor (grilla de Datos de Origen) */
+const fcv=(ic,l,v,u,bdg,bdgK)=>`<div class="bcard">${bdg?`<span class="bdg${bdgK?' '+bdgK:''}">${bdg}</span>`:''}
+  <span class="ic"><span class="ms ms-24">${ic}</span></span>
+  <div class="l">${l}</div><div class="v">${v}${u?`<span class="u">${u}</span>`:''}</div></div>`;
+/* Card de número grande + label a la derecha (Gastos Comerciales / Fecha de Faena) */
+const numc=(n,u,l)=>`<div class="ncard"><span class="n">${n}${u?`<span class="u">${u}</span>`:''}</span><span class="l">${l}</span></div>`;
+/* Rinde Campo = Kg Carne / Neto en origen (siempre "campo": no hay Rinde Planta) */
+/* Encierre: por defecto no hay. Cuando lo hay (p. ej. "Tarde anterior") la
+   tropa puede venir con restricción de agua y comida, que se muestra como
+   badge en la Feature-Card y como chips en el panel de la card. */
+const encierreDe=t=>t.encierre||'Sin Encierre';
+const encBadge=t=>t.sinAguaComida
+  ?'<span class="ms ms-16">block</span>Sin Agua / <span class="ms ms-16">block</span>Sin Comida':'';
+const encChips=t=>t.sinAguaComida
+  ?'<span class="chips"><span class="chip"><span class="ms ms-16">block</span>Sin Agua</span><span class="chip"><span class="ms ms-16">block</span>Sin Comida</span></span>':'';
+
+const soloNum=v=>parseFloat(String(v||'').replace(/\./g,'').replace(/[^\d]/g,''))||0;
+const rindeCampo=t=>{const n=soloNum(t.neto),c=soloNum(t.carne);return n&&c?Math.round(c/n*100):null;};
+
+/* Card partida: mitad ícono+label / mitad valor grande (Datos de Faena) */
+const splitc=(ic,l,v,u,txt)=>`<div class="scard">
+  <span class="lft">${txt?`<b class="kg">${txt}</b>`:`<span class="ms ms-24">${ic}</span>`}<span class="l">${l}</span></span>
+  <span class="rgt">${v}${u?`<span class="u">${u}</span>`:''}</span></div>`;
+
+function legajo(t,st){
+  /* En Vendidas el flete todavía no tiene transportista asignado; a partir de
+     A Cargar se muestra la empresa. */
+  const flete=st==='vendidas'?'En Planta':(t.transporte||'Transporte Porcino SRL');
+  const has=n=>({origen:['cargadas','faenadas','saldo','cerradas'],faena:['faenadas','saldo','cerradas'],
+    liq:['saldo','cerradas'],pagos:['saldo','cerradas']}[n]||[]).includes(st);
+  const S=[];
+
+  /* ── CONDICIONES PACTADAS ── */
+  S.push(['Condiciones pactadas',`
+    <div class="cp-top">
+      <table class="lt precio">
+        <thead><tr><th>Valor</th><th>Categoría/Tipificación</th></tr></thead>
+        <tbody>
+          <tr><td class="n"><span class="cur">$</span> ${t.precio||'1.850'}</td><td>${t.cat} - ${t.tipif||'U'}</td></tr>
+          <tr class="tot"><td>KG VIVO + IVA</td><td></td></tr>
+        </tbody></table>
+      <div class="cp-side">
+        ${fcr('sell','Tipo de Precio','Kilo Vivo')}
+        ${fcr('event','Plazo',t.plazo||'15 días')}
+        <div class="full">${fcr('local_shipping','Flete',flete,'',`<span class="ms ms-16">location_on</span>${t.faenador}`,'info')}</div>
+      </div>
+    </div>
+    <div class="cp-row">
+      ${numc((t.gastos||'1 %').replace(/\s*%/,''),' %','Gastos<br/>Comerciales')}
+      ${numc((t.fFaena||'—').slice(0,5),'','Fecha de<br/>Faena')}
+      ${tile('doc','task','Confirmación de','Venta')}
+    </div>
+    <div class="lsub">Restricciones y procedimientos de pesada</div>
+    <div class="bgrid">
+      ${fcr('door_front','Encierre',encierreDe(t),'',encBadge(t))}
+      ${fcr('percent','Desbaste',t.desbaste||'—')}
+    </div>
+    <div class="lsub">Información del flete</div>
+    <div class="bgrid">
+      ${fcr('event_available','Fecha de Carga',t.fCarga||'A definir')}
+      ${fcr('local_shipping','Flete',flete,'','Coordinado por <b>dCaC</b>','info')}
+    </div>`]);
+
+  /* ── DATOS DE ORIGEN ── */
+  S.push(['Datos de origen',has('origen')?`
+    <div class="bgrid six">
+      ${fcv('inventory_2','Cabezas',t.cant||'120')}
+      ${fcv('scale','Peso Bruto',(t.bruto||t.neto||'13.400 Kg').replace(' Kg',''),' Kg')}
+      ${fcv('percent','Desbaste',t.desbaste||'—')}
+      ${fcv('monitor_weight','Peso Neto',(t.neto||'13.400 Kg').replace(' Kg',''),' Kg')}
+      ${fcv('schedule','Hora de Carga',t.hCarga||'07:30')}
+      ${fcv('schedule','Hora de Pesada',t.hPesada||'07:10')}
+    </div>
+    <div class="cp-row" style="margin-top:var(--sp-sm)">
+      ${fcr('weight','Diferencia Peso Informado',t.difPeso||'22',' Kg')}
+      ${tile('doc','description','','DTE')}
+      ${tile('doc','receipt','Ticket de','Pesada')}
+    </div>
+    <div class="lby">Datos Informados por: <b>${t.oper}</b></div>`:null]);
+
+  /* ── DATOS DE FAENA ── */
+  S.push(['Datos de faena',has('faena')?`
+    <div class="df-top">
+      ${fcr('event_available','Fecha de Faena',t.fFaena)}
+      ${fcr('factory','Establecimiento Faenador',t.faenador,'',`<span class="ms ms-16">location_on</span>${t.faenLoc}`,'info')}
+      ${tile('doc','fact_check','Ver','Romaneo')}
+    </div>
+    <div class="bgrid two" style="margin-top:var(--sp-sm)">
+      ${splitc('restaurant','Kg Carne',(t.carne||'10.988 Kg').replace(' Kg',''),' Kg')}
+      ${splitc('','Entrada a Planta',(t.neto||'13.400 Kg').replace(' Kg',''),' Kg','KG')}
+      ${splitc(t.magro>=56?'check_circle':'error','Magro',t.magro,' %')}
+      ${splitc('monitoring','Rinde Campo',rindeCampo(t)??'—',' %')}
+    </div>`:null]);
+
+  /* ── DATOS DE LIQUIDACIÓN ── */
+  S.push(['Datos de liquidación',has('liq')?`
+    <div class="lsub first">Costeo de tropa</div>
+    ${costeo(t)}
+    <table class="lt" style="margin-top:var(--sp-lg)"><thead><tr><th>Concepto</th><th>Neto Gravado</th><th>IVA</th><th>Ingr. Brutos</th><th>Sellos</th></tr></thead>
+      <tbody>
+        <tr><td>Factura Hacienda</td><td class="pos">$ 11.982.400</td><td class="pos">$ 1.258.152</td><td class="neg">$ -119.824</td><td>$ 0</td></tr>
+        <tr><td>Recupero Gastos Logísticos</td><td class="neg">$ -480.000</td><td class="neg">$ -100.800</td><td class="neg">$ -14.400</td><td>$ 0</td></tr>
+        <tr class="tot"><td>Total</td><td>$ 11.502.400</td><td>$ 1.157.352</td><td>$ -134.224</td><td>$ 0</td></tr>
+      </tbody></table>`:null]);
+
+  /* ── PAGOS ── */
+  S.push(['Pagos',has('pagos')?`
+    <div class="pg-top">
+      ${pgCard('attach_money','Precio',`${t.precio} <span class="u">$/Kg Vivo</span>`,`${t.precio} <span class="u">$/Kg Vivo</span>`)}
+      ${pgCard('event','Plazo',`21 <span class="u">días</span>`,`${(t.plazo||'15 días').replace(' días','')} <span class="u">días</span>`)}
+      ${pgCard('attach_money','Importe',`$ ${t.saldo||t.importe}`,`$ ${t.saldo||t.importe}`,true)}
+    </div>
+    <table class="lt mov"><thead><tr>
+      <th>Saldo inicial</th><th>Tipo</th><th>Fecha</th><th>Movimiento</th><th>Monto transacción</th><th>Ajuste comercial</th><th>IVA s/ ajuste com.</th><th>Saldo resultante</th></tr></thead>
+      <tbody>
+        <tr><td>—</td><td class="tp">Disponibilidad del saldo por operación liquidada</td><td>${t.fFaena}</td><td class="pos">$ ${t.saldo||t.importe}</td><td>$ ${t.saldo||t.importe}</td><td>—</td><td>—</td><td>$ ${t.saldo||t.importe}</td></tr>
+        <tr><td>$ ${t.saldo||t.importe}</td><td class="tp">Consumo de operación por transferencia a AFIP</td><td>${t.venc||t.fPago||'—'}</td><td class="neg">$ 1.575.131</td><td>$ -1.575.131</td><td>—</td><td>—</td><td>$ 10.753.629</td></tr>
+      </tbody></table>
+    <div class="pg-foot">
+      <div class="pg-neto"><span>Neto gravado ajuste comercial</span><b>$ 0,00</b></div>
+      ${tile('doc','schedule','Ajuste por','Mod. de Plazo')}
+    </div>`:null]);
+
+  return `<div class="legajo"><div class="lg-inner">
+    <div class="lg-body">
+      ${S.filter(s=>s[1]!==null).map(([ti,b])=>`<div class="lsec">
+        <h4 onclick="tgSec(this)">${ti}<span class="ms ms-24">expand_less</span></h4>
+        <div class="lsec-b">${b}</div></div>`).join('')}
+    </div>
+  </div></div>`;
 }
-renderCas();
+/* ══ COSTEO DE TROPA ══
+   Tabla sin bordes verticales, header de dos líneas (etiqueta + unidad)
+   y tira de totales como cards sueltas debajo.                          */
+const miles=n=>n.toLocaleString('es-AR');
+function costeo(t){
+  const cab=parseInt(String(t.cant||'120').replace(/\D/g,''),10);
+  const kg=parseFloat(String(t.kg||'110').replace(/[^\d]/g,''));
+  const pr=parseFloat(String(t.precio||'1850').replace(/\./g,'').replace(',','.'));
+  /* el costeo se abre por tipificación: dos sub-lotes de ejemplo */
+  const a=Math.round(cab*0.6), b=cab-a;
+  const F=[
+    {cant:a,precio:pr,kilos:Math.round(a*kg),cat:`${t.cat} - 1`,prom:(kg-4).toFixed(2).replace('.',',')},
+    {cant:b,precio:pr-30,kilos:Math.round(b*(kg+5)),cat:`${t.cat} - 2`,prom:(kg+5).toFixed(2).replace('.',',')}
+  ];
+  const totKg=F.reduce((s,f)=>s+f.kilos,0);
+  const promPr=Math.round(F.reduce((s,f)=>s+f.precio*f.cant,0)/cab);
+  return `<table class="costeo">
+    <thead><tr>
+      <th>Cantidad</th>
+      <th>Precio<span>+ IVA</span></th>
+      <th>Kilos<span>Kilo Vivo</span></th>
+      <th>Categoría<span>Tipificación</span></th>
+      <th>Kg Vivos<span>Promedio</span></th>
+      <th>Aclaraciones</th>
+    </tr></thead>
+    <tbody>${F.map(f=>`<tr>
+      <td>${f.cant}</td><td>$${miles(f.precio)}</td><td>${miles(f.kilos)}</td>
+      <td>${f.cat}</td><td>${f.prom}</td><td>-</td></tr>`).join('')}
+    </tbody></table>
+  <div class="costeo-tot">
+    <div><span class="l">Total</span><span class="v">${cab}</span></div>
+    <div><span class="l">Precio prom.</span><span class="v">$ ${miles(promPr)},00</span></div>
+    <div><span class="l">Total kilos</span><span class="v">${miles(totKg)}</span></div>
+    <div><span class="l">Neto gravado</span><span class="v">$ ${miles(Math.round(totKg*promPr))} +IVA</span></div>
+    <div><span class="l">Peso prom.</span><span class="v">${Math.round(totKg/cab)} Kg</span></div>
+    <div><span class="l">Fecha de pago</span><span class="v">${t.venc||t.fPago||'—'}</span></div>
+    <div><span class="l">Plazo</span><span class="v">${String(t.plazo||'').replace(/\D/g,'')}</span></div>
+  </div>`;
+}
+
+/* Card de Pagos: escalera Inicial → Actual */
+function pgCard(ic,ti,ini,act,big){
+  return `<div class="pgc"><div class="h"><span class="ms ms-20">${ic}</span>${ti}</div>
+    <div class="lad"><span class="arm"></span><div class="rows">
+      <div class="r ini"><span class="pill">Inicial</span><span class="val">${ini}</span></div>
+      <div class="r act"><span class="pill on">Actual</span><span class="val${big?' big':''}">${act}</span></div>
+    </div></div></div>`;
+}
+const C={
+vendidas:t=>`<div class="card">${head(t)}<div class="c-body wide2">
+  ${lcol(t,`${lone('event_available','Fecha de Carga',t.fCarga)}
+    ${lone('event_available','Fecha de Faena',t.fFaena)}
+    ${lone('local_shipping','Transporte',t.transporte||'En Planta','Coordinado por <b>dCaC</b>')}`,true)}
+  <div class="panel"><h3>Datos para la emisión de DTE/DUT</h3><div class="prows">
+    ${prow('Establecimiento Faenador',t.faenador,'',`<span class="pin"><span class="ms ms-16">location_on</span>${t.faenLoc}</span>`)}
+    ${prow('Datos Consignatario',t.consig,'','CUIT: '+t.consigCuit)}
+    ${prow('Datos de Faena',t.soc,'','CUIT: '+(CUIT_SOC[t.soc]||'—'))}
+  </div></div>
+  <div class="panel"><h3>Condiciones pactadas</h3><div class="prows">
+    ${prow('Precio','$ '+t.precio,'/Kg Vivo + IVA')}
+    ${prow('Plazo',t.plazo)}
+    ${prow('Flete','En Planta')}
+    ${prow('Gastos Comerciales',t.gastos)}
+  </div></div>
+  <div class="tiles">${tile('doc','scale','Condiciones de','Pesada')}</div>
+</div>${foot(t,'vendidas')}${legajo(t,'vendidas')}</div>`,
+
+acargar:t=>`<div class="card">${head(t)}<div class="c-body wide2">
+  ${lcol(t,lone('event_available','Fecha de Carga',t.fCarga))}
+  <div class="panel"><h3>Datos para la emisión de DTE/DUT</h3><div class="prows">
+    ${prow('Establecimiento Faenador',t.faenador,'',`<span class="pin"><span class="ms ms-16">location_on</span>${t.faenLoc}</span> · RENSPA: ${t.renspa}`)}
+    ${prow('Datos Consignatario',t.consig,'','CUIT: '+t.consigCuit)}
+    ${prow('Datos de Faena',t.soc,'','CUIT: '+(CUIT_SOC[t.soc]||'—'))}
+  </div></div>
+  <div class="panel"><h3>Rest. y procedimientos de pesada</h3><div class="prows">
+    ${prow('Encierre',encierreDe(t),'',encChips(t))}
+    ${prow('Balanza',t.balanza)}
+    ${prow('Desbaste',t.desbaste)}
+  </div></div>
+  <div class="tiles">${acciones(t)}</div>
+</div>${foot(t,'acargar')}${legajo(t,'acargar')}</div>`,
+
+cargadas:t=>`<div class="card">${head(t)}<div class="c-body">
+  ${lcol(t,lone('event_available','Fecha de Carga',t.fCarga))}
+  ${t.sinDatos?`<div class="panel np"><h3>Datos de origen</h3>
+    <div class="pempty"><button class="dropzone"><span class="ms ms-32">add</span>
+      <span class="t">Cargar <b>Datos de Origen</b></span></button></div></div>`
+  :`<div class="panel"><h3>Datos de origen</h3><div class="prows two">
+    ${prow('Cantidad',t.cant,'Cab.')}
+    ${prow('Fecha de Carga',t.fCarga)}
+    ${prow('Peso Bruto',t.bruto)}
+    ${prow('Peso Promedio',t.kg)}
+    ${prow('Desbaste',t.desbaste)}
+    ${prow('Fecha de Faena',t.fFaena)}
+    ${prow('Peso Neto',t.neto)}
+    ${prow('Establecimiento Faenador',t.faenador,'',`<span class="pin"><span class="ms ms-16">location_on</span>${t.faenLoc}</span>`)}
+  </div></div>`}
+  <div class="tiles">${acciones(t)}</div>
+</div>${foot(t,'cargadas')}${legajo(t,'cargadas')}</div>`,
+
+faenadas:t=>`<div class="card">${head(t)}<div class="c-body eq">
+  ${lcol(t,`<div class="lrow2">${lblk('event_available','Fecha de <b>Carga</b>',t.fCarga,t.hCarga)}${lblk('event','Fecha de <b>Faena</b>',t.fFaena,t.hFaena)}</div>`)}
+  <div class="fgrid">
+    <div class="fcard full"><span class="ic"><span class="ms ms-24">factory</span></span>
+      <span><span class="l">Establecimiento Faenador</span><span class="v">${t.faenador}</span></span></div>
+    <div class="fcard"><span class="ic"><span class="ms ms-24">scale</span></span>
+      <span><span class="l">Neto en Origen</span><span class="v">${t.neto}</span></span></div>
+    <div class="fcard"><span class="ic"><span class="ms ms-24">restaurant</span></span>
+      <span><span class="l">Kg Carne</span><span class="v">${t.carne}</span></span></div>
+    <div class="fcard"><span class="ic"><span class="ms ms-24">${t.magro>=56?'check_circle':'error'}</span></span>
+      <span><span class="l">Magro</span><span class="v">${t.magro} <span class="u">%</span></span></span></div>
+    <div class="fcard"><span class="ic"><span class="ms ms-24">monitoring</span></span>
+      <span><span class="l">Rinde Campo</span><span class="v">${rindeCampo(t)??'—'} <span class="u">%</span></span></span></div>
+  </div>
+  <div class="tiles">${tile('doc','fact_check','','Romaneo')}</div>
+</div>${foot(t,'faenadas')}${legajo(t,'faenadas')}</div>`,
+
+saldo:t=>`<div class="card">${head(t)}<div class="c-body">
+  ${lcol(t,lone('event','Fecha de Faena',t.fFaena))}
+  <div class="panel"><h3>Condiciones actuales</h3><div class="prows two">
+    ${prow('Precio','$ '+t.precio,'/Kg Vivo + IVA')}
+    ${prow('Fecha de Faena',t.fFaena)}
+    ${prow('Plazo',t.plazo)}
+    ${prow('Vencimiento Inicial',t.venc)}
+    ${prow('Saldo','$ '+t.saldo)}
+    ${prow('Número de Factura',t.factura)}
+  </div></div>
+  <div class="tiles">
+    ${tile('doc','receipt_long','','Liquidación')}
+    ${tile('doc','edit_note','','Nota Ajuste')}
+    ${tile('doc','fact_check','','Romaneo')}
+    ${tile('dcp','bolt','','Programar Pago')}
+  </div>
+</div>${foot(t,'saldo')}${legajo(t,'saldo')}</div>`,
+
+cerradas:t=>`<div class="card">${head(t)}<div class="c-body">
+  ${lcol(t,lone('event','Fecha de Faena',t.fFaena))}
+  <div class="panel"><h3>Condiciones de cierre</h3><div class="prows two">
+    ${prow('Precio','$ '+t.precio,'/Kg Vivo + IVA')}
+    ${prow('Magro Final',`<span class="badge ${t.magro>=56?'badge-green':'badge-red'}"><span class="dot"></span>${t.magro}%</span>`)}
+    ${prow('Plazo',t.plazo)}
+    ${prow('Establecimiento Faenador',t.faenador,'',`<span class="pin"><span class="ms ms-16">location_on</span>${t.faenLoc}</span>`)}
+    ${prow('Importe Neto','$ '+t.importe,'+ IVA')}
+    ${prow('Número de Factura',t.factura)}
+    ${t.ajuste?prow('Ajuste Financiero','$ '+t.ajuste,'+ IVA · Crédito'):''}
+  </div></div>
+  <div class="tiles">
+    ${tile('doc','receipt_long','','Liquidación')}
+    ${tile('doc','edit_note','','Nota Ajuste')}
+    ${tile('doc','fact_check','','Romaneo')}
+    ${t.pago?tile('dcp','bolt','','Programar Pago'):tile('doc','schedule','Ajuste por','Mod. de Plazo')}
+  </div>
+</div>${dupBox(t)}${foot(t,'cerradas')}${legajo(t,'cerradas')}</div>`
+};
+
+/* Buscador de tropas — exclusivo de Cerradas [F] */
+const buscador=`<div class="buscador"><span class="ms ms-24">search</span>
+  <input placeholder="Buscar tropa por ID, categoría, establecimiento o frigorífico"/></div>`;
+
+Object.keys(D).forEach(k=>{
+  document.getElementById('st-'+k).innerHTML = (k==='cerradas'?buscador:'') +
+    D[k].map(C[k]).join('') +
+    '<div class="empty">No hay más operaciones de porcinos en este estado.</div>';
+});
+
+document.querySelectorAll('.mo .tab').forEach(t=>t.addEventListener('click',()=>{
+  document.querySelectorAll('.mo .tab').forEach(x=>x.classList.toggle('active',x.dataset.s===t.dataset.s));
+  document.querySelectorAll('.mo .state').forEach(s=>s.classList.toggle('on',s.id==='st-'+t.dataset.s));
+}));
+function tgL(b){
+  const card=b.closest('.card'), lg=card&&card.querySelector('.legajo');
+  if(!lg){console.warn('No se encontró el legajo de esta card');return;}
+  const abierto=lg.classList.toggle('open');
+  card.querySelectorAll('.btn-ver').forEach(x=>{
+    x.classList.toggle('open',abierto);
+    x.querySelector('.txt').textContent=abierto?'Ocultar Informe Completo':'Ver Informe Completo';
+  });
+}
+/* ── DUPLICAR Y EDITAR ──────────────────────────────────────────
+   Lleva al Paso 1 del formulario con los datos de la tropa ya cargados,
+   marcados como precargados (clase .pre, igual que la extracción por DTE).
+   Lo que depende de la operación nueva — fechas, DTE, datos de origen y de
+   faena — queda vacío a propósito. */
+function duplicarTropa(st,id){
+  const t=(D[st]||[]).find(x=>x.id===id); if(!t) return;
+  viaDTE=false; dteBackScreen='s1';
+
+  const set=(elId,val)=>{
+    const el=document.getElementById(elId); if(!el||val==null||val==='') return;
+    if(el.tagName==='SELECT'){
+      let o=[...el.options].find(x=>x.textContent.trim()===String(val))
+        ||[...el.options].find(x=>x.value&&x.textContent.includes(String(val)));
+      if(!o){o=document.createElement('option');o.textContent=val;el.appendChild(o);}
+      o.selected=true;
+    }else{ el.value=val; }
+    el.classList.remove('partial'); el.classList.add('pre');
+  };
+
+  /* Paso 1 — tropa */
+  set('soc1',t.soc);
+  set('est1',t.est);
+  set('cant1',String(soloNum(t.cant||t.cab)||''));
+  set('cat1',t.cat);
+  set('peso1',String(soloNum(t.kg)||''));
+  set('raza1',t.raza);
+  set('dias1',String(parseInt(t.dias)||''));
+  checkReq1();
+
+  /* Paso 2 — comprador y condiciones */
+  set('matri1',t.comprador);
+  set('faen1',t.faenador);
+  set('plazo1',String(parseInt(t.plazo)||''));
+  const tb=document.getElementById('pr1');
+  if(tb){
+    tb.innerHTML=''; document.getElementById('pe1').style.display='none';
+    addRow('pr1','pe1');
+    const fila=tb.lastElementChild;
+    const inp=fila.querySelector('input'); inp.value=t.precio||''; inp.classList.add('pre');
+    const selCat=fila.querySelector('select');
+    let o=[...selCat.options].find(x=>x.textContent.trim()===t.cat);
+    if(!o){o=document.createElement('option');o.textContent=t.cat;selCat.appendChild(o);}
+    o.selected=true; selCat.classList.add('pre');
+  }
+  /* las jaulas se rearman vacías: las fechas son de la operación nueva */
+  const jt=document.querySelector('#s6 .jtable tbody');
+  if(jt){jt.innerHTML=DEFAULT_JAULA_ROW;jaulaCount=1;}
+
+  /* el aviso de campos precargados cambia de origen: la tropa, no los DTEs */
+  const txt=`Copiamos los datos de la tropa #${t.id}. Revisá y editá lo que cambie — las fechas, el DTE y los datos de origen son de la operación nueva.`;
+  ['preBanner1','preBanner2'].forEach(bid=>{
+    const b=document.getElementById(bid); if(!b) return;
+    b.className='pre-banner info'; b.style.display='flex';
+    b.querySelector('.txt').textContent=txt;
+  });
+
+  goTo('s5');
+}
+
+function tgSec(h){h.parentElement.classList.toggle('closed');}
+function tg(e,b){e.stopPropagation();const w=b.parentElement,o=w.classList.contains('open');
+  document.querySelectorAll('.mo .utip.open').forEach(x=>x.classList.remove('open'));if(!o)w.classList.add('open');}
+document.addEventListener('click',()=>document.querySelectorAll('.mo .utip.open').forEach(x=>x.classList.remove('open')));
+
+window.tgL=tgL; window.tgSec=tgSec; window.duplicarTropa=duplicarTropa;
+})();
 </script>
 </body>
 </html>
