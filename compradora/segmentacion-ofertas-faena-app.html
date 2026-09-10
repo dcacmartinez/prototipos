@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Segmentación de Ofertas Faena — Prototipo App</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,300,0,0" rel="stylesheet">
+<style>
+/* ════════════════════════════════════════════════════════════════
+   Estructura y estilos calcados del Figma "Respuestas de Ofertas"
+   → flujo Confirmar Oferta (Mobile Legacy), relevado 09/09/2026.
+   Tokens de color según 04_templates/04_assets/design-system/Design_dCaC.md
+   (los valores muestreados del video vienen corridos por la compresión).
+   ════════════════════════════════════════════════════════════════ */
+:root{
+  --brand:#3179A7; --brand-dark:#235677; --brand-light:#EAF2F6; --brand-mid:#BFD5E4;
+  --ink:#153346;
+  --bg-page:#EDEDED; --bg-l1:#FFFFFF; --bg-l2:#F8F8F8;
+  --border-tertiary:#EDEDED; --border-secondary:#C0C0C0;
+  --c-primary:#555555; --c-secondary:#666666; --c-tertiary:#888888; --c-disabled:#C0C0C0;
+  --green:#55A32A; --green-dark:#48901F; --positive:#54A22B; --positive-bg:#EEF6EA;
+  --warning:#B29B0E; --warning-border:#E7E0B4; --warning-text:#4B4106;
+  --negative:#D25859; --negative-border:#F8CECE; --negative-text:#612929;
+  --info-bg:#F4F8FA; --pin:#D25859;
+  --r-sm:8px; --r-xs:4px; --r-btn:6px;
+}
+*{box-sizing:border-box}
+body{margin:0;background:#D8DCE0;font-family:Lato,sans-serif;color:var(--c-primary);display:flex;justify-content:center;padding:24px 0 40px;-webkit-font-smoothing:antialiased}
+.ms{font-family:'Material Symbols Outlined';font-weight:300;font-style:normal;line-height:1;vertical-align:middle;user-select:none;display:inline-block;width:1em;overflow:hidden;white-space:nowrap}
+.hidden{display:none!important}
+
+.phone{width:390px;background:var(--bg-page);border-radius:28px;overflow:hidden;box-shadow:0 18px 48px rgba(21,51,70,.28);position:relative}
+.status{height:34px;background:var(--bg-l1);display:flex;align-items:center;justify-content:space-between;padding:0 18px;font-size:12px;font-weight:700;color:var(--ink)}
+.topbar{height:46px;background:var(--bg-l1);display:flex;align-items:center;padding:0 12px;border-bottom:1px solid var(--border-tertiary)}
+.topbar .back{font-size:26px;color:var(--brand)}
+.topbar .wm{flex:1;text-align:center;font-family:Georgia,'Times New Roman',serif;font-size:19px;color:var(--brand);margin-right:26px}
+.scroll{height:700px;overflow-y:auto;background:var(--bg-page)}
+.scroll>*{flex:0 0 auto}
+.scroll::-webkit-scrollbar{width:0}
+
+/* ── Cabecera del lote ── */
+.lote-head{background:var(--bg-l1);padding:12px 14px}
+.lote-title{font-size:19px;font-weight:900;color:var(--brand);line-height:24px}
+.lote-sub{font-size:13px;color:var(--c-tertiary);margin-top:2px}
+.lote-sub b{color:var(--c-primary);font-weight:700}
+.media{height:190px;background:linear-gradient(150deg,#7d8f79,#5f7060 45%,#48544b);display:flex;align-items:center;justify-content:center;position:relative}
+.media .lbl{color:rgba(255,255,255,.85);font-size:12px;display:flex;align-items:center;gap:6px}
+.media .bars{position:absolute;bottom:8px;left:0;right:0;display:flex;justify-content:center;gap:4px}
+.media .bars i{width:18px;height:3px;border-radius:2px;background:rgba(255,255,255,.45)}
+.media .bars i.on{background:#fff}
+.geo{background:var(--bg-l1);display:flex;align-items:center;gap:7px;padding:10px 14px;font-size:14px;color:var(--c-primary)}
+.geo .ms{font-size:18px;color:var(--pin)}
+.geo b{font-weight:700}
+.geo .muted{color:var(--c-tertiary)}
+.btn-out{margin-left:auto;border:1px solid var(--brand-mid);border-radius:var(--r-btn);color:var(--brand);font-size:12px;padding:6px 12px;background:var(--bg-l1);cursor:pointer;font-family:Lato}
+
+/* ── Panel de oferta ── */
+.offer{margin:14px 10px 0;border:2px solid var(--brand);border-radius:var(--r-sm);background:var(--bg-page)}
+.offer-head{background:var(--brand);padding:13px 12px;text-align:center;border-radius:6px 6px 0 0}
+.offer-head span{font-size:13px;font-weight:900;color:#fff;text-transform:uppercase;letter-spacing:.3px}
+.offer-body{padding:10px;display:flex;flex-direction:column;gap:10px}
+.pcard{background:var(--bg-l1);border-radius:var(--r-sm);padding:12px}
+.prow{display:flex;align-items:center;gap:8px;font-size:15px;color:var(--c-primary)}
+.prow b{font-weight:700}
+.prow .link{margin-left:auto;color:var(--brand);font-size:15px;cursor:pointer}
+.hr{height:1px;background:var(--border-tertiary);margin:12px -12px}
+.sel-label{font-size:15px;font-weight:700;color:var(--c-primary);margin-bottom:10px}
+.sel-label em{font-style:normal;color:var(--brand)}
+.sec-title{font-size:15px;font-weight:700;color:var(--brand)}
+
+/* Control de precio (calcado del Figma) */
+.price-ctl{display:flex;gap:8px;align-items:stretch}
+.price-box{flex:1;background:var(--bg-page);border-radius:var(--r-sm);padding:10px 14px;display:flex;align-items:center;gap:10px;min-height:74px}
+.price-big{font-size:38px;line-height:46px;font-weight:400;color:var(--c-secondary);white-space:nowrap;letter-spacing:-1px}
+.price-suffix{font-size:14px;line-height:18px;color:var(--c-tertiary);margin-left:auto;text-align:right;white-space:nowrap}
+.price-suffix b{display:block;color:var(--c-secondary);font-weight:700}
+.stepbox{width:56px;border:1px solid var(--border-tertiary);border-radius:var(--r-sm);display:flex;flex-direction:column;background:var(--bg-l1)}
+.stepbox span{flex:1;display:flex;align-items:center;justify-content:center;color:var(--brand);font-size:15px;cursor:pointer;user-select:none}
+.stepbox span:first-child{border-bottom:1px solid var(--border-tertiary)}
+.stepbox span:hover{background:var(--brand-light)}
+
+/* Segmentos secundarios */
+.seg-list{margin-top:10px;border-top:1px solid var(--border-tertiary)}
+.seg-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:9px 0;border-bottom:1px solid var(--border-tertiary)}
+.seg-row:last-child{border-bottom:none}
+.seg-row .range{font-size:13px;color:var(--c-tertiary)}
+.seg-row .price{font-size:15px;font-weight:700;color:var(--c-secondary)}
+.price-wrap{display:flex;align-items:center;gap:6px}
+.steppers-sm{display:flex;flex-direction:column;color:var(--c-disabled)}
+.steppers-sm .ms{font-size:15px;height:13px;cursor:pointer}
+.steppers-sm .ms:hover{color:var(--brand)}
+
+/* Rango del segmento principal + hint */
+.range-line{display:flex;align-items:center;gap:6px;margin-bottom:6px;position:relative}
+.range-line .range{font-size:13px;font-weight:700;color:var(--ink)}
+.range-line .range .est{font-weight:400;color:var(--c-tertiary)}
+.hint{margin-left:auto;display:inline-flex;align-items:center;cursor:help}
+.hint>.ms{font-size:17px;color:var(--brand)}
+.hint .bubble{position:absolute;left:0;right:0;top:calc(100% + 6px);background:var(--ink);color:#E7F0F6;font-size:11px;line-height:16px;font-weight:400;padding:10px 12px;border-radius:var(--r-sm);box-shadow:0 8px 24px rgba(21,51,70,.28);opacity:0;visibility:hidden;transition:opacity .12s;z-index:20}
+.hint .bubble b{color:#fff}
+.hint .bubble::before{content:'';position:absolute;right:6px;top:-5px;width:10px;height:10px;background:var(--ink);transform:rotate(45deg)}
+.hint:hover .bubble,.hint.on .bubble{opacity:1;visibility:visible}
+
+/* Selector de categoría (tropas mixtas de mismo eje) */
+.tabs{display:flex;background:var(--bg-page);border-radius:var(--r-sm);padding:4px;gap:2px;margin-bottom:10px}
+.tab{flex:1;text-align:center;padding:7px 0;border-radius:var(--r-xs);font-size:12px;font-weight:700;color:var(--c-tertiary);cursor:pointer;white-space:nowrap;overflow:hidden}
+.tab.active{background:var(--brand-light);color:var(--brand-dark)}
+
+.edit-link{display:inline-flex;align-items:center;gap:4px;color:var(--brand);font-size:13px;font-weight:700;cursor:pointer;margin-top:10px}
+.edit-link .ms{font-size:17px}
+
+/* Chips de plazo */
+.chips{display:grid;grid-template-columns:repeat(5,1fr);gap:5px}
+.chip{border:1px solid var(--border-tertiary);border-radius:var(--r-sm);padding:8px 0 7px;text-align:center;cursor:pointer;min-height:56px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px}
+.chip .ms{font-size:22px;color:var(--c-disabled)}
+.chip .cl{font-size:10px;color:var(--c-disabled);line-height:12px}
+.chip.selected{border-color:var(--brand);background:var(--bg-l1)}
+.chip.selected .ms,.chip.selected .cl{color:var(--brand)}
+
+/* Flete */
+.flete{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.fl{border:1px solid var(--border-tertiary);border-radius:var(--r-sm);padding:11px 6px;display:flex;align-items:center;justify-content:center;gap:6px;font-size:12px;color:var(--c-disabled);cursor:pointer;white-space:nowrap}
+.fl .ms{font-size:19px}
+.fl.selected{border-color:var(--brand);color:var(--brand);font-weight:700}
+.flete-geo{display:flex;align-items:center;gap:6px;margin-top:10px;font-size:13px;color:var(--c-secondary)}
+.flete-geo .ms{font-size:16px;color:var(--pin)}
+
+/* Gastos y restricciones */
+.big-pct{font-size:26px;font-weight:900;color:var(--c-secondary);margin-top:6px}
+.big-pct small{font-size:15px;font-weight:400}
+.stats3{display:grid;grid-template-columns:repeat(3,1fr);margin-top:10px}
+.st{display:flex;align-items:baseline;gap:6px;justify-content:center;position:relative}
+.st+.st::before{content:'';position:absolute;left:0;top:2px;bottom:2px;width:1px;background:var(--border-tertiary)}
+.st .n{font-size:22px;font-weight:900;color:var(--c-secondary)}
+.st .u{font-size:11px;line-height:13px;color:var(--c-disabled)}
+.pesada{display:flex;justify-content:space-between;gap:10px;margin-top:10px;padding-top:9px;border-top:1px solid var(--border-tertiary);font-size:12px;color:var(--c-tertiary)}
+.pesada b{color:var(--c-secondary)}
+
+.add-link{color:var(--brand);font-size:14px;cursor:pointer;padding:2px 2px 0}
+.btn-send{background:var(--green);color:#fff;border:none;border-radius:var(--r-btn);font-family:Lato;font-size:19px;font-weight:700;height:52px;width:100%;cursor:pointer}
+.btn-send:hover{background:var(--green-dark)}
+.estimador{background:var(--bg-l1);border-radius:var(--r-sm);padding:13px;display:flex;align-items:center;justify-content:center;gap:8px;color:var(--brand);font-size:16px;font-weight:700;cursor:pointer}
+.estimador .ms{font-size:20px}
+.chev{width:44px;height:26px;background:var(--bg-l1);border-radius:0 0 var(--r-sm) var(--r-sm);margin:0 auto;display:flex;align-items:center;justify-content:center;color:var(--brand)}
+
+/* Bloques bajo el panel */
+.blk{margin:16px 10px 0}
+.blk-title{font-size:17px;color:var(--c-secondary);margin-bottom:10px}
+.op{display:flex;align-items:center;gap:10px;padding:0 4px}
+.op .pic{width:46px;height:46px;border-radius:999px;background:var(--brand-mid);flex-shrink:0}
+.op .n{font-size:15px;color:var(--c-secondary);flex:1;white-space:nowrap}
+.op .a{display:flex;align-items:center;gap:5px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap}
+.op .a.tel{color:var(--brand)}
+.op .a.wa{color:var(--green)}
+.op .a .ms{font-size:20px}
+.card{background:var(--bg-l1);border-radius:var(--r-sm);padding:14px}
+.card-h{display:flex;align-items:center;gap:10px;padding-bottom:12px;border-bottom:1px solid var(--border-tertiary)}
+.card-h .t{font-size:16px;color:var(--brand);white-space:nowrap}
+.pill{margin-left:auto;border:1px solid var(--brand-mid);border-radius:var(--r-btn);color:var(--brand);font-size:12px;font-weight:700;padding:7px 10px;display:flex;align-items:center;gap:6px;cursor:pointer;background:var(--bg-l1);white-space:nowrap}
+.pill .ms{font-size:17px}
+.tri{display:grid;grid-template-columns:repeat(3,1fr);padding:12px 0}
+.tri .c{text-align:center;position:relative}
+.tri .c+.c::before{content:'';position:absolute;left:0;top:0;bottom:0;width:1px;background:var(--border-tertiary)}
+.tri .k{font-size:13px;color:var(--c-tertiary)}
+.tri .v{font-size:22px;font-weight:900;color:var(--brand);margin:3px 0 1px}
+.tri .v.g{color:var(--positive)}
+.tri .s{font-size:11px;color:var(--brand)}
+.tri .s.g{color:var(--positive)}
+.tri .ck{font-size:26px;color:var(--brand)}
+.nutri{display:flex;justify-content:space-between;gap:10px;padding-top:12px;border-top:1px solid var(--border-tertiary);font-size:13px;color:var(--c-tertiary)}
+.nutri .l b{display:block;color:var(--brand);font-size:14px;margin-top:2px}
+.nutri .r{text-align:right}
+.nutri .r b{color:var(--c-primary)}
+.nutri .tags{margin-top:3px;color:var(--c-disabled);font-size:12px;display:flex;gap:10px;justify-content:flex-end}
+.quad{display:grid;grid-template-columns:repeat(4,1fr);padding-top:12px;gap:2px}
+.quad .c{position:relative;padding:0 6px}
+.quad .c+.c::before{content:'';position:absolute;left:0;top:2px;bottom:2px;width:1px;background:var(--border-tertiary)}
+.quad .k{font-size:12px;color:var(--c-tertiary)}
+.quad .v{font-size:15px;font-weight:900;color:var(--c-primary);margin-top:2px;line-height:19px}
+.quad .s{font-size:11px;color:var(--c-tertiary)}
+.vend{display:flex;align-items:center;gap:12px;padding:4px}
+.vend .av{font-size:38px;color:var(--c-disabled)}
+.vend .c{flex:1;position:relative;padding-left:12px}
+.vend .c+.c::before{content:'';position:absolute;left:0;top:2px;bottom:2px;width:1px;background:var(--border-tertiary)}
+.vend .v{font-size:19px;font-weight:900;color:var(--c-primary)}
+.vend .k{font-size:13px;color:var(--c-secondary)}
+.vend .s{font-size:12px;color:var(--c-tertiary)}
+.prot{display:flex;gap:12px;align-items:flex-start;padding:4px}
+.prot .ic{width:34px;height:34px;border-radius:999px;background:var(--positive-bg);color:var(--positive);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.prot .tx{font-size:12px;line-height:17px;color:var(--c-tertiary)}
+.footnav{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 10px 24px}
+.footnav div{border:1px solid var(--brand-mid);border-radius:var(--r-btn);background:var(--bg-l1);color:var(--brand);font-size:13px;padding:10px 0;text-align:center;cursor:pointer}
+
+/* Alertas */
+.alert{display:flex;gap:8px;border-radius:var(--r-sm);padding:10px 12px;border:1px solid}
+.alert .ms{font-size:18px;flex-shrink:0;margin-top:1px}
+.alert-title{font-size:12px;font-weight:700;line-height:16px}
+.alert-body{font-size:11px;line-height:16px;margin-top:2px}
+.alert.info{background:var(--info-bg);border-color:var(--brand-mid);color:var(--ink)}
+.alert.info .ms{color:var(--brand)}
+.alert.warn{background:#FDFCF9;border-color:var(--warning-border);color:var(--warning-text)}
+.alert.warn .ms{color:var(--warning)}
+
+/* Oferta baja */
+.baja-banner{background:var(--negative);color:#fff;border-radius:var(--r-sm) var(--r-sm) 0 0;padding:10px 12px;display:flex;align-items:center;gap:6px}
+.baja-banner .t{font-size:12px;font-weight:900;text-transform:uppercase}
+.baja-body{border:1px solid var(--negative-border);border-top:none;border-radius:0 0 var(--r-sm) var(--r-sm);padding:14px 12px;background:#FEF7F7}
+.tip{display:flex;gap:8px;background:#fff;border:1px solid var(--warning-border);border-radius:var(--r-sm);padding:10px;font-size:12px;line-height:17px;color:var(--warning-text);margin-top:10px}
+.tip .ms{color:var(--warning);font-size:18px;flex-shrink:0}
+.rd{background:#fff;border:1px solid var(--border-tertiary);border-radius:var(--r-sm);margin-top:12px}
+.rd .seg-row{padding:9px 12px;border-bottom:1px solid var(--border-tertiary)}
+.rd .seg-row:last-child{border-bottom:none}
+.hist{background:var(--bg-l1);border-radius:var(--r-sm);padding:14px 12px}
+.hist-h{font-size:12px;font-weight:900;color:var(--c-tertiary);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+.hist-row{display:flex;justify-content:space-between;font-size:13px;padding:4px 0}
+.hist-row .v{font-weight:700;color:var(--c-primary)}
+/* ── Respuesta del hub: Oferta Baja / Oferta Competitiva ──
+   Copys y estructura según feedback de negocio del 09/09/2026:
+   baja sin fecha y sin importe sugerido; competitiva con la prioridad
+   fusionada con la fecha en el título y el stepper resuelto como texto. */
+.resp{border-radius:var(--r-sm);overflow:hidden;border:2px solid}
+.resp.baja{border-color:#9B3A3B}
+.resp.comp{border-color:#3C731F}
+.resp-head{padding:12px;text-align:center}
+.resp.baja .resp-head{background:#9B3A3B}
+.resp.comp .resp-head{background:#3C731F}
+.resp-head span{color:#fff;font-weight:900;text-transform:uppercase;letter-spacing:.4px}
+.resp-body{background:var(--bg-l1);padding:16px}
+.resp-h{text-align:center;font-weight:700;color:var(--c-primary)}
+.resp-h b{font-weight:900}
+.resp.baja .resp-h b{color:#9B3A3B}
+.resp.comp .resp-h b{color:#3C731F}
+.resp-h .mut{font-weight:400;color:var(--c-tertiary)}
+.resp-p{text-align:center;color:var(--c-tertiary);margin-top:8px}
+.resp-p b{color:var(--c-secondary);font-weight:700}
+.resp-div{height:1px;background:var(--border-tertiary);margin:16px 0}
+.resp-k{font-size:13px;color:var(--c-tertiary);margin-bottom:6px}
+.resp-meta{margin-top:14px}
+.resp-meta .r{display:flex;justify-content:space-between;gap:12px;padding:7px 0;border-bottom:1px solid var(--border-tertiary);font-size:13px;color:var(--c-tertiary)}
+.resp-meta .r:last-child{border-bottom:none}
+.resp-meta .r b{color:var(--c-primary);font-weight:700;text-align:right}
+
+/* Bottom sheets */
+.sheet-ov{position:absolute;inset:0;background:rgba(21,51,70,.45);display:none;align-items:flex-end;z-index:50}
+.sheet-ov.open{display:flex}
+.sheet{background:var(--bg-l1);border-radius:16px 16px 0 0;width:100%;max-height:84%;overflow:auto;padding:8px 16px 20px}
+.grabber{width:40px;height:4px;border-radius:999px;background:var(--border-secondary);margin:6px auto 12px}
+.sheet-title{font-size:17px;font-weight:900;color:var(--ink)}
+.sheet-sub{font-size:12px;line-height:17px;color:var(--c-tertiary);margin-top:2px;margin-bottom:12px}
+.edit-hdr{display:grid;grid-template-columns:1fr 76px 76px 18px;gap:6px;padding-bottom:6px;border-bottom:1px solid var(--border-tertiary)}
+.edit-hdr span{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.3px;color:var(--c-tertiary);text-align:right}
+.edit-hdr span:first-child{text-align:left}
+.edit-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid var(--border-tertiary)}
+.edit-row.multi{display:grid;grid-template-columns:1fr 76px 76px 18px;gap:6px;align-items:center}
+.edit-row .rf{font-size:12px;color:var(--c-secondary)}
+.range-input{font-family:Lato;font-size:12px;width:52px;padding:6px;border:1px solid var(--border-tertiary);border-radius:var(--r-xs)}
+.range-input.wide{width:80px}
+.price-input{font-family:Lato;font-size:13px;font-weight:700;width:76px;padding:6px;border:1px solid var(--border-tertiary);border-radius:var(--r-xs);text-align:right}
+.edit-price{display:flex;align-items:center;gap:8px}
+.edit-price .del{font-size:17px;color:var(--c-disabled);cursor:pointer}
+.add-seg{display:inline-flex;align-items:center;gap:6px;color:var(--brand);font-size:12px;font-weight:700;cursor:pointer;padding-top:12px}
+.add-seg .ms{font-size:17px}
+.sheet-foot{display:flex;gap:8px;margin-top:16px}
+.btn{border:none;border-radius:var(--r-btn);font-family:Lato;font-size:14px;font-weight:700;height:42px;width:100%;cursor:pointer}
+.btn-primary{background:var(--brand);color:#fff}
+.btn-green{background:var(--green);color:#fff}
+.btn-ghost{background:transparent;color:var(--brand);border:1px solid var(--brand-mid)}
+.modal-row{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid var(--border-tertiary)}
+.modal-row:last-child{border-bottom:none}
+.modal-row .k{font-size:12px;color:var(--c-tertiary)}
+.modal-row .v{font-size:12px;font-weight:700;color:var(--c-primary);text-align:right}
+.seg-hdr{display:grid;grid-template-columns:1fr 76px 76px;gap:6px;padding:6px 12px;background:var(--bg-l2);border-bottom:1px solid var(--border-tertiary);border-radius:var(--r-sm) var(--r-sm) 0 0}
+.seg-hdr span{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.3px;color:var(--c-tertiary);text-align:right}
+.seg-hdr span:first-child{text-align:left}
+.rd .seg-row.multi{display:grid;grid-template-columns:1fr 76px 76px;gap:6px;align-items:center}
+.rd .seg-row.multi .cell{text-align:right}
+.ok-icon{width:52px;height:52px;border-radius:999px;background:var(--positive-bg);color:var(--positive);display:flex;align-items:center;justify-content:center;margin:0 auto 10px}
+.ok-icon .ms{font-size:30px}
+
+/* Widget de tropas */
+.cw{position:fixed;right:20px;bottom:20px;z-index:200}
+.cw-fab{background:var(--ink);color:#fff;border-radius:999px;padding:12px 18px;display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;cursor:pointer;box-shadow:0 6px 20px rgba(21,51,70,.32)}
+.cw-fab .ms{font-size:20px}
+.cw-panel{display:none;background:var(--ink);border-radius:12px;padding:8px;margin-bottom:8px;width:308px;max-height:76vh;overflow:auto;box-shadow:0 10px 32px rgba(21,51,70,.36)}
+.cw.open .cw-panel{display:block}
+.cw-t{color:#8FB4CC;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:10px 10px 6px}
+.cw-item{color:#DCE8F0;font-size:13px;line-height:18px;padding:9px 10px;border-radius:var(--r-sm);cursor:pointer;display:flex;gap:8px;align-items:flex-start}
+.cw-item:hover{background:rgba(255,255,255,.08)}
+.cw-item.active{background:var(--brand);color:#fff;font-weight:700}
+.cw-item .ms{font-size:18px;opacity:.7;margin-top:1px}
+.cw-item small{display:block;font-size:11px;font-weight:400;opacity:.75;margin-top:1px}
+.cw-sep{height:1px;background:rgba(255,255,255,.1);margin:8px 6px}
+</style>
+</head>
+<body>
+
+<div class="phone">
+  <div class="status"><span>5:13 PM</span><span class="ms" style="font-size:15px">signal_cellular_alt</span></div>
+  <div class="topbar"><span class="ms back">chevron_left</span><span class="wm">deCampoaCampo</span></div>
+
+  <div class="scroll" id="scroll">
+
+    <!-- Cabecera del lote -->
+    <div class="lote-head">
+      <div class="lote-title" id="l-title"></div>
+      <div class="lote-sub" id="l-sub"></div>
+    </div>
+    <div class="media"><div class="lbl"><span class="ms">photo_camera</span>Foto / video del lote</div>
+      <div class="bars"><i class="on"></i><i></i><i></i><i></i></div></div>
+    <div class="geo"><span class="ms">location_on</span><b id="l-ubic"></b><span class="muted" id="l-prov"></span>
+      <button class="btn-out">Ver mapa</button></div>
+
+    <!-- Oferta baja -->
+    <!-- Respuesta del hub -->
+    <div id="blk-resp" class="hidden" style="margin:14px 10px 0">
+      <div class="resp" id="resp-card">
+        <div class="resp-head"><span id="resp-title" style="font-size:13px"></span></div>
+        <div class="resp-body" style="padding:14px 12px">
+          <div class="resp-h" id="resp-h" style="font-size:15px;line-height:21px"></div>
+          <div class="resp-p" id="resp-p" style="font-size:13px;line-height:19px"></div>
+          <div class="resp-div"></div>
+          <div class="resp-k">Precio ofertado</div>
+          <div class="rd" id="seg-resp" style="margin-top:0"></div>
+          <div class="resp-meta" id="resp-meta"></div>
+          <div id="resp-cta" style="margin-top:14px"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ PANEL DE OFERTA (calcado del Figma) ═══ -->
+    <div class="offer" id="blk-offer">
+      <div class="offer-head"><span>Ingresá tu oferta</span></div>
+      <div class="offer-body">
+
+        <div id="f-aviso"></div>
+
+        <!-- Sociedad + Precio -->
+        <div class="pcard">
+          <div class="prow">Sociedad: <b id="f-soc-name"></b><span class="link" onclick="openSheet('ov-soc')">Cambiar</span></div>
+          <div class="hr"></div>
+          <div class="sel-label">Seleccioná el <em>Precio</em></div>
+
+          <div class="tabs hidden" id="f-tabs"></div>
+
+          <!-- segmento principal -->
+          <div id="f-principal"></div>
+          <!-- segmentos secundarios -->
+          <div class="seg-list" id="f-table"></div>
+          <span class="edit-link hidden" id="f-edit" onclick="openEdit()"><span class="ms">edit</span>Editar segmentación</span>
+          <div id="f-nota" style="margin-top:10px"></div>
+        </div>
+
+        <!-- Plazo -->
+        <div class="pcard">
+          <div class="sel-label">Seleccioná el <em>Plazo</em></div>
+          <div class="chips" id="f-chips">
+            <div class="chip selected" onclick="pickPlazo(this,'Contado')"><span class="ms">paid</span><span class="cl">Contado</span></div>
+            <div class="chip" onclick="pickPlazo(this,'30 días')"><span class="ms">calendar_month</span><span class="cl">30 días</span></div>
+            <div class="chip" onclick="pickPlazo(this,'30 y 60')"><span class="ms">calendar_month</span><span class="cl">30 y 60</span></div>
+            <div class="chip" onclick="pickPlazo(this,'60 días')"><span class="ms">calendar_month</span><span class="cl">60 días</span></div>
+            <div class="chip" onclick="pickPlazo(this,'Otro')"><span class="ms">more_horiz</span><span class="cl">Otro</span></div>
+          </div>
+        </div>
+
+        <!-- Flete -->
+        <div class="pcard">
+          <div class="sel-label">Seleccioná el <em>Flete</em></div>
+          <div class="flete">
+            <div class="fl selected" onclick="pickFlete(this)"><span class="ms">local_shipping</span>a Retirar en Origen</div>
+            <div class="fl" onclick="pickFlete(this)"><span class="ms">local_shipping</span>Puesto en Destino</div>
+          </div>
+          <div class="flete-geo"><span class="ms">location_on</span><span id="f-geo"></span></div>
+        </div>
+
+        <!-- Gastos comerciales -->
+        <div class="pcard">
+          <div class="sec-title">Gastos Comerciales</div>
+          <div class="big-pct">3<small>%</small></div>
+        </div>
+
+        <!-- Restricciones -->
+        <div class="pcard">
+          <div class="sec-title">Restricciones y Procedimiento de Pesada</div>
+          <div class="stats3">
+            <div class="st"><span class="n">5</span><span class="u">Tabla de<br>$ / Kg</span></div>
+            <div class="st"><span class="n" id="r-desde">360</span><span class="u">Desde<br>Kg</span></div>
+            <div class="st"><span class="n" id="r-tope">370</span><span class="u">Tope<br>Kg</span></div>
+          </div>
+          <div class="pesada"><span>Balanza: <b>SR arriba del camion (20Km)</b></span><span>Desbaste:<b>4%</b></span></div>
+        </div>
+
+        <span class="add-link">+ Agregar aclaración</span>
+
+        <button class="btn-send" onclick="openConfirm()">Enviar Oferta</button>
+
+        <div>
+          <div class="estimador"><span class="ms">calculate</span>Estimador de Costos</div>
+          <div class="chev"><span class="ms">expand_more</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Operador -->
+    <div class="blk">
+      <div class="blk-title">Consulte al Operador</div>
+      <div class="op"><span class="pic"></span><span class="n">Ramona Wyman</span>
+        <span class="a tel"><span class="ms">call</span>Llamar</span>
+        <span class="a wa"><span class="ms">chat</span>WhatsApp</span></div>
+    </div>
+
+    <!-- Informe de la tropa -->
+    <div class="blk"><div class="card">
+      <div class="card-h"><span class="t">Informe de la tropa</span><span class="pill"><span class="ms">share</span>Compartir</span></div>
+      <div class="tri">
+        <div class="c"><div class="k">Edad</div><div class="v">18</div><div class="s">meses</div></div>
+        <div class="c"><div class="k">Calidad</div><div class="v g">8,5</div><div class="s g">sobre 10 pts</div></div>
+        <div class="c"><div class="k">Ma. Líquida</div><div class="ck ms">check</div></div>
+      </div>
+      <div class="nutri">
+        <div class="l">Tto. Nutricional<b>Praderas y/o Verdeos</b></div>
+        <div class="r">Zona <b>Limpia</b><div class="tags"><span>✕ Garrapata</span><span>✕ Mio-Mio</span></div></div>
+      </div>
+    </div></div>
+
+    <!-- Informe de revisación -->
+    <div class="blk"><div class="card">
+      <div class="card-h"><span class="t">Informe de Revisación</span><span class="pill">Segmentación de Tropa</span></div>
+      <div class="quad">
+        <div class="c"><div class="k">Est. Corporal</div><div class="v">4</div><div class="s">sobre 5 pts</div></div>
+        <div class="c"><div class="k">Descarte</div><div class="v">0</div><div class="s">animales</div></div>
+        <div class="c"><div class="k">Sanidad</div><div class="v">Muy buena</div></div>
+        <div class="c"><div class="k">Uniformidad</div><div class="v">Parejo</div><div class="s">350 Kgs aprox</div></div>
+      </div>
+    </div></div>
+
+    <!-- Vendedor -->
+    <div class="blk">
+      <div class="blk-title">Información del Vendedor</div>
+      <div class="vend">
+        <span class="ms av">account_circle</span>
+        <div class="c"><div class="v">100</div><div class="k">Cabezas</div><div class="s">comercializadas</div></div>
+        <div class="c"><div class="v">3</div><div class="k">Operaciones</div><div class="s">concretadas</div></div>
+        <div class="c"><div class="v">1</div><div class="k">año</div><div class="s">operando</div></div>
+      </div>
+    </div>
+
+    <!-- Compra protegida -->
+    <div class="blk">
+      <div class="blk-title">Compra Protegida</div>
+      <div class="prot"><span class="ic"><span class="ms">lock</span></span>
+        <span class="tx">Pedro Genta y CIA S.A audita esta operación, a su vez liquida y es responsable en el cumplimiento entre partes.</span></div>
+    </div>
+
+    <div class="footnav"><div>‹ Volver al listado</div><div>^ Volver al principio</div></div>
+
+  </div><!-- /scroll -->
+
+  <!-- Sheets -->
+  <div class="sheet-ov" id="ov-soc"><div class="sheet">
+    <div class="grabber"></div><div class="sheet-title">Sociedad operadora</div>
+    <div class="sheet-sub">Elegí con qué sociedad querés ofertar.</div>
+    <div id="soc-list"></div>
+  </div></div>
+
+  <div class="sheet-ov" id="ov-edit"><div class="sheet">
+    <div class="grabber"></div><div class="sheet-title">Editar segmentación</div>
+    <div class="sheet-sub" id="edit-sub"></div><div id="edit-body"></div>
+    <div class="sheet-foot"><button class="btn btn-ghost" onclick="closeSheet('ov-edit')">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveEdit()">Guardar</button></div>
+  </div></div>
+
+  <div class="sheet-ov" id="ov-confirm"><div class="sheet">
+    <div class="grabber"></div><div class="sheet-title" style="margin-bottom:10px">Confirmá tu oferta</div>
+    <div id="confirm-body"></div>
+    <div class="sheet-foot"><button class="btn btn-ghost" onclick="closeSheet('ov-confirm')">Modificar</button>
+      <button class="btn btn-green" onclick="closeSheet('ov-confirm');openSheet('ov-ok')">Confirmar</button></div>
+  </div></div>
+
+  <div class="sheet-ov" id="ov-ok"><div class="sheet" style="text-align:center;padding-bottom:24px">
+    <div class="grabber"></div><div class="ok-icon"><span class="ms">check</span></div>
+    <div class="sheet-title">Oferta enviada</div>
+    <div class="sheet-sub">Tu oferta nos importa. Enviarla no constituye un compromiso de compra.</div>
+    <button class="btn btn-green" onclick="closeSheet('ov-ok')">Entendido</button>
+  </div></div>
+</div>
+
+<div class="cw" id="cw">
+  <div class="cw-panel">
+    <div class="cw-t">Tipo de tropa</div>
+    <div id="cw-tropas"></div>
+    <div class="cw-sep"></div>
+    <div class="cw-t">Estado de la oferta</div>
+    <div class="cw-item active" data-e="ofertar" onclick="setEstado('ofertar')"><span class="ms">edit_note</span><div>Ofertar<small>Formulario de carga</small></div></div>
+    <div class="cw-item" data-e="competitiva" onclick="setEstado('competitiva')"><span class="ms">verified</span><div>Respuesta: Oferta Competitiva<small>Prioridad + fecha en el título</small></div></div>
+    <div class="cw-item" data-e="baja" onclick="setEstado('baja')"><span class="ms">error</span><div>Respuesta: Oferta Baja<small>Sin fecha ni importe sugerido</small></div></div>
+  </div>
+  <div class="cw-fab" onclick="document.getElementById('cw').classList.toggle('open')"><span class="ms">tune</span>Tropa</div>
+</div>
+
+<script>
+/* Granularidad: sociedad × destino × grupo de categorías × segmento.
+   destino = consumo | exportacion (no es categoría). eje = kilaje | tipificacion.
+   Cada tropa se oferta con 3 sociedades: dos con historial y una sin historial. */
+function principalIndex(destino, eje, n){
+  if(eje === 'tipificacion') return Math.floor((n-1)/2);   // supuesto del proto (P2)
+  if(destino === 'exportacion') return Math.floor((n-1)/2); // pico de la campana
+  return 0;                                                 // consumo: primer segmento
+}
+const SIN_HISTORIAL = 'Frigorífico del Sur S.A.';
+
+const TROPAS = {
+  consumo: {
+    nombre:'Consumo', hint:'Cursor en el segmento de mayor precio',
+    lote:{cab:112, cat:'Novillitos', kg:410, raza:'Braford', term:'Careta',
+      ubic:'Trenque Lauquen', prov:'Buenos Aires', desde:400, tope:420},
+    plazo:'Contado',
+    sociedades:{
+      'Coto':{destino:'consumo', eje:'kilaje', grupo:['Novillito','Vaquillona'], segmentos:[
+        {max:100, price:9000},{min:100,max:110, price:8700},{min:110, price:8400}]},
+      'Matarife Pichinini':{destino:'consumo', eje:'kilaje', grupo:['Novillito','Vaquillona','Ternero'], segmentos:[
+        {max:95, price:9150},{min:95, price:8800}]},
+      [SIN_HISTORIAL]:{sinHistorial:true, precio:9000}
+    }
+  },
+  expo: {
+    nombre:'Exportación', hint:'Cursor en el segmento del medio',
+    lote:{cab:96, cat:'Novillos', kg:470, raza:'Mestizo', term:'Careta',
+      ubic:'Rafaela', prov:'Santa Fe', desde:460, tope:480},
+    plazo:'30 días',
+    sociedades:{
+      'Swift':{destino:'exportacion', eje:'kilaje', grupo:['Novillo','MEJ'], segmentos:[
+        {max:120, price:8050},{min:120,max:190, price:8300},{min:190, price:8100}]},
+      'Los Nogales S.A.':{destino:'exportacion', eje:'kilaje', grupo:['Novillo'], segmentos:[
+        {max:110, price:7950},{min:110,max:140, price:8200},{min:140,max:190, price:8350},
+        {min:190,max:220, price:8250},{min:220, price:8050}]},
+      [SIN_HISTORIAL]:{sinHistorial:true, precio:8300}
+    }
+  },
+  vaca: {
+    nombre:'Vacas', hint:'Tipificación + grasa · P2 abierto',
+    lote:{cab:84, cat:'Vacas Gordas', kg:480, raza:'Mestizo', term:'Careta',
+      ubic:'Esperanza', prov:'Santa Fe', desde:470, tope:495},
+    plazo:'30 días',
+    sociedades:{
+      'Carroll-Rippin':{destino:'consumo', eje:'tipificacion', grupo:['Vaca Gorda','Vaca Manufactura'], segmentos:[
+        {label:'B1', price:7550},{label:'C1', price:7200},{label:'C2', price:6900}]},
+      'Coto':{destino:'consumo', eje:'tipificacion', grupo:['Vaca Gorda'], segmentos:[
+        {label:'B1', price:7600},{label:'B2', price:7450},{label:'C1', price:7200},
+        {label:'C2', price:6950},{label:'C3', price:6700}]},
+      [SIN_HISTORIAL]:{sinHistorial:true, precio:7200}
+    }
+  },
+  mixtaConsumo: {
+    nombre:'Mixta consumo · 2 categorías', hint:'Novillito + Vaquillona · selector de categoría',
+    lote:{cab:128, cat:'Novillitos y Vaquillonas', kg:395, raza:'Mestizo', term:'Careta',
+      ubic:'Alejandro Roca', prov:'Córdoba', desde:385, tope:405},
+    plazo:'Contado', referencia:'Novillito',
+    aviso:{tipo:'info', t:'Tropa con dos categorías',
+      b:'Los rangos de kilaje son los mismos para las dos categorías. Cargá el precio de cada una alternando con el selector. El operador definió <b>Novillito</b> como categoría de referencia.'},
+    sociedades:{
+      'Coto':{destino:'consumo', eje:'kilaje', grupo:['Novillito','Vaquillona'], cols:['Novillito','Vaquillona'], segmentos:[
+        {max:100, prices:[8950,8750]},{min:100,max:110, prices:[8650,8450]},{min:110, prices:[8350,8150]}]},
+      'Matarife Pichinini':{destino:'consumo', eje:'kilaje', grupo:['Novillito','Vaquillona'], cols:['Novillito','Vaquillona'], segmentos:[
+        {max:95, prices:[9100,8900]},{min:95, prices:[8750,8550]}]},
+      [SIN_HISTORIAL]:{sinHistorial:true, precio:8900}
+    }
+  },
+  mixtaExpo: {
+    nombre:'Mixta exportación · 2 categorías', hint:'Novillo + MEJ · selector de categoría',
+    lote:{cab:104, cat:'Novillos y MEJ', kg:460, raza:'Mestizo', term:'Careta',
+      ubic:'Rafaela', prov:'Santa Fe', desde:450, tope:475},
+    plazo:'30 días', referencia:'Novillo',
+    aviso:{tipo:'info', t:'Tropa con dos categorías',
+      b:'Los rangos de kilaje son los mismos para las dos categorías. Cargá el precio de cada una alternando con el selector. El operador definió <b>Novillo</b> como categoría de referencia.'},
+    sociedades:{
+      'Swift':{destino:'exportacion', eje:'kilaje', grupo:['Novillo','MEJ'], cols:['Novillo','MEJ'], segmentos:[
+        {max:120, prices:[7980,7830]},{min:120,max:190, prices:[8230,8080]},{min:190, prices:[8030,7880]}]},
+      'Los Nogales S.A.':{destino:'exportacion', eje:'kilaje', grupo:['Novillo','MEJ'], cols:['Novillo','MEJ'], segmentos:[
+        {max:110, prices:[7880,7730]},{min:110,max:140, prices:[8130,7980]},{min:140,max:190, prices:[8280,8130]},
+        {min:190,max:220, prices:[8180,8030]},{min:220, prices:[7980,7830]}]},
+      [SIN_HISTORIAL]:{sinHistorial:true, precio:8230}
+    }
+  },
+  mixtaVaca: {
+    nombre:'Mixta vaca + vaquillona', hint:'Solo segmentación de vaca',
+    lote:{cab:140, cat:'Vacas y Vaquillonas', kg:450, raza:'Mestizo', term:'Careta',
+      ubic:'Concordia', prov:'Entre Ríos', desde:440, tope:465},
+    plazo:'Contado', referencia:'Vaca',
+    aviso:{tipo:'warn', t:'Tropa con dos categorías',
+      b:'Vaca y vaquillona no segmentan por el mismo criterio. El operador definió <b>Vaca</b> como categoría de referencia: ofertá la segmentación de vaca y aclará abajo tu precio para la vaquillona.'},
+    sociedades:{
+      'Carroll-Rippin':{destino:'consumo', eje:'tipificacion', grupo:['Vaca Gorda','Vaca Manufactura'], segmentos:[
+        {label:'B1', price:7500},{label:'C1', price:7150},{label:'C2', price:6850}]},
+      'Coto':{destino:'consumo', eje:'tipificacion', grupo:['Vaca Gorda'], segmentos:[
+        {label:'B1', price:7550},{label:'B2', price:7400},{label:'C1', price:7150},
+        {label:'C2', price:6900},{label:'C3', price:6650}]},
+      [SIN_HISTORIAL]:{sinHistorial:true, precio:7150}
+    }
+  }
+};
+
+const PLAZO_F = {'Contado':1.03,'30 días':1.00,'30 y 60':0.985,'60 días':0.965,'Otro':0.95};
+let TROPA='consumo', ESTADO='ofertar', ST=null, UNICO=0, COL=0;
+const $ = id => document.getElementById(id);
+const fmt = n => '$ ' + Number(n).toLocaleString('es-AR');
+const nCols = () => (ST && ST.cols) ? ST.cols.length : 1;
+const pv  = (seg,c) => seg.prices ? seg.prices[c] : seg.price;
+const setPv = (seg,c,v) => { if(seg.prices) seg.prices[c] = v; else seg.price = v; };
+function rangeLabel(seg, eje){
+  if(eje === 'tipificacion') return 'Tipificación ' + seg.label;
+  if(seg.min == null) return 'Hasta ' + seg.max + ' kg';
+  if(seg.max == null) return 'Más de ' + seg.min + ' kg';
+  return seg.min + ' – ' + seg.max + ' kg';
+}
+
+function renderWidget(){
+  $('cw-tropas').innerHTML = Object.entries(TROPAS).map(([k,t])=>
+    `<div class="cw-item${k===TROPA?' active':''}" data-t="${k}" onclick="setTropa('${k}')">
+      <span class="ms">${t.sociedades[Object.keys(t.sociedades)[0]].destino==='exportacion'?'public':'restaurant'}</span>
+      <div>${t.nombre}<small>${t.hint}</small></div></div>`).join('');
+  document.querySelectorAll('.cw-item[data-e]').forEach(el=> el.classList.toggle('active', el.dataset.e===ESTADO));
+}
+
+function renderLote(){
+  const L = TROPAS[TROPA].lote;
+  $('l-title').textContent = `${L.cab} ${L.cat}`;
+  $('l-sub').innerHTML = `<b>${L.kg} Kg</b> ${L.raza}, ${L.term}`;
+  $('l-ubic').textContent = L.ubic + ',';
+  $('l-prov').textContent = L.prov;
+  $('f-geo').textContent = `${L.ubic}, ${L.prov}`;
+  $('r-desde').textContent = L.desde;
+  $('r-tope').textContent = L.tope;
+}
+
+function initTropa(){
+  const T = TROPAS[TROPA];
+  $('f-aviso').innerHTML = T.aviso
+    ? `<div class="alert ${T.aviso.tipo}"><span class="ms">info</span><div><div class="alert-title">${T.aviso.t}</div><div class="alert-body">${T.aviso.b}</div></div></div>` : '';
+  $('f-aviso').classList.toggle('hidden', !T.aviso);
+  [...$('f-chips').children].forEach(c=> c.classList.toggle('selected', c.querySelector('.cl').textContent === T.plazo));
+  const socs = Object.keys(T.sociedades);
+  $('soc-list').innerHTML = socs.map(s=>
+    `<div class="modal-row" style="cursor:pointer" onclick="switchSoc('${s.replace(/'/g,"\\'")}');closeSheet('ov-soc')">
+      <div class="k" style="font-size:14px;color:var(--c-primary)">${s}</div>
+      <div class="v">${T.sociedades[s].sinHistorial?'Sin segmentación':'Segmentada'}</div></div>`).join('');
+  loadSoc(socs[0], T.plazo);
+}
+
+function loadSoc(soc, plazo){
+  COL = 0;
+  const d = JSON.parse(JSON.stringify(TROPAS[TROPA].sociedades[soc]));
+  if(d.sinHistorial){ ST = {sociedad:soc, plazo:plazo, sinHistorial:true}; UNICO = d.precio; }
+  else { ST = {sociedad:soc, plazo:plazo, ...d}; ST.principal = principalIndex(d.destino, d.eje, d.segmentos.length); }
+  renderPanel();
+}
+function switchSoc(soc){
+  const base = TROPAS[TROPA].plazo;              // los precios del catálogo están a este plazo
+  const plazo = ST ? ST.plazo : base;
+  loadSoc(soc, base);
+  const r = (PLAZO_F[plazo]||1)/(PLAZO_F[base]||1);
+  if(ST.sinHistorial) UNICO = Math.round(UNICO*r/5)*5;
+  else ST.segmentos.forEach(s=> s.prices ? s.prices.forEach((p,i)=> s.prices[i]=Math.round(p*r/5)*5) : s.price = Math.round(s.price*r/5)*5);
+  ST.plazo = plazo; renderPanel();
+}
+function pickPlazo(el, label){
+  [...el.parentElement.children].forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected');
+  if(!ST) return;
+  const r = (PLAZO_F[label]||1)/(PLAZO_F[ST.plazo]||1);
+  if(ST.sinHistorial) UNICO = Math.round(UNICO*r/5)*5;
+  else ST.segmentos.forEach(s=> s.prices ? s.prices.forEach((p,i)=> s.prices[i]=Math.round(p*r/5)*5) : s.price = Math.round(s.price*r/5)*5);
+  ST.plazo = label; renderPanel();
+}
+function pickFlete(el){ [...el.parentElement.children].forEach(c=>c.classList.remove('selected')); el.classList.add('selected'); }
+
+function hintText(){
+  const T = TROPAS[TROPA];
+  const eje = ST.eje==='tipificacion' ? 'tipificación y grasa' : 'kilaje de la media res';
+  let t = `<b>${ST.sociedad}</b> segmenta ${ST.grupo.join(' y ')} por ${eje}, en ${ST.segmentos.length} tramos.`;
+  if(nCols() > 1) t += ` Los rangos son los mismos para las dos categorías; cambiá de categoría con el selector para cargar el precio de cada una.`;
+  if(T.referencia) t += ` El operador definió <b>${T.referencia}</b> como categoría de referencia.`;
+  t += ' Todos los valores son editables.';
+  return t;
+}
+
+/* Control de precio del Figma: caja gris + caja de steppers al costado */
+function priceControl(label, valor, onUp, onDown){
+  return `<div class="range-line">
+      <span class="range">${label}</span>
+      ${ST.sinHistorial?'':`<span class="hint" onclick="this.classList.toggle('on')"><span class="ms">info</span><span class="bubble">${hintText()}</span></span>`}
+    </div>
+    <div class="price-ctl">
+      <div class="price-box"><span class="price-big">${fmt(valor)}</span>
+        <span class="price-suffix">x Kg Carne<b>+ IVA</b></span></div>
+      <div class="stepbox"><span onclick="${onUp}">▲</span><span onclick="${onDown}">▼</span></div>
+    </div>`;
+}
+
+function renderPanel(){
+  $('f-soc-name').textContent = ST.sociedad;
+
+  if(ST.sinHistorial){
+    $('f-tabs').classList.add('hidden');
+    $('f-principal').innerHTML = priceControl('Precio único', UNICO, 'stepUnico(25)', 'stepUnico(-25)');
+    $('f-table').innerHTML = '';
+    $('f-edit').classList.add('hidden');
+    $('f-nota').innerHTML = `<div class="alert info"><span class="ms">info</span><div><div class="alert-body">
+      Todavía no tenemos tu segmentación cargada para esta categoría. Ofertá un precio único y avisale al operador si querés diferenciar por kilaje.</div></div></div>`;
+    renderRespuesta(); return;
+  }
+
+  const multi = nCols() > 1;
+  $('f-tabs').innerHTML = multi
+    ? ST.cols.map((c,i)=>`<div class="tab${i===COL?' active':''}" onclick="setCol(${i})">${c}</div>`).join('') : '';
+  $('f-tabs').classList.toggle('hidden', !multi);
+
+  const seg = ST.segmentos[ST.principal];
+  const est = ST.eje==='kilaje' ? ' <span class="est">de media res</span>' : '';
+  $('f-principal').innerHTML = priceControl(rangeLabel(seg,ST.eje)+est, pv(seg,COL), 'stepAll(COL,25)', 'stepAll(COL,-25)');
+
+  $('f-table').innerHTML = ST.segmentos.map((s,i)=> i===ST.principal ? '' :
+    `<div class="seg-row"><span class="range">${rangeLabel(s,ST.eje)}</span>
+      <div class="price-wrap"><span class="price">${fmt(pv(s,COL))}</span>
+        <span class="steppers-sm"><span class="ms" onclick="stepOne(${i},COL,10)">keyboard_arrow_up</span>
+        <span class="ms" onclick="stepOne(${i},COL,-10)">keyboard_arrow_down</span></span></div></div>`).join('');
+  $('f-edit').classList.remove('hidden');
+  $('f-nota').innerHTML = '';
+  renderRespuesta();
+}
+function setCol(i){ COL = i; renderPanel(); }
+
+/* El cursor principal mueve toda su columna preservando el delta entre segmentos.
+   El delta lo precarga y mantiene negocio (Enzo); nunca se calcula. */
+function stepAll(c,d){ ST.segmentos.forEach(s=> setPv(s,c, pv(s,c)+d)); renderPanel(); }
+function stepOne(i,c,d){ const s = ST.segmentos[i]; setPv(s,c, pv(s,c)+d); renderPanel(); }
+function stepUnico(d){ UNICO += d; renderPanel(); }
+function editPrice(i,c,v){ setPv(ST.segmentos[i], c, +v); }
+
+function openEdit(){
+  if(!ST || ST.sinHistorial) return;
+  $('edit-sub').textContent = `${ST.sociedad} · ${ST.destino==='exportacion'?'Exportación':'Consumo'} · ${ST.grupo.join(' · ')}`;
+  renderEdit(); openSheet('ov-edit');
+}
+function renderEdit(){
+  const multi = nCols() > 1;
+  const hdr = multi ? `<div class="edit-hdr"><span>Segmento</span>${ST.cols.map(c=>`<span>${c}</span>`).join('')}<span></span></div>` : '';
+  const rows = ST.segmentos.map((seg,i)=>{
+    let rf;
+    if(ST.eje==='tipificacion') rf = `<input class="range-input wide" value="${seg.label}" oninput="ST.segmentos[${i}].label=this.value"/>`;
+    else if(seg.min==null) rf = `Hasta <input type="number" class="range-input" value="${seg.max}" oninput="ST.segmentos[${i}].max=+this.value"/> kg`;
+    else if(seg.max==null) rf = `Más de <input type="number" class="range-input" value="${seg.min}" oninput="ST.segmentos[${i}].min=+this.value"/> kg`;
+    else rf = `<input type="number" class="range-input" value="${seg.min}" oninput="ST.segmentos[${i}].min=+this.value"/> – <input type="number" class="range-input" value="${seg.max}" oninput="ST.segmentos[${i}].max=+this.value"/> kg`;
+    const del = ST.segmentos.length>1 ? `<span class="ms del" onclick="delSeg(${i})">delete</span>` : '<span></span>';
+    const inputs = (multi ? ST.cols : ['x']).map((c,ci)=>
+      `<input type="number" class="price-input" value="${pv(seg,ci)}" oninput="editPrice(${i},${ci},this.value)"/>`).join('');
+    if(multi) return `<div class="edit-row multi"><span class="rf">${rf}</span>${inputs}${del}</div>`;
+    return `<div class="edit-row"><span class="rf">${rf}</span><div class="edit-price">${inputs}${del}</div></div>`;
+  }).join('');
+  $('edit-body').innerHTML = hdr + rows + `<span class="add-seg" onclick="addSeg()"><span class="ms">add_circle</span>Agregar segmento</span>`;
+}
+function addSeg(){
+  const multi = nCols() > 1;
+  const last = ST.segmentos.at(-1);
+  const nuevo = multi ? {prices: last.prices.map(p=>p-300)} : {price: last.price-300};
+  if(ST.eje==='tipificacion'){
+    nuevo.label = 'Nueva';
+    if(multi) nuevo.prices = last.prices.map(p=>p-200); else nuevo.price = last.price-200;
+  } else if(last.max == null){ const b = last.min + 20; last.max = b; nuevo.min = b; }
+  else nuevo.min = last.max;
+  ST.segmentos.push(nuevo); renderEdit();
+}
+function delSeg(i){
+  if(ST.segmentos.length<=1) return;
+  ST.segmentos.splice(i,1);
+  ST.principal = principalIndex(ST.destino, ST.eje, ST.segmentos.length);
+  renderEdit();
+}
+function saveEdit(){ renderPanel(); closeSheet('ov-edit'); }
+
+function tablaResumen(){
+  const multi = nCols() > 1;
+  const hdr = multi ? `<div class="seg-hdr"><span>Segmento</span>${ST.cols.map(c=>`<span>${c}</span>`).join('')}</div>` : '';
+  return hdr + ST.segmentos.map((s,i)=>{
+    const p = i===ST.principal;
+    const label = `<span class="range"${p?' style="font-weight:700;color:var(--ink)"':''}>${rangeLabel(s,ST.eje)}${p?' · principal':''}</span>`;
+    if(multi) return `<div class="seg-row multi">${label}${ST.cols.map((c,ci)=>`<span class="cell price">${fmt(pv(s,ci))}</span>`).join('')}</div>`;
+    return `<div class="seg-row">${label}<span class="price">${fmt(pv(s,0))}</span></div>`;
+  }).join('');
+}
+
+function openConfirm(){
+  const T = TROPAS[TROPA]; let body='';
+  if(ST.sinHistorial){
+    body += `<div class="modal-row"><div class="k">Precio</div><div class="v">${fmt(UNICO)} x Kg Carne + IVA</div></div>`;
+  } else {
+    body += `<div style="margin-bottom:10px"><div class="k" style="font-size:12px;color:var(--c-tertiary);margin-bottom:6px">Segmentación · ${ST.grupo.join(' · ')}</div><div class="rd" style="margin-top:0">${tablaResumen()}</div></div>`;
+  }
+  if(T.referencia) body += `<div class="modal-row"><div class="k">Categoría de referencia</div><div class="v">${T.referencia}</div></div>`;
+  body += `<div class="modal-row"><div class="k">Sociedad</div><div class="v">${ST.sociedad}</div></div>`;
+  body += `<div class="modal-row"><div class="k">Plazo</div><div class="v">${ST.plazo}</div></div>`;
+  body += `<div class="modal-row"><div class="k">Flete</div><div class="v">${document.querySelector('.fl.selected').textContent.trim()}</div></div>`;
+  $('confirm-body').innerHTML = body; openSheet('ov-confirm');
+}
+function openSheet(id){ $(id).classList.add('open'); }
+function closeSheet(id){ $(id).classList.remove('open'); }
+document.querySelectorAll('.sheet-ov').forEach(o=> o.addEventListener('click', e=>{ if(e.target===o) o.classList.remove('open'); }));
+
+/* ── Respuesta del hub ──
+   Copys y estructura según feedback de negocio del 09/09/2026:
+   · Baja: sin fecha, sin importe sugerido y sin el tip de cuánto subir.
+   · Competitiva: la prioridad se fusiona con la fecha en el título, y el
+     stepper de 3 pasos se resuelve como texto corrido. */
+const RESP = {
+  competitiva: {
+    cls:'comp', titulo:'Oferta competitiva',
+    h:'Sos <b>prioridad 2</b> desde el 21/09/2026 <span class="mut">(hace 3 días)</span>',
+    p:'Tu oferta ya fue recibida y estamos acordando la venta con el productor. Si acepta, vas a poder ejecutar la <b>Compra Inmediata</b> de este lote.',
+    cta:null
+  },
+  baja: {
+    cls:'baja', titulo:'Oferta baja',
+    h:'Tu oferta no es competitiva',
+    p:'Hay ofertas superiores. Ingresá una nueva oferta si querés entrar en el corte para entrar en las compras inmediatas.',
+    cta:'Ingresar una nueva oferta'
+  }
+};
+
+function renderRespuesta(){
+  if(ESTADO === 'ofertar' || !ST) return;
+  const R = RESP[ESTADO];
+  $('resp-card').className = 'resp ' + R.cls;
+  $('resp-title').textContent = R.titulo;
+  $('resp-h').innerHTML = R.h;
+  $('resp-p').innerHTML = R.p;
+  $('seg-resp').innerHTML = ST.sinHistorial
+    ? `<div class="seg-row"><span class="range">Precio único</span><span class="price">${fmt(UNICO)}</span></div>`
+    : tablaResumen();
+  const meta = [['Plazo', ST.plazo], ['Flete', 'A retirar en Origen'], ['Gastos Comerciales', '3%']];
+  meta.push(['Sociedad', ST.sociedad]);   // en app la sociedad va dentro del bloque, como en el Figma
+  $('resp-meta').innerHTML = meta.map(([k,v])=>`<div class="r"><span>${k}</span><b>${v}</b></div>`).join('');
+  $('resp-cta').innerHTML = R.cta
+    ? `<button class="btn btn-primary" onclick="setEstado('ofertar')">${R.cta}</button>` : '';
+}
+
+function setTropa(k){
+  TROPA = k;
+  document.querySelectorAll('.sheet-ov').forEach(o=>o.classList.remove('open'));
+  renderWidget(); renderLote(); initTropa();
+  $('cw').classList.remove('open'); $('scroll').scrollTop = 0;
+}
+function setEstado(e){
+  ESTADO = e;
+  document.querySelectorAll('.sheet-ov').forEach(o=>o.classList.remove('open'));
+  $('blk-resp').classList.toggle('hidden', e==='ofertar');
+  $('blk-offer').classList.toggle('hidden', e!=='ofertar');
+  renderWidget(); renderRespuesta();
+  $('cw').classList.remove('open'); $('scroll').scrollTop = 0;
+}
+
+renderWidget(); renderLote(); initTropa(); setEstado('ofertar');
+</script>
+</body>
+</html>
