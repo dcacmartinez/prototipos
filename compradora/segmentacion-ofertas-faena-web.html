@@ -124,12 +124,11 @@ body{margin:0;background:var(--bg-page);font-family:Lato,sans-serif;color:var(--
 .steppers-sm{display:flex;flex-direction:column;color:var(--c-tertiary)}
 .steppers-sm .ms{font-size:16px;height:14px;cursor:pointer}
 .steppers-sm .ms:hover{color:var(--brand)}
-.seg-row.principal{display:block;background:var(--brand-light);border:1px solid var(--brand-mid);border-radius:var(--r-sm);margin:-1px;padding:12px 14px;position:relative}
-.seg-row.principal .range-line{display:flex;align-items:center;gap:6px}
-.seg-row.principal .range{font-size:13px;font-weight:700;line-height:20px;color:var(--ink)}
-.seg-row.principal .range .est{font-weight:400;color:var(--c-tertiary)}
-.principal-line{display:flex;align-items:center;gap:8px;margin-top:2px}
-.seg-row.principal .price{font-size:40px;line-height:52px;font-weight:900;color:var(--brand);white-space:nowrap}
+/* Fila principal: rango, precio y steppers en UNA sola fila (feedback 15/09). */
+.seg-row.principal{display:flex;align-items:center;gap:10px;background:var(--brand-light);border:1px solid var(--brand-mid);border-radius:var(--r-sm);margin:-1px;padding:12px 14px;position:relative}
+.seg-row.principal .range{font-size:13px;font-weight:700;line-height:17px;color:var(--ink);flex:1;min-width:0}
+.seg-row.principal .price{font-size:34px;line-height:40px;font-weight:900;color:var(--brand);white-space:nowrap}
+.seg-row.principal .price-suffix{font-size:12px;line-height:15px}
 .edit-link{display:inline-flex;align-items:center;gap:4px;color:var(--brand);font-size:13px;font-weight:700;cursor:pointer;margin-top:10px}
 .edit-link .ms{font-size:18px}
 /* Selector de categoría para tropas mixtas de mismo eje */
@@ -163,9 +162,9 @@ body{margin:0;background:var(--bg-page);font-family:Lato,sans-serif;color:var(--
 .hint .bubble::before{content:'';position:absolute;right:12px;top:-5px;width:10px;height:10px;background:var(--ink);transform:rotate(45deg)}
 .hint:hover .bubble{opacity:1;visibility:visible}
 
-.chips{display:grid;grid-template-columns:repeat(5,1fr);gap:4px}
+.chips{display:grid;grid-template-columns:repeat(4,1fr);gap:4px}
 .chip{border-radius:var(--r-sm);padding:13px 0;text-align:center;cursor:pointer}
-.chip .ms{font-size:26px;color:var(--c-disabled);display:block;margin-bottom:6px}
+.chip .ms{font-size:26px;color:var(--c-disabled);display:block;width:1em;margin:0 auto 6px}
 .chip .cl{font-size:11px;font-weight:700;color:var(--c-tertiary)}
 .chip.selected{background:var(--brand-light)}
 .chip.selected .ms,.chip.selected .cl{color:var(--ink)}
@@ -215,7 +214,15 @@ body{margin:0;background:var(--bg-page);font-family:Lato,sans-serif;color:var(--
 .resp.baja .resp-head{background:#9B3A3B}
 .resp.comp .resp-head{background:#3C731F}
 .resp-head span{color:#fff;font-weight:900;text-transform:uppercase;letter-spacing:.4px;font-size:15px}
-.resp-body{background:var(--bg-l1);padding:18px 16px}
+.resp-body{--rp-y:18px;--rp-x:16px;background:var(--bg-l1);padding:var(--rp-y) var(--rp-x)}
+/* La barra de prioridad va a sangre: pegada a los bordes izquierdo, derecho y
+   superior de .resp-body. Se logra con márgenes negativos del tamaño exacto
+   del padding del padre, que por eso vive en --rp-x / --rp-y. */
+.resp-badge{display:flex;align-items:center;justify-content:center;gap:8px;background:#E4F1DA;color:#2F5C18;padding:12px;margin:calc(var(--rp-y) * -1) calc(var(--rp-x) * -1) 14px;border-bottom:1px solid #CFE3C0}
+.resp-badge .ms{font-size:21px}
+.resp-badge span:last-child{font-size:14px;font-weight:700}
+.resp-badge b{font-weight:900}
+.resp-fecha{text-align:center;font-style:italic;color:var(--c-tertiary);font-size:13px;margin-bottom:10px}
 .resp-h{text-align:center;font-weight:700;color:var(--c-primary);font-size:17px;line-height:24px}
 .resp-h b{font-weight:900}
 .resp.baja .resp-h b{color:#9B3A3B}
@@ -244,6 +251,8 @@ body{margin:0;background:var(--bg-page);font-family:Lato,sans-serif;color:var(--
 .modal-row .k{font-size:13px;color:var(--c-tertiary)}
 .modal-row .v{font-size:13px;font-weight:700;color:var(--c-primary);text-align:right}
 .edit-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--border-tertiary)}
+.edit-nota{font-size:12px;line-height:17px;color:var(--c-tertiary);background:var(--bg-secondary);border-radius:var(--r-xs);padding:9px 11px;margin-bottom:12px}
+.edit-nota b{color:var(--c-secondary);font-weight:700}
 .range-input{font-family:Lato;font-size:13px;width:56px;padding:6px 8px;border:1px solid var(--border-tertiary);border-radius:var(--r-xs);color:var(--c-primary)}
 .range-input.wide{width:88px}
 .price-input{font-family:Lato;font-size:14px;font-weight:700;width:88px;padding:6px 8px;border:1px solid var(--border-tertiary);border-radius:var(--r-xs);color:var(--c-primary);text-align:right}
@@ -268,6 +277,11 @@ body{margin:0;background:var(--bg-page);font-family:Lato,sans-serif;color:var(--
 .cw-item .ms{font-size:18px;opacity:.7;margin-top:1px}
 .cw-item small{display:block;font-size:11px;font-weight:400;opacity:.75;margin-top:1px}
 .cw-sep{height:1px;background:rgba(255,255,255,.1);margin:8px 6px}
+.cw-rinde{display:flex;align-items:center;gap:10px;padding:2px 10px 4px}
+.cw-rinde input{flex:1;accent-color:#8FB4CC;height:4px}
+.cw-rv{color:#fff;font-size:13px;font-weight:700;min-width:50px;text-align:right}
+.cw-media{color:#8FB4CC;font-size:11px;line-height:15px;padding:0 10px 8px}
+.cw-media b{color:#fff}
 </style>
 </head>
 <body>
@@ -358,6 +372,8 @@ body{margin:0;background:var(--bg-page);font-family:Lato,sans-serif;color:var(--
       <div class="resp" id="resp-card">
         <div class="resp-head"><span id="resp-title"></span></div>
         <div class="resp-body">
+          <div class="resp-badge" id="resp-badge"></div>
+          <div class="resp-fecha" id="resp-fecha"></div>
           <div class="resp-h" id="resp-h"></div>
           <div class="resp-p" id="resp-p"></div>
           <div class="resp-div"></div>
@@ -387,10 +403,11 @@ body{margin:0;background:var(--bg-page);font-family:Lato,sans-serif;color:var(--
           <div class="price-box">
             <span class="price-big" id="u-price">$ 9.000</span>
             <span class="price-suffix">x Kg Carne<br>+ IVA</span>
-            <span class="steppers"><span class="ms" onclick="stepUnico(25)">keyboard_arrow_up</span><span class="ms" onclick="stepUnico(-25)">keyboard_arrow_down</span></span>
+            <span class="steppers"><span class="ms" onclick="stepUnico(PASO)">keyboard_arrow_up</span><span class="ms" onclick="stepUnico(-PASO)">keyboard_arrow_down</span></span>
           </div>
+          <span class="edit-link" onclick="crearSegmentacion()"><span class="ms">edit</span>Editar segmentación</span>
           <div class="alert info" style="margin-top:10px"><span class="ms">info</span><div><div class="alert-body">
-            Todavía no tenemos tu segmentación de precios cargada para esta categoría. Ofertá un precio único y avisale al operador si querés diferenciar por kilaje.
+            Todavía no tenemos tu segmentación de precios cargada para esta categoría. Podés ofertar un precio único o crear tu segmentación.
           </div></div></div>
         </div>
 
@@ -401,8 +418,7 @@ body{margin:0;background:var(--bg-page);font-family:Lato,sans-serif;color:var(--
             <div class="chip" onclick="pickPlazo(this,'30 Días')"><span class="ms">calendar_month</span><span class="cl">30 Días</span></div>
             <div class="chip" onclick="pickPlazo(this,'30 y 60')"><span class="ms">calendar_month</span><span class="cl">30 y 60</span></div>
             <div class="chip" onclick="pickPlazo(this,'60 Días')"><span class="ms">calendar_month</span><span class="cl">60 Días</span></div>
-            <div class="chip" onclick="pickPlazo(this,'Otro')"><span class="ms">more_horiz</span><span class="cl">Otro</span></div>
-          </div>
+                      </div>
         </div>
 
         <div class="field">
@@ -451,10 +467,17 @@ body{margin:0;background:var(--bg-page);font-family:Lato,sans-serif;color:var(--
     <div class="cw-t">Tipo de tropa</div>
     <div id="cw-tropas"></div>
     <div class="cw-sep"></div>
+    <div class="cw-t">Rinde estimado</div>
+    <div class="cw-rinde">
+      <input type="range" id="cw-rinde" min="46" max="66" step="0.5" value="56" oninput="setRinde(this.value)">
+      <span class="cw-rv" id="cw-rinde-v">56.0%</span>
+    </div>
+    <div class="cw-media" id="cw-media"></div>
+    <div class="cw-sep"></div>
     <div class="cw-t">Estado de la oferta</div>
     <div class="cw-item active" data-e="ofertar" onclick="setEstado('ofertar')"><span class="ms">edit_note</span><div>Ofertar<small>Formulario de carga</small></div></div>
-    <div class="cw-item" data-e="competitiva" onclick="setEstado('competitiva')"><span class="ms">verified</span><div>Respuesta: Oferta Competitiva<small>Prioridad + fecha en el título</small></div></div>
-    <div class="cw-item" data-e="baja" onclick="setEstado('baja')"><span class="ms">error</span><div>Respuesta: Oferta Baja<small>Sin fecha ni importe sugerido</small></div></div>
+    <div class="cw-item" data-e="competitiva" onclick="setEstado('competitiva')"><span class="ms">verified</span><div>Respuesta: Oferta Competitiva<small>Barra de prioridad + fecha</small></div></div>
+    <div class="cw-item" data-e="baja" onclick="setEstado('baja')"><span class="ms">error</span><div>Respuesta: Oferta Baja<small>Sin importe sugerido</small></div></div>
   </div>
   <div class="cw-fab" onclick="document.getElementById('cw').classList.toggle('open')"><span class="ms">tune</span>Tropa</div>
 </div>
@@ -470,15 +493,28 @@ body{margin:0;background:var(--bg-page);font-family:Lato,sans-serif;color:var(--
    segmentación distinto y una sin historial (cae al precio único de hoy).
    ════════════════════════════════════════════════════════════════ */
 
-/* Regla del cursor principal (acordada con negocio el 19/08):
-   consumo → primer segmento (el más liviano = el de mayor precio)
-   exportación → segmento intermedio (pico de la campana)
-   vaca / tipificación → SIN DEFINIR (P2). El proto asume el del medio. */
-function principalIndex(destino, eje, n){
-  if(eje === 'tipificacion') return Math.floor((n-1)/2);
-  if(destino === 'exportacion') return Math.floor((n-1)/2);
-  return 0;
+/* ════════════════════════════════════════════════════════════════
+   Posición del cursor — regla del 15/09/2026
+   El cursor y el precio de publicación van al segmento **donde cae la
+   tropa**, tanto en consumo como en exportación. Así el precio de
+   publicación es uno solo aunque a cada sociedad le caiga en un tramo
+   distinto de su propia escalera.
+   La media res estimada sale del peso vivo por un rinde genérico teórico.
+   En vaca no hay kilaje: el cursor va a la **mejor tipificación**.
+   ════════════════════════════════════════════════════════════════ */
+let RINDE_TEORICO = 0.56;   /* rinde estimado de la tropa. Editable desde el picker: mover el
+                              rinde mueve la media res estimada y, con ella, el segmento donde
+                              cae el cursor. Es la variable que en producción viene del comprador. */
+const mediaEstimada = kgVivo => Math.round(kgVivo * RINDE_TEORICO / 2);
+
+function segmentoPrincipal(soc, kgVivo){
+  if(soc.eje === 'tipificacion') return 0;     // la mejor tipificación es la primera de la lista
+  const m = mediaEstimada(kgVivo);
+  const i = soc.segmentos.findIndex(s =>     // límites inclusivos: [min, max]
+    (s.min == null || m >= s.min) && (s.max == null || m <= s.max));
+  return i === -1 ? soc.segmentos.length - 1 : i;
 }
+
 
 const SIN_HISTORIAL = 'Frigorífico del Sur S.A.';
 
@@ -491,9 +527,9 @@ const TROPAS = {
     fecha:'26/08/2026', plazo:'Contado',
     sociedades:{
       'Coto':{destino:'consumo', eje:'kilaje', grupo:['Novillito','Vaquillona'], segmentos:[
-        {max:100, price:9000},{min:100,max:110, price:8700},{min:110, price:8400}]},
+        {max:110, price:9000},{max:120, price:8700},{price:8400}]},
       'Matarife Pichinini':{destino:'consumo', eje:'kilaje', grupo:['Novillito','Vaquillona','Ternero'], segmentos:[
-        {max:95, price:9150},{min:95, price:8800}]},
+        {max:120, price:9150},{price:8800}]},
       [SIN_HISTORIAL]:{sinHistorial:true, precio:9000}
     }
   },
@@ -506,10 +542,10 @@ const TROPAS = {
     fecha:'20/08/2026', plazo:'30 Días',
     sociedades:{
       'Swift':{destino:'exportacion', eje:'kilaje', grupo:['Novillo','MEJ'], segmentos:[
-        {max:120, price:8050},{min:120,max:190, price:8300},{min:190, price:8100}]},
+        {max:120, price:8050},{max:190, price:8300},{price:8100}]},
       'Los Nogales S.A.':{destino:'exportacion', eje:'kilaje', grupo:['Novillo'], segmentos:[
-        {max:110, price:7950},{min:110,max:140, price:8200},{min:140,max:190, price:8350},
-        {min:190,max:220, price:8250},{min:220, price:8050}]},
+        {max:110, price:7950},{max:140, price:8200},{max:190, price:8350},
+        {max:220, price:8250},{price:8050}]},
       [SIN_HISTORIAL]:{sinHistorial:true, precio:8300}
     }
   },
@@ -540,9 +576,9 @@ const TROPAS = {
       b:'Los rangos de kilaje son los mismos para las dos categorías. Cargá el precio de cada una alternando con el selector. El operador definió <b>Novillito</b> como categoría de referencia.'},
     sociedades:{
       'Coto':{destino:'consumo', eje:'kilaje', grupo:['Novillito','Vaquillona'], cols:['Novillito','Vaquillona'], segmentos:[
-        {max:100, prices:[8950,8750]},{min:100,max:110, prices:[8650,8450]},{min:110, prices:[8350,8150]}]},
+        {max:105, prices:[8950,8750]},{max:115, prices:[8650,8450]},{prices:[8350,8150]}]},
       'Matarife Pichinini':{destino:'consumo', eje:'kilaje', grupo:['Novillito','Vaquillona'], cols:['Novillito','Vaquillona'], segmentos:[
-        {max:95, prices:[9100,8900]},{min:95, prices:[8750,8550]}]},
+        {max:115, prices:[9100,8900]},{prices:[8750,8550]}]},
       [SIN_HISTORIAL]:{sinHistorial:true, precio:8900}
     }
   },
@@ -557,10 +593,10 @@ const TROPAS = {
       b:'Los rangos de kilaje son los mismos para las dos categorías. Cargá el precio de cada una alternando con el selector. El operador definió <b>Novillo</b> como categoría de referencia.'},
     sociedades:{
       'Swift':{destino:'exportacion', eje:'kilaje', grupo:['Novillo','MEJ'], cols:['Novillo','MEJ'], segmentos:[
-        {max:120, prices:[7980,7830]},{min:120,max:190, prices:[8230,8080]},{min:190, prices:[8030,7880]}]},
+        {max:120, prices:[7980,7830]},{max:190, prices:[8230,8080]},{prices:[8030,7880]}]},
       'Los Nogales S.A.':{destino:'exportacion', eje:'kilaje', grupo:['Novillo','MEJ'], cols:['Novillo','MEJ'], segmentos:[
-        {max:110, prices:[7880,7730]},{min:110,max:140, prices:[8130,7980]},{min:140,max:190, prices:[8280,8130]},
-        {min:190,max:220, prices:[8180,8030]},{min:220, prices:[7980,7830]}]},
+        {max:110, prices:[7880,7730]},{max:140, prices:[8130,7980]},{max:190, prices:[8280,8130]},
+        {max:220, prices:[8180,8030]},{prices:[7980,7830]}]},
       [SIN_HISTORIAL]:{sinHistorial:true, precio:8230}
     }
   },
@@ -584,16 +620,57 @@ const TROPAS = {
   }
 };
 
-const PLAZO_F = {'Contado':1.03,'30 Días':1.00,'30 y 60':0.985,'60 Días':0.965,'Otro':0.95};
+/* Plazos más altos pagan precios más altos (feedback 15/09). */
+/* Plazo → precio: a plazo más largo, precio más alto. Estrictamente creciente. */
+const PLAZO_F = {'Contado':0.965,'30 Días':1.00,'30 y 60':1.025,'60 Días':1.055};
+/* Paso de los selectores de precio — regla del 17/09: los controles (steppers
+   y rueda) mueven el precio de a $10. La edición por teclado en el modal de
+   segmentación sigue siendo libre: ahí se escribe cualquier número. */
+const PASO = 10;
 let TROPA = 'consumo', ESTADO = 'ofertar', ST = null, UNICO = 0;
 let COL = 0;                                   // categoría activa en tropas mixtas
 const $ = id => document.getElementById(id);
 const fmt = n => '$ ' + Number(n).toLocaleString('es-AR');
 function rangeLabel(seg, eje){
   if(eje === 'tipificacion') return 'Tipificación ' + seg.label;
+  if(seg.min == null && seg.max == null) return 'Todos los kilajes';
   if(seg.min == null) return 'Hasta ' + seg.max + ' kg';
-  if(seg.max == null) return 'Más de ' + seg.min + ' kg';
+  if(seg.max == null) return 'Desde ' + seg.min + ' kg';
   return seg.min + ' – ' + seg.max + ' kg';
+}
+
+/* ════════════════════════════════════════════════════════════════
+   Cortes de segmentación — regla del 17/09/2026
+   Dos segmentos NO pueden compartir kilaje. El único número que se
+   edita es el CORTE de cada tramo (su "hasta"); el "desde" del tramo
+   siguiente se deriva como corte + 1. Por eso `min` no se guarda en
+   los datos: se calcula acá. Consecuencias:
+     · la escalera no puede solaparse ni dejar huecos;
+     · mover un corte arrastra el arranque del tramo siguiente;
+     · si un corte queda por debajo del anterior, se sube al mínimo
+       válido (anterior + 1) y el ajuste se propaga hacia la derecha;
+     · el último tramo siempre es abierto (max = null).
+   En vaca el eje es tipificación y esto no aplica.
+   ════════════════════════════════════════════════════════════════ */
+function normalizarCortes(segs){
+  if(!segs || segs.some(s => s.label !== undefined)) return segs;   // eje tipificación
+  segs.forEach((s,i)=>{
+    const prev = segs[i-1];
+    const piso = (prev && prev.max != null) ? prev.max + 1 : null;
+    if(i < segs.length - 1){
+      const minimo = piso == null ? 1 : piso;
+      if(s.max == null || s.max < minimo) s.max = minimo;
+    } else s.max = null;                                            // el último es abierto
+    s.min = piso;
+  });
+  return segs;
+}
+function editCorte(i, v){
+  const n = Math.round(Number(v));
+  ST.segmentos[i].max = isNaN(n) ? 1 : Math.max(1, n);
+  normalizarCortes(ST.segmentos);
+  ST.principal = segmentoPrincipal(ST, TROPAS[TROPA].lote.kg);
+  renderEdit();
 }
 
 /* ── Widget ── */
@@ -649,7 +726,8 @@ function loadSoc(soc, plazo){
     UNICO = d.precio;
   } else {
     ST = {sociedad:soc, plazo:plazo, ...d};
-    ST.principal = principalIndex(d.destino, d.eje, d.segmentos.length);
+    normalizarCortes(ST.segmentos);              // deriva los "desde" a partir de los cortes
+    ST.principal = segmentoPrincipal(ST, TROPAS[TROPA].lote.kg);
   }
   renderPanel();
 }
@@ -658,8 +736,7 @@ function switchSoc(soc){
   const plazo = ST ? ST.plazo : base;
   loadSoc(soc, base);
   const r = (PLAZO_F[plazo]||1)/(PLAZO_F[base]||1);
-  if(ST.sinHistorial) UNICO = Math.round(UNICO*r/5)*5;
-  else ST.segmentos.forEach(s=> s.price = Math.round(s.price*r/5)*5);
+  escalarPrecios(r);
   ST.plazo = plazo;
   renderPanel();
 }
@@ -668,8 +745,7 @@ function pickPlazo(el, label){
   el.classList.add('selected');
   if(!ST) return;
   const r = (PLAZO_F[label]||1)/(PLAZO_F[ST.plazo]||1);
-  if(ST.sinHistorial) UNICO = Math.round(UNICO*r/5)*5;
-  else ST.segmentos.forEach(s=> s.price = Math.round(s.price*r/5)*5);
+  escalarPrecios(r);
   ST.plazo = label;
   renderPanel();
 }
@@ -685,6 +761,9 @@ function hintText(){
   const T = TROPAS[TROPA];
   const eje = ST.eje==='tipificacion' ? 'tipificación y grasa' : 'kilaje de la media res';
   let t = `<b>${ST.sociedad}</b> segmenta ${ST.grupo.join(' y ')} por ${eje}, en ${ST.segmentos.length} tramos.`;
+  t += ST.eje === 'tipificacion'
+    ? ' El cursor arranca en la mejor tipificación.'
+    : ` La media estimada de esta tropa es de <b>${mediaEstimada(TROPAS[TROPA].lote.kg)} kg</b> (rinde teórico ${Math.round(RINDE_TEORICO*100)}%), y por eso el cursor cae en este tramo.`;
   if(nCols() > 1) t += ` Los rangos son los mismos para las dos categorías; cambiá de categoría con el selector para cargar el precio de cada una.`;
   if(T.referencia) t += ` El operador definió <b>${T.referencia}</b> como categoría de referencia para esta tropa.`;
   t += ' Todos los valores son editables.';
@@ -709,20 +788,18 @@ function renderPanel(){
 
   $('f-table').innerHTML = ST.segmentos.map((seg,i)=>{
     if(i === ST.principal) return `<div class="seg-row principal">
-      <div class="range-line">
-        <span class="range">${rangeLabel(seg,ST.eje)} <span class="est">${ST.eje==='kilaje'?'de media res':''}</span></span>
-        ${hint}
-      </div>
-      <div class="principal-line"><span class="price">${fmt(pv(seg,COL))}</span>
-        <span class="price-suffix">x Kg Carne<br>+ IVA</span>
-        <span class="steppers">
-          <span class="ms" title="Mueve todos los segmentos manteniendo la diferencia" onclick="stepAll(COL,25)">keyboard_arrow_up</span>
-          <span class="ms" title="Mueve todos los segmentos manteniendo la diferencia" onclick="stepAll(COL,-25)">keyboard_arrow_down</span>
-        </span></div></div>`;
+      <span class="range">${rangeLabel(seg,ST.eje)}</span>
+      <span class="price">${fmt(pv(seg,COL))}</span>
+      <span class="price-suffix">x Kg Carne<br>+ IVA</span>
+      <span class="steppers">
+        <span class="ms" title="Mueve todos los segmentos manteniendo la diferencia" onclick="stepAll(COL,PASO)">keyboard_arrow_up</span>
+        <span class="ms" title="Mueve todos los segmentos manteniendo la diferencia" onclick="stepAll(COL,-PASO)">keyboard_arrow_down</span>
+      </span>
+      ${hint}</div>`;
     return `<div class="seg-row"><span class="range">${rangeLabel(seg,ST.eje)}</span>
       <div class="price-wrap"><span class="price">${fmt(pv(seg,COL))}</span>
-        <span class="steppers-sm"><span class="ms" onclick="stepOne(${i},COL,10)">keyboard_arrow_up</span>
-        <span class="ms" onclick="stepOne(${i},COL,-10)">keyboard_arrow_down</span></span></div></div>`;
+        <span class="steppers-sm"><span class="ms" onclick="stepOne(${i},COL,PASO)">keyboard_arrow_up</span>
+        <span class="ms" onclick="stepOne(${i},COL,-PASO)">keyboard_arrow_down</span></span></div></div>`;
   }).join('');
 
   renderRespuesta();
@@ -738,6 +815,26 @@ function stepUnico(d){ UNICO += d; $('u-price').textContent = fmt(UNICO); render
 function editPrice(i,c,v){ setPv(ST.segmentos[i], c, +v); }
 
 /* ── Edición ── */
+/* Sin segmentación cargada: se ofrece igual "Editar segmentación" para que
+   el comprador la cree desde cero (feedback 15/09). */
+function crearSegmentacion(){
+  const T = TROPAS[TROPA];
+  const modelo = Object.values(T.sociedades).find(x => !x.sinHistorial);
+  const media = mediaEstimada(T.lote.kg);
+  ST = {
+    sociedad: ST.sociedad, plazo: ST.plazo,
+    destino: modelo.destino, eje: modelo.eje, grupo: modelo.grupo,
+    segmentos: modelo.eje === 'tipificacion'
+      ? [{label:'B1', price:UNICO}, {label:'C1', price:UNICO-300}]
+      : [{max: media, price:UNICO}, {price:UNICO-300}]   // el 2º arranca en media+1
+  };
+  normalizarCortes(ST.segmentos);
+  ST.principal = segmentoPrincipal(ST, T.lote.kg);
+  COL = 0;
+  renderPanel();
+  openEdit();
+}
+
 function openEdit(){
   if(!ST || ST.sinHistorial) return;
   $('edit-sub').textContent = `${ST.sociedad} · ${ST.destino==='exportacion'?'Exportación':'Consumo'} · ${ST.grupo.join(' · ')}`;
@@ -746,19 +843,22 @@ function openEdit(){
 function renderEdit(){
   const multi = nCols() > 1;
   const hdr = multi ? `<div class="edit-hdr"><span>Segmento</span>${ST.cols.map(c=>`<span>${c}</span>`).join('')}<span></span></div>` : '';
+  const nota = ST.eje==='tipificacion' ? '' :
+    `<div class="edit-nota">Editás el <b>corte</b> de cada tramo. El tramo siguiente arranca en ese kilaje + 1, así dos segmentos nunca comparten kilaje.</div>`;
   const rows = ST.segmentos.map((seg,i)=>{
     let rf;
+    /* Un solo input por fila: el corte. El "desde" es texto, derivado del
+       corte de arriba, para que no se pueda escribir un solapamiento. */
     if(ST.eje==='tipificacion') rf = `<input class="range-input wide" value="${seg.label}" oninput="ST.segmentos[${i}].label=this.value"/>`;
-    else if(seg.min==null) rf = `Hasta <input type="number" class="range-input" value="${seg.max}" oninput="ST.segmentos[${i}].max=+this.value"/> kg`;
-    else if(seg.max==null) rf = `Más de <input type="number" class="range-input" value="${seg.min}" oninput="ST.segmentos[${i}].min=+this.value"/> kg`;
-    else rf = `<input type="number" class="range-input" value="${seg.min}" oninput="ST.segmentos[${i}].min=+this.value"/> – <input type="number" class="range-input" value="${seg.max}" oninput="ST.segmentos[${i}].max=+this.value"/> kg`;
+    else if(seg.max == null) rf = seg.min == null ? 'Todos los kilajes' : `Desde <b>${seg.min}</b> kg`;
+    else rf = `${seg.min == null ? 'Hasta' : `<b>${seg.min}</b> –`} <input type="number" class="range-input" min="1" value="${seg.max}" onchange="editCorte(${i},this.value)"/> kg`;
     const del = ST.segmentos.length>1 ? `<span class="ms del" onclick="delSeg(${i})" title="Quitar">delete</span>` : '<span></span>';
     const inputs = (multi ? ST.cols : ['x']).map((c,ci)=>
       `<input type="number" class="price-input" value="${pv(seg,ci)}" oninput="editPrice(${i},${ci},this.value)"/>`).join('');
     if(multi) return `<div class="edit-row multi"><span class="rf">${rf}</span>${inputs}${del}</div>`;
     return `<div class="edit-row"><span class="rf">${rf}</span><div class="edit-price">${inputs}${del}</div></div>`;
   }).join('');
-  $('edit-body').innerHTML = hdr + rows + `<span class="add-seg" onclick="addSeg()"><span class="ms">add_circle</span>Agregar segmento</span>`;
+  $('edit-body').innerHTML = nota + hdr + rows + `<span class="add-seg" onclick="addSeg()"><span class="ms">add_circle</span>Agregar segmento</span>`;
 }
 function addSeg(){
   const multi = nCols() > 1;
@@ -767,16 +867,21 @@ function addSeg(){
   if(ST.eje==='tipificacion'){
     nuevo.label = 'Nueva';
     if(multi) nuevo.prices = last.prices.map(p=>p-200); else nuevo.price = last.price-200;
-  } else if(last.max == null){
-    const b = last.min + 20; last.max = b; nuevo.min = b;
-  } else nuevo.min = last.max;
+  } else {
+    /* El último tramo es abierto: se le pone un corte y el nuevo queda abierto.
+       normalizarCortes() deriva el "desde" del nuevo como ese corte + 1. */
+    last.max = (last.min != null ? last.min : mediaEstimada(TROPAS[TROPA].lote.kg)) + 20;
+  }
   ST.segmentos.push(nuevo);
+  normalizarCortes(ST.segmentos);
+  ST.principal = segmentoPrincipal(ST, TROPAS[TROPA].lote.kg);
   renderEdit();
 }
 function delSeg(i){
   if(ST.segmentos.length<=1) return;
   ST.segmentos.splice(i,1);
-  ST.principal = principalIndex(ST.destino, ST.eje, ST.segmentos.length);
+  normalizarCortes(ST.segmentos);
+  ST.principal = segmentoPrincipal(ST, TROPAS[TROPA].lote.kg);
   renderEdit();
 }
 function saveEdit(){ renderPanel(); closeModal('ov-edit'); }
@@ -813,22 +918,29 @@ function openModal(id){ $(id).classList.add('open'); }
 function closeModal(id){ $(id).classList.remove('open'); }
 document.querySelectorAll('.overlay').forEach(o=> o.addEventListener('click', e=>{ if(e.target===o) o.classList.remove('open'); }));
 
-/* ── Respuesta del hub ──
-   Feedback de negocio del 09/09/2026:
-   · Baja: sin fecha, sin importe sugerido y sin el tip de cuánto subir.
-   · Competitiva: la prioridad se fusiona con la fecha en el título, y el
-     stepper de 3 pasos se resuelve como texto corrido. */
+/* ── Respuesta del hub — diseños finales (16/09/2026) ──
+   · La prioridad sale del título y pasa a una barra verde clara propia,
+     con ícono de personas y formato «Prioridad de Compra Inmediata: #2».
+   · La fecha vuelve, pero como línea propia en gris itálica
+     («Respuesta de hace 3 días (21/09/2026)»), en los dos estados.
+     Esto revierte el «sacar la fecha» del 09/09, que se había pedido
+     sobre una maqueta donde la fecha competía con el título.
+   · Baja: copy corto, sin importe sugerido y sin tip de cuánto subir. */
 const RESP = {
   competitiva: {
     cls:'comp', titulo:'Oferta competitiva',
-    h:'Sos <b>prioridad 2</b> desde el 21/09/2026 <span class="mut">(hace 3 días)</span>',
-    p:'Tu oferta ya fue recibida y estamos acordando la venta con el productor. Si acepta, vas a poder ejecutar la <b>Compra Inmediata</b> de este lote.',
+    badge:{icon:'groups', txt:'Prioridad de Compra Inmediata: <b>#2</b>'},
+    fecha:'Respuesta de hace 3 días (21/09/2026)',
+    h:null,
+    p:'Una vez cerrado el acuerdo con el vendedor tendrás prioridad para la <b>Compra Inmediata</b>.',
     cta:null
   },
   baja: {
     cls:'baja', titulo:'Oferta baja',
+    badge:null,
+    fecha:'Respuesta de hace 3 días (21/09/2026)',
     h:'Tu oferta no es competitiva',
-    p:'Hay ofertas superiores. Ingresá una nueva oferta si querés entrar en el corte para entrar en las compras inmediatas.',
+    p:'Hay ofertas superiores. Ingresá una nueva oferta para acceder a la <b>Compra Inmediata</b>.',
     cta:'Ingresar una nueva oferta'
   }
 };
@@ -838,7 +950,12 @@ function renderRespuesta(){
   const R = RESP[ESTADO];
   $('resp-card').className = 'resp ' + R.cls;
   $('resp-title').textContent = R.titulo;
-  $('resp-h').innerHTML = R.h;
+  $('resp-badge').innerHTML = R.badge ? `<span class="ms">${R.badge.icon}</span><span>${R.badge.txt}</span>` : '';
+  $('resp-badge').classList.toggle('hidden', !R.badge);
+  $('resp-fecha').innerHTML = R.fecha || '';
+  $('resp-fecha').classList.toggle('hidden', !R.fecha);
+  $('resp-h').innerHTML = R.h || '';
+  $('resp-h').classList.toggle('hidden', !R.h);
   $('resp-p').innerHTML = R.p;
   $('seg-resp').innerHTML = ST.sinHistorial
     ? `<div class="seg-row"><span class="range">Precio único</span><span class="price">${fmt(UNICO)}</span></div>`
@@ -850,11 +967,46 @@ function renderRespuesta(){
     ? `<button class="btn btn-primary" onclick="setEstado('ofertar')">${R.cta}</button>` : '';
 }
 
+
+/* ── Rinde estimado (picker) ──
+   Regla del 15/09: el cursor cae en el segmento de la media res estimada.
+   Media res = peso vivo × rinde ÷ 2. Al mover el rinde se recalcula la media
+   y el cursor salta de tramo sin tocar la escalera de precios.
+   En vaca el eje es tipificación: el rinde no mueve el cursor. */
+function setRinde(v){
+  RINDE_TEORICO = Number(v)/100;
+  $('cw-rinde-v').textContent = Number(v).toFixed(1) + '%';
+  if(ST && !ST.sinHistorial){
+    ST.principal = segmentoPrincipal(ST, TROPAS[TROPA].lote.kg);
+    renderPanel();
+    if(ESTADO !== 'ofertar') renderRespuesta();
+  }
+  renderRindeInfo();
+}
+function renderRindeInfo(){
+  const L = TROPAS[TROPA].lote, m = mediaEstimada(L.kg);
+  $('cw-media').innerHTML = (ST && ST.eje === 'tipificacion')
+    ? `Media estimada <b>${m} kg</b> · en vaca el cursor va a la mejor tipificación, no al kilaje`
+    : `${L.kg} kg vivo × ${(RINDE_TEORICO*100).toFixed(1)}% ÷ 2 = <b>${m} kg</b> de media res`;
+}
+
+/* Reescala TODA la oferta por el factor de plazo r. Sirve para cualquier
+   casuística: precio único (sin historial), escalera segmentada y tropa mixta
+   de mismo eje, donde cada segmento tiene un precio por categoría. */
+function escalarPrecios(r){
+  if(!ST) return;
+  if(ST.sinHistorial){ UNICO = Math.round(UNICO*r/PASO)*PASO; return; }
+  ST.segmentos.forEach(s=>{
+    if(s.prices) s.prices = s.prices.map(p=> Math.round(p*r/PASO)*PASO);
+    else s.price = Math.round(s.price*r/PASO)*PASO;
+  });
+}
+
 /* ── Navegación ── */
 function setTropa(k){
   TROPA = k;
   document.querySelectorAll('.overlay').forEach(o=>o.classList.remove('open'));
-  renderWidget(); renderLote(); initTropa();
+  renderWidget(); renderLote(); initTropa(); renderRindeInfo();
   $('cw').classList.remove('open');
   window.scrollTo(0,0);
 }
@@ -868,7 +1020,7 @@ function setEstado(e){
   window.scrollTo(0,0);
 }
 
-renderWidget(); renderLote(); initTropa(); setEstado('ofertar');
+renderWidget(); renderLote(); initTropa(); renderRindeInfo(); setEstado('ofertar');
 </script>
 </body>
 </html>
