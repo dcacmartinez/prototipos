@@ -95,6 +95,12 @@ body{margin:0;background:#D8DCE0;font-family:Lato,sans-serif;color:var(--c-prima
 
 /* Segmentos secundarios */
 .seg-list{margin-top:10px;border-top:1px solid var(--border-tertiary)}
+/* Fila del tramo principal dentro de la escalera: el precio grande ocupa su
+   lugar en la lista en vez de vivir arriba de todo, para que se lea dónde cae
+   el cursor respecto de los otros tramos (paridad con web). */
+.seg-principal{padding:12px 0 11px;border-bottom:1px solid var(--border-tertiary)}
+.seg-principal:last-child{border-bottom:none}
+.seg-principal .range-line .range{font-weight:700;color:var(--ink)}
 .seg-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:5px 0;border-bottom:1px solid var(--border-tertiary)}
 .rd .seg-row{padding:9px 12px}
 .seg-row:last-child{border-bottom:none}
@@ -379,9 +385,9 @@ body{margin:0;background:#D8DCE0;font-family:Lato,sans-serif;color:var(--c-prima
 
           <div class="tabs hidden" id="f-tabs"></div>
 
-          <!-- segmento principal -->
+          <!-- Precio único (sociedad sin historial) -->
           <div id="f-principal"></div>
-          <!-- segmentos secundarios -->
+          <!-- Escalera completa: el precio grande va en la posición del tramo principal -->
           <div class="seg-list" id="f-table"></div>
           <span class="edit-link hidden" id="f-edit" onclick="openEdit()"><span class="ms">edit</span>Editar segmentación</span>
           <div id="f-nota" style="margin-top:10px"></div>
@@ -814,7 +820,7 @@ function renderPanel(){
   if(ST.sinHistorial){
     $('f-tabs').classList.add('hidden');
     $('f-principal').innerHTML = priceControl('Precio único', UNICO, 'stepUnico(PASO)', 'stepUnico(-PASO)', 'openWheel(\'unico\')');
-    $('f-table').innerHTML = '';
+    $('f-table').innerHTML = '';   // sin segmentación no hay escalera
     $('f-edit').classList.remove('hidden');
     $('f-edit').setAttribute('onclick','crearSegmentacion()');
     $('f-nota').innerHTML = `<div class="alert info"><span class="ms">info</span><div><div class="alert-body">
@@ -827,11 +833,13 @@ function renderPanel(){
     ? ST.cols.map((c,i)=>`<div class="tab${i===COL?' active':''}" onclick="setCol(${i})">${c}</div>`).join('') : '';
   $('f-tabs').classList.toggle('hidden', !multi);
 
-  const seg = ST.segmentos[ST.principal];
-  $('f-principal').innerHTML = priceControl(rangeLabel(seg,ST.eje), pv(seg,COL), 'stepAll(COL,PASO)', 'stepAll(COL,-PASO)', 'openWheel(\'principal\')');
-
-  $('f-table').innerHTML = ST.segmentos.map((s,i)=> i===ST.principal ? '' :
-    `<div class="seg-row"><span class="range">${rangeLabel(s,ST.eje)}</span>
+  /* El precio grande se renderiza DENTRO de la escalera, en la posición del
+     tramo principal — igual que en web. Si el cursor cae en el 2º de 3 tramos,
+     el precio grande queda en el medio, con un tramo arriba y otro abajo. */
+  $('f-principal').innerHTML = '';
+  $('f-table').innerHTML = ST.segmentos.map((s,i)=> i === ST.principal
+    ? `<div class="seg-principal">${priceControl(rangeLabel(s,ST.eje), pv(s,COL), 'stepAll(COL,PASO)', 'stepAll(COL,-PASO)', "openWheel('principal')")}</div>`
+    : `<div class="seg-row"><span class="range">${rangeLabel(s,ST.eje)}</span>
       <button class="price-btn" onclick="openWheel('sec',${i})" aria-label="Editar el precio de ${rangeLabel(s,ST.eje)}">
         <span class="pv">${fmt(pv(s,COL))}</span><span class="ms">unfold_more</span></button></div>`).join('');
   $('f-edit').classList.remove('hidden');
