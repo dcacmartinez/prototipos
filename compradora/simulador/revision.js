@@ -292,7 +292,7 @@ function montarTopbar(){
       <span class="rev-dot rev-inline" style="position:static; display:inline-flex;">?</span>
       de cada dato para decirnos si es personalizado por sociedad y de dónde sale.
       Las fórmulas se revisan desde el panel. Podés mover los valores del simulador
-      para ver cómo impactan: no se guardan.
+      para ver cómo impactan.
     </div>
     <div class="rev-topbar-acc">
       <span class="rev-estado" id="rev-estado">—</span>
