@@ -1,0 +1,441 @@
+/* =========================================================================
+   CAPA DE REVISIÓN — estilos
+   Tokens tomados de Design_dCaC.md (sistema plano, sin sombras,
+   escala de radio 4 · 8 · 12 · 16 · 999, único acento de marca #3179a7).
+   Todo acá vive bajo el prefijo .rev- para no tocar el prototipo.
+   ========================================================================= */
+
+:root{
+  --rev-brand:#3179a7;
+  --rev-brand-dark:#235677;
+  --rev-brand-light:#eaf2f6;
+  --rev-brand-mid:#bfd5e4;
+  --rev-positive:#54a22b;
+  --rev-positive-bg:#eef6ea;
+  --rev-positive-border:#cae2bd;
+  --rev-warning:#b29b0e;
+  --rev-warning-bg:#f7f5e7;
+  --rev-warning-border:#e7e0b4;
+  --rev-negative:#d25859;
+  --rev-negative-bg:#fdefef;
+  --rev-ink:#555;
+  --rev-ink-2:#666;
+  --rev-ink-3:#888;
+  --rev-line:#ededed;
+  --rev-line-2:#c0c0c0;
+  --rev-surface:#fff;
+  --rev-surface-2:#f8f8f8;
+  --rev-drawer-w:400px;
+}
+
+.rev-scope, .rev-scope *{box-sizing:border-box;}
+
+/* -------------------------------------------------------------------------
+   Barra superior de contexto
+   ------------------------------------------------------------------------- */
+.rev-topbar{
+  /* estática a propósito: el prototipo ya tiene un header y un título
+     sticky, y una tercera barra pegada arriba los pisaría. */
+  position:relative; z-index:80;
+  background:var(--rev-brand-light);
+  border-bottom:1px solid var(--rev-brand-mid);
+  font-family:Lato,-apple-system,"Segoe UI",sans-serif;
+  color:var(--rev-brand-dark);
+  padding:9px 24px;
+  display:flex; align-items:center; gap:14px; flex-wrap:wrap;
+  font-size:13.5px;
+}
+.rev-topbar .rev-topbar-txt{flex:1 1 320px; min-width:0;}
+.rev-topbar b{font-weight:800;}
+.rev-topbar-acc{display:flex; align-items:center; gap:10px; flex-wrap:wrap;}
+
+.rev-chip{
+  display:inline-flex; align-items:center; gap:6px;
+  background:var(--rev-surface); border:1px solid var(--rev-brand-mid);
+  border-radius:999px; padding:4px 12px;
+  font-size:12.5px; font-weight:700; color:var(--rev-brand-dark);
+  cursor:pointer; font-family:inherit;
+}
+.rev-chip:hover{background:var(--rev-brand-light);}
+.rev-chip.rev-chip-plain{cursor:default;}
+
+.rev-estado{font-size:12.5px; font-weight:700; color:var(--rev-ink-3);}
+.rev-estado.rev-ok{color:var(--rev-positive);}
+.rev-estado.rev-err{color:var(--rev-negative);}
+
+.rev-aviso{
+  background:var(--rev-warning-bg); border-bottom:1px solid var(--rev-warning-border);
+  color:#4b4106; font-size:13px; padding:8px 24px;
+  font-family:Lato,-apple-system,"Segoe UI",sans-serif;
+}
+
+/* -------------------------------------------------------------------------
+   Punto de revisión anclado a cada campo
+   ------------------------------------------------------------------------- */
+.rev-host{position:relative;}
+
+.rev-dot{
+  position:absolute; top:-7px; right:-7px; z-index:30;
+  width:22px; height:22px; border-radius:999px;
+  border:1px solid var(--rev-warning-border);
+  background:var(--rev-warning-bg); color:#4b4106;
+  font-family:Lato,-apple-system,"Segoe UI",sans-serif;
+  font-size:12px; font-weight:800; line-height:1;
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer; padding:0;
+}
+.rev-dot:hover{border-color:var(--rev-brand); color:var(--rev-brand-dark);}
+.rev-dot.rev-done{
+  background:var(--rev-positive-bg); border-color:var(--rev-positive-border); color:#234412;
+}
+.rev-dot.rev-abierto{outline:2px solid var(--rev-brand); outline-offset:1px;}
+.rev-dot.rev-inline{position:static; margin-left:8px; vertical-align:middle;}
+
+/* -------------------------------------------------------------------------
+   Popover del mini-formulario
+   ------------------------------------------------------------------------- */
+.rev-pop{
+  position:absolute; z-index:320; width:380px; max-width:calc(100vw - 32px);
+  max-height:calc(100vh - 40px); overflow-y:auto;
+  background:var(--rev-surface); border:1px solid var(--rev-line-2);
+  border-radius:12px; padding:16px;
+  font-family:Lato,-apple-system,"Segoe UI",sans-serif;
+  color:var(--rev-ink); font-size:14px;
+}
+.rev-pop-head{display:flex; align-items:flex-start; gap:10px; margin-bottom:8px;}
+.rev-pop-head h5{margin:2px 0 0; font-size:15px; font-weight:800; color:var(--rev-ink);}
+.rev-pop-kicker{
+  display:block; font-size:10.5px; font-weight:800; letter-spacing:.06em;
+  text-transform:uppercase; color:var(--rev-ink-3);
+}
+.rev-pop-cerrar{
+  border:0; background:none; font-size:18px; line-height:1; color:var(--rev-ink-3);
+  cursor:pointer; padding:0 2px;
+}
+.rev-pop-valor{
+  font-size:12.5px; color:var(--rev-ink-3); margin:0 0 10px;
+}
+.rev-pop-valor b{color:var(--rev-ink); font-weight:700;}
+
+/* fórmula inferida */
+.rev-pop-formula{
+  background:var(--rev-surface-2); border:1px solid var(--rev-line);
+  border-radius:8px; padding:10px 12px; margin:0 0 14px;
+  font-size:13px; line-height:1.55; color:var(--rev-ink);
+}
+
+/* cálculos intermedios que componen una fórmula */
+.rev-pasos{
+  border:1px solid var(--rev-line); border-radius:8px; padding:10px 12px; margin:0 0 14px;
+}
+.rev-pasos-tit{
+  margin:0 0 8px; font-size:11px; font-weight:800; letter-spacing:.04em;
+  text-transform:uppercase; color:var(--rev-ink-3);
+}
+.rev-pasos-tit span{ font-weight:700; text-transform:none; letter-spacing:0; }
+.rev-paso{
+  padding:7px 0; border-top:1px solid var(--rev-line); font-size:12.5px; line-height:1.45;
+}
+.rev-paso:first-of-type{ border-top:0; padding-top:0; }
+.rev-paso b{ display:block; color:var(--rev-ink); font-weight:700; }
+.rev-paso span{ color:var(--rev-ink-3); }
+
+/* notas traídas de los CSV */
+.rev-pop-nota{
+  background:var(--rev-warning-bg); border:1px solid var(--rev-warning-border);
+  border-radius:8px; padding:9px 11px; margin:0 0 10px;
+  font-size:12.5px; color:#4b4106; line-height:1.45;
+}
+.rev-pop-plm{
+  background:var(--rev-brand-light); border:1px solid var(--rev-brand-mid);
+  border-radius:8px; padding:9px 11px; margin:0 0 10px;
+  font-size:12.5px; color:var(--rev-brand-dark); line-height:1.45;
+}
+.rev-ayuda{
+  margin:7px 0 0; font-size:11.5px; color:var(--rev-ink-3); line-height:1.4;
+}
+.rev-sug{
+  font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:.04em;
+  color:var(--rev-ink-3); background:var(--rev-surface-2);
+  border-radius:999px; padding:1px 6px; margin-left:4px;
+}
+.rev-opcion.rev-sel .rev-sug{ background:rgba(255,255,255,.24); color:#fff; }
+
+.rev-campo{margin-bottom:13px;}
+.rev-campo:last-child{margin-bottom:0;}
+.rev-campo > label{
+  display:block; font-size:12px; font-weight:800; color:var(--rev-ink-3);
+  text-transform:uppercase; letter-spacing:.03em; margin-bottom:6px;
+}
+.rev-campo input[type=text], .rev-campo textarea{
+  width:100%; font-family:inherit; font-size:14px; color:var(--rev-ink);
+  border:1px solid var(--rev-line-2); border-radius:8px; padding:8px 10px;
+  background:var(--rev-surface); resize:vertical;
+}
+.rev-campo textarea{min-height:64px; line-height:1.45;}
+.rev-campo input:focus, .rev-campo textarea:focus{
+  outline:none; border-color:var(--rev-brand);
+}
+
+.rev-opciones{display:flex; flex-wrap:wrap; gap:6px;}
+.rev-opcion{
+  border:1px solid var(--rev-line-2); background:var(--rev-surface);
+  border-radius:999px; padding:6px 12px; font-family:inherit;
+  font-size:12.5px; font-weight:700; color:var(--rev-ink-2); cursor:pointer;
+}
+.rev-opcion:hover{border-color:var(--rev-brand);}
+.rev-opcion.rev-sel{
+  background:var(--rev-brand); border-color:var(--rev-brand); color:#fff;
+}
+
+.rev-pop-pie{
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
+  margin-top:14px; padding-top:12px; border-top:1px solid var(--rev-line);
+  font-size:12px; color:var(--rev-ink-3);
+}
+.rev-btn{
+  border:0; border-radius:8px; padding:8px 16px; font-family:inherit;
+  font-size:13.5px; font-weight:800; cursor:pointer;
+  background:var(--rev-brand); color:#fff;
+}
+.rev-btn:hover{background:var(--rev-brand-dark);}
+.rev-btn-sec{background:var(--rev-surface-2); color:var(--rev-ink-2); border:1px solid var(--rev-line-2);}
+.rev-btn-sec:hover{background:var(--rev-line); color:var(--rev-ink);}
+
+/* -------------------------------------------------------------------------
+   Resaltado de lo que toca una fórmula
+   ------------------------------------------------------------------------- */
+.rev-pin{
+  display:inline-block; width:9px; height:9px; border-radius:3px;
+  vertical-align:-1px; margin-right:3px;
+}
+.rev-pin-out{ background:var(--rev-brand); }
+.rev-pin-src{ background:var(--rev-warning); }
+.rev-pin-none{ background:var(--rev-line-2); }
+
+.rev-resaltado{
+  border-top:1px solid var(--rev-line); margin:2px 0 14px; padding-top:11px;
+}
+.rev-resaltado-lin{ margin:0; font-size:12.5px; color:var(--rev-ink-2); line-height:1.45; }
+.rev-uso{
+  margin:7px 0 0; padding-left:14px; border-left:2px solid var(--rev-line);
+  font-size:12.5px; color:var(--rev-ink-3); line-height:1.5;
+}
+.rev-check{
+  display:flex; align-items:flex-start; gap:8px; margin-top:9px; cursor:pointer;
+  font-size:12.5px; color:var(--rev-ink-2); line-height:1.4;
+}
+.rev-check input{ margin:2px 0 0; accent-color:var(--rev-brand); flex-shrink:0; }
+
+/* Lo resaltado se levanta por encima del fondo oscuro del panel (z-index 290),
+   así queda a la vista mientras todo lo demás sigue atenuado. Sólo mientras
+   el panel está abierto: si no, se treparía por encima del header fijo del
+   prototipo al scrollear. */
+body.rev-panel-abierto .rev-hl-out,
+body.rev-panel-abierto .rev-hl-src{ position:relative; z-index:291; }
+body.rev-panel-abierto tr.rev-hl-out,
+body.rev-panel-abierto tr.rev-hl-src{ z-index:auto; }
+body.rev-panel-abierto tr.rev-hl-out td,
+body.rev-panel-abierto tr.rev-hl-src td{ position:relative; z-index:291; }
+
+/* el campo que la fórmula completa */
+.rev-hl-out{
+  outline:2px solid var(--rev-brand); outline-offset:2px; border-radius:8px;
+  background:var(--rev-brand-light) !important;
+}
+tr.rev-hl-out td{ background:var(--rev-brand-light) !important; }
+tr.rev-hl-out{ outline-offset:-2px; }
+
+/* los campos que intervienen */
+.rev-hl-src{
+  outline:2px dashed var(--rev-warning-border); outline-offset:2px; border-radius:8px;
+  background:var(--rev-warning-bg) !important;
+}
+tr.rev-hl-src td{ background:var(--rev-warning-bg) !important; }
+tr.rev-hl-src{ outline-offset:-2px; }
+
+.rev-leyenda{
+  /* 295: por encima del fondo del panel (290) para poder tocar "Quitar"
+     con el panel abierto, y por debajo del panel (300). */
+  position:fixed; left:22px; bottom:22px; z-index:295;
+  background:var(--rev-surface); border:1px solid var(--rev-line-2);
+  border-radius:12px; padding:10px 14px;
+  font-family:Lato,-apple-system,"Segoe UI",sans-serif; font-size:12.5px; color:var(--rev-ink-2);
+  display:none; align-items:center; gap:16px; max-width:min(520px, calc(100vw - 44px));
+}
+.rev-leyenda.rev-visible{ display:flex; }
+.rev-leyenda-txt{ min-width:0; }
+.rev-leyenda-txt b{ display:block; color:var(--rev-ink); font-weight:800; font-size:13px; }
+.rev-leyenda-refs{ display:block; margin-top:2px; }
+.rev-leyenda-refs > *{ margin-right:10px; }
+.rev-leyenda-cerrar{
+  border:1px solid var(--rev-line-2); background:var(--rev-surface-2); border-radius:999px;
+  padding:5px 13px; font-family:inherit; font-size:12.5px; font-weight:700;
+  color:var(--rev-ink-2); cursor:pointer; flex-shrink:0;
+}
+.rev-leyenda-cerrar:hover{ background:var(--rev-line); color:var(--rev-ink); }
+
+/* -------------------------------------------------------------------------
+   Panel lateral
+   ------------------------------------------------------------------------- */
+.rev-fab{
+  position:fixed; right:22px; bottom:22px; z-index:150;
+  background:var(--rev-brand); color:#fff; border:0; border-radius:999px;
+  padding:13px 20px; font-family:Lato,-apple-system,"Segoe UI",sans-serif;
+  font-size:14px; font-weight:800; cursor:pointer;
+  display:flex; align-items:center; gap:9px;
+}
+.rev-fab:hover{background:var(--rev-brand-dark);}
+.rev-fab-contador{
+  background:#fff; color:var(--rev-brand-dark); border-radius:999px;
+  padding:1px 9px; font-size:12.5px; font-weight:800;
+}
+
+.rev-drawer{
+  position:fixed; top:0; right:0; bottom:0; width:var(--rev-drawer-w);
+  max-width:100vw; z-index:300;
+  background:var(--rev-surface); border-left:1px solid var(--rev-line-2);
+  font-family:Lato,-apple-system,"Segoe UI",sans-serif; color:var(--rev-ink);
+  display:flex; flex-direction:column;
+  transform:translateX(100%); transition:transform .22s ease;
+}
+.rev-drawer.rev-abierto{transform:translateX(0);}
+.rev-drawer-head{
+  padding:18px 20px 14px; border-bottom:1px solid var(--rev-line); flex-shrink:0;
+}
+.rev-drawer-head h3{margin:0 0 12px; font-size:17px; font-weight:800; color:var(--rev-ink);}
+.rev-drawer-head p{margin:0; font-size:12.5px; color:var(--rev-ink-3); line-height:1.45;}
+
+.rev-solapas{
+  display:flex; gap:4px; background:var(--rev-surface-2);
+  border:1px solid var(--rev-line); border-radius:999px; padding:3px; margin-bottom:11px;
+}
+.rev-solapa{
+  flex:1; border:0; background:none; border-radius:999px; padding:7px 10px;
+  font-family:inherit; font-size:13px; font-weight:800; color:var(--rev-ink-3); cursor:pointer;
+}
+.rev-solapa span{font-weight:700; opacity:.75; font-size:12px;}
+.rev-solapa.rev-sel{background:var(--rev-brand); color:#fff;}
+.rev-drawer-cerrar{
+  position:absolute; top:16px; right:16px;
+  border:0; background:none; font-size:22px; line-height:1;
+  color:var(--rev-ink-3); cursor:pointer;
+}
+
+.rev-progreso{margin-top:13px;}
+.rev-progreso-barra{
+  height:6px; border-radius:999px; background:var(--rev-line); overflow:hidden;
+}
+.rev-progreso-fill{height:100%; background:var(--rev-positive); width:0; transition:width .25s ease;}
+.rev-progreso-txt{
+  margin-top:6px; font-size:12.5px; font-weight:700; color:var(--rev-ink-3);
+  display:flex; justify-content:space-between;
+}
+
+.rev-filtros{
+  display:flex; gap:6px; padding:12px 20px; border-bottom:1px solid var(--rev-line);
+  flex-shrink:0;
+}
+.rev-lista{flex:1; overflow-y:auto; padding:6px 20px 28px;}
+
+.rev-grupo-tit{
+  font-size:11.5px; font-weight:800; text-transform:uppercase; letter-spacing:.05em;
+  color:var(--rev-ink-3); margin:18px 0 8px;
+}
+.rev-item{
+  border:1px solid var(--rev-line); border-radius:8px;
+  margin-bottom:6px; background:var(--rev-surface);
+}
+.rev-item-cab{padding:10px 12px; cursor:pointer; border-radius:8px;}
+.rev-item-cab:hover{border-color:var(--rev-brand-mid); background:var(--rev-brand-light);}
+
+/* fórmula desplegada dentro del panel */
+.rev-item.rev-expandido{
+  border-color:var(--rev-brand); background:var(--rev-surface);
+}
+.rev-item.rev-expandido .rev-item-cab{background:var(--rev-brand-light);}
+.rev-item-cuerpo{
+  padding:14px 12px 12px; border-top:1px solid var(--rev-line);
+}
+.rev-item-cuerpo .rev-pop-valor{margin-bottom:8px;}
+.rev-item-pie{
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
+  margin-top:14px; padding-top:11px; border-top:1px solid var(--rev-line);
+  font-size:12px; color:var(--rev-ink-3);
+}
+.rev-item-tit{
+  font-size:13.5px; font-weight:700; color:var(--rev-ink);
+  display:flex; align-items:flex-start; gap:8px; line-height:1.35;
+}
+.rev-item-estado{
+  flex-shrink:0; width:8px; height:8px; border-radius:999px; margin-top:5px;
+  background:var(--rev-warning);
+}
+.rev-item.rev-done .rev-item-estado{background:var(--rev-positive);}
+.rev-item-meta{
+  font-size:12px; color:var(--rev-ink-3); margin-top:5px; padding-left:16px; line-height:1.4;
+  display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden;
+}
+.rev-item-meta b{color:var(--rev-ink-2); font-weight:700;}
+
+/* los que traen una duda abierta de Producto o una nota de PLM */
+.rev-item.rev-con-nota{border-left:3px solid var(--rev-warning-border);}
+
+.rev-drawer-pie{
+  padding:13px 20px; border-top:1px solid var(--rev-line); flex-shrink:0;
+  display:flex; gap:8px; align-items:center; flex-wrap:wrap;
+}
+
+.rev-backdrop{
+  position:fixed; inset:0; z-index:290; background:rgba(16,24,40,.28);
+  opacity:0; pointer-events:none; transition:opacity .22s ease;
+}
+.rev-backdrop.rev-abierto{opacity:1; pointer-events:auto;}
+
+/* -------------------------------------------------------------------------
+   Modal de identidad
+   ------------------------------------------------------------------------- */
+.rev-modal-fondo{
+  position:fixed; inset:0; z-index:400; background:rgba(16,24,40,.35);
+  display:flex; align-items:center; justify-content:center; padding:20px;
+  font-family:Lato,-apple-system,"Segoe UI",sans-serif;
+}
+.rev-modal{
+  background:var(--rev-surface); border-radius:16px; padding:26px;
+  width:100%; max-width:420px; color:var(--rev-ink);
+}
+.rev-modal h3{margin:0 0 8px; font-size:19px; font-weight:800;}
+.rev-modal p{margin:0 0 18px; font-size:14px; color:var(--rev-ink-2); line-height:1.5;}
+.rev-modal input{
+  width:100%; font-family:inherit; font-size:15px; color:var(--rev-ink);
+  border:1px solid var(--rev-line-2); border-radius:8px; padding:10px 12px;
+  margin-bottom:16px;
+}
+.rev-modal input:focus{outline:none; border-color:var(--rev-brand);}
+
+/* -------------------------------------------------------------------------
+   Mobile
+   ------------------------------------------------------------------------- */
+@media (max-width:640px){
+  .rev-topbar{padding:9px 16px;}
+  .rev-drawer{--rev-drawer-w:100vw;}
+  .rev-fab{right:14px; bottom:14px; padding:11px 16px;}
+  .rev-pop{width:calc(100vw - 32px);}
+  .rev-leyenda{left:14px; right:14px; bottom:74px; max-width:none;}
+}
+
+/* -------------------------------------------------------------------------
+   Ajustes al prototipo para el modo revisión
+   -------------------------------------------------------------------------
+   El "Confirmar ✓" de cada sección (y su ✎ para reabrirla) es del flujo del
+   comprador: pliega la sección y esconde campos que acá hay que revisar,
+   y encima choca con el sentido de "confirmar" de esta instancia.
+   ------------------------------------------------------------------------- */
+.btn-confirmar-sec,
+.sim-sec-head .btn-editar{ display:none !important; }
+.sim-sec.confirmado .sim-sec-body{ max-height:none !important; }
+.sim-sec .sim-sec-resumen{ display:none !important; }
+
+@media print{
+  .rev-fab, .rev-drawer, .rev-backdrop, .rev-dot, .rev-pop, .rev-leyenda{display:none !important;}
+}

@@ -1,0 +1,1939 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Simulador de Negocio Ganadero — Revisión con Negocio · dCaC</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiI+PHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNyIgZmlsbD0iIzIzNWQ4MCIvPjxwYXRoIGQ9Ik0xMSAxMGMtMS0xLjUtMS0zIDAtNC4zIiBzdHJva2U9IiNmZmYiIHN0cm9rZS13aWR0aD0iMi4yIiBmaWxsPSJub25lIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48cGF0aCBkPSJNMjEgMTBjMS0xLjUgMS0zIDAtNC4zIiBzdHJva2U9IiNmZmYiIHN0cm9rZS13aWR0aD0iMi4yIiBmaWxsPSJub25lIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48ZWxsaXBzZSBjeD0iOSIgY3k9IjE0IiByeD0iMi4zIiByeT0iMS42IiBmaWxsPSIjZmZmIiB0cmFuc2Zvcm09InJvdGF0ZSgtMzAgOSAxNCkiLz48ZWxsaXBzZSBjeD0iMjMiIGN5PSIxNCIgcng9IjIuMyIgcnk9IjEuNiIgZmlsbD0iI2ZmZiIgdHJhbnNmb3JtPSJyb3RhdGUoMzAgMjMgMTQpIi8+PGVsbGlwc2UgY3g9IjE2IiBjeT0iMTgiIHJ4PSI3IiByeT0iOCIgZmlsbD0iI2ZmZiIvPjwvc3ZnPg==">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;500;600;700;800;900&display=swap">
+
+<style>
+  :root{
+    --azul:#3179a7;
+    --azul-dark:#235677;
+    --azul-soft:#eaf2f6;
+    --verde:#54a22b;
+    --verde-dark:#234412;
+    --verde-soft:#eef6ea;
+    --rojo:#d25859;
+    --rojo-soft:#fdefef;
+    --ink:#555555;
+    --ink-soft:#666666;
+    --muted:#888888;
+    --line:#ededed;
+    --bg:#ededed;
+    --card:#ffffff;
+    --shadow-sm:0 1px 2px rgba(16,24,40,.05);
+    --shadow-md:0 2px 4px rgba(16,24,40,.04), 0 10px 24px rgba(16,24,40,.06);
+    --radius:16px;
+    --radius-sm:11px;
+    --header-h:62px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; font-family:Lato, -apple-system, "Segoe UI", sans-serif;
+    background:var(--bg); color:var(--ink-soft); font-size:15px; line-height:1.5;
+  }
+  .dcac-header{
+    background:#fff; border-bottom:1px solid var(--line);
+    padding:13px 28px; display:flex; align-items:center; justify-content:space-between;
+    position:sticky; top:0; z-index:60;
+  }
+  .dcac-header .logo{font-size:21px; font-weight:300; color:var(--ink); letter-spacing:-.01em;}
+  .dcac-header .logo b{font-weight:800;}
+  .dcac-header .logo .a{color:var(--azul);}
+  .dcac-header .lote-tag{font-size:12.5px; color:var(--muted); background:var(--bg); border-radius:20px; padding:6px 14px; font-weight:600;}
+
+  .contenedor-principal{max-width:1280px; margin:0 auto; padding:26px 24px 90px;}
+  .grid{display:grid; grid-template-columns: minmax(0,1fr) 380px; gap:32px; align-items:start;}
+  @media (max-width:980px){
+    .grid{grid-template-columns:1fr;}
+    .col-der{position:static !important;}
+    #bloque-titulo{position:static !important;}
+  }
+
+  /* ---- Título ---- */
+  #bloque-titulo{position:sticky; top:var(--header-h); z-index:40; margin-bottom:18px;}
+  .titulo-full h1{font-size:28px; font-weight:300; color:var(--ink); margin:0; letter-spacing:-.01em;}
+  .titulo-full h1 b{font-weight:800;}
+  .titulo-full{position:relative; padding-top:4px;}
+  .titulo-full .subtitulo{font-size:15.5px; color:var(--ink-soft); margin-top:3px;}
+  .titulo-full .subtitulo em{font-style:italic;}
+  .input-titulo{border:none; background:transparent; font:inherit; color:inherit; padding:0 1px; border-bottom:1.5px dashed var(--muted); border-radius:0; -moz-appearance:textfield;}
+  .input-titulo::-webkit-outer-spin-button, .input-titulo::-webkit-inner-spin-button{-webkit-appearance:none; margin:0;}
+  .input-titulo:hover{border-bottom-color:var(--azul);}
+  .input-titulo:focus{outline:none; background:var(--azul-soft); border-radius:6px; border-bottom-color:var(--azul);}
+  .input-titulo-cabezas{width:2.6ch;}
+  .input-titulo-peso{width:2.6ch;}
+  .titulo-full .lote-num{position:absolute; top:4px; right:0; background:#fff; border:1px solid var(--line); border-radius:8px; padding:6px 14px; color:var(--muted); font-size:12.5px; font-weight:600;}
+  .titulo-collapsed{
+    display:flex; align-items:center; justify-content:space-between; gap:14px;
+    background:#fff; border:1px solid var(--line); border-radius:var(--radius-sm);
+    padding:13px 18px; font-size:13.5px; color:var(--ink-soft); flex-wrap:wrap; box-shadow:var(--shadow-sm);
+  }
+  .titulo-collapsed strong{color:var(--ink);}
+  .btn-link{background:none; border:none; color:var(--azul); font-weight:700; cursor:pointer; font-size:13px; padding:0; white-space:nowrap;}
+  .btn-link:hover{color:var(--azul-dark);}
+
+  /* ---- Área central ---- */
+  #area-central{position:relative;}
+  .video-placeholder{
+    background:linear-gradient(135deg,#cfd9c9,#9fb191);
+    height:360px; border-radius:var(--radius); position:relative; overflow:hidden;
+    display:flex; align-items:center; justify-content:center; color:rgba(255,255,255,.85); font-size:14px;
+    box-shadow:var(--shadow-md);
+  }
+  .video-placeholder:before{ content:"▶  Video de la tropa"; font-size:16px; font-weight:600; letter-spacing:.02em;}
+  .caption-ubicacion{
+    position:absolute; left:0; right:0; bottom:0; background:rgba(20,24,20,.55); color:#fff;
+    padding:11px 18px; font-size:13.5px; display:flex; justify-content:space-between; backdrop-filter:blur(2px);
+  }
+  .info-row{display:flex; gap:14px; margin-top:16px; flex-wrap:wrap;}
+  .info-card{background:#fff; border:1px solid var(--line); border-radius:var(--radius-sm); padding:14px 22px; flex:1; min-width:120px; box-shadow:var(--shadow-sm);}
+  .info-label{font-size:12.5px; color:var(--muted); font-weight:600; text-transform:uppercase; letter-spacing:.03em;}
+  .info-val{font-size:25px; color:var(--ink); font-weight:800; margin-top:2px;}
+  .info-val span{font-size:12.5px; color:var(--muted); font-weight:500; margin-left:4px;}
+  .info-val.verde{color:var(--verde);}
+
+  /* ---- Cards columna derecha ---- */
+  .col-der{position:sticky; top:var(--header-h);}
+  .card{background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:20px 22px; margin-bottom:16px; box-shadow:var(--shadow-sm);}
+  .card label{display:block; font-size:12.5px; color:var(--ink-soft); margin:14px 0 7px; font-weight:700; text-transform:uppercase; letter-spacing:.02em;}
+  .card label:first-of-type{margin-top:0;}
+  .sociedad{font-size:13px; color:var(--ink-soft);}
+  .sociedad strong{display:block; color:var(--ink); font-size:15px; margin-top:4px; font-weight:800;}
+
+  .precio-row{display:flex; align-items:center; justify-content:center; gap:10px;}
+  .precio-val{font-size:32px; color:var(--ink); display:flex; align-items:center; font-weight:800;}
+  .precio-val input{
+    border:none; font-size:32px; width:118px; color:var(--ink); font-family:inherit; background:transparent; font-weight:800; text-align:center;
+  }
+  .precio-val input:focus{outline:none; background:var(--azul-soft); border-radius:8px;}
+  .step-btn{
+    width:36px; height:36px; border-radius:50%; border:1px solid var(--line); background:#fff;
+    color:var(--azul); font-size:19px; font-weight:700; cursor:pointer; flex-shrink:0;
+    display:flex; align-items:center; justify-content:center; transition:.15s; line-height:1;
+  }
+  .step-btn:hover{background:var(--azul-soft); border-color:var(--azul); transform:translateY(-1px);}
+  .step-btn:active{transform:translateY(0) scale(.95);}
+  .step-btn-sm{
+    width:24px; height:24px; border-radius:50%; border:1px solid var(--line); background:#fff;
+    color:var(--azul); font-size:14px; font-weight:700; cursor:pointer; flex-shrink:0;
+    display:flex; align-items:center; justify-content:center; transition:.15s; line-height:1;
+  }
+  .step-btn-sm:hover{background:var(--azul-soft); border-color:var(--azul);}
+  .step-btn-sm:active{transform:scale(.95);}
+  .campo-precio-venta{display:flex; align-items:center; gap:5px;}
+  .kg-label{color:var(--muted); font-size:12.5px; margin-top:4px; text-align:center;}
+
+  .pill-row, .toggle-row{display:flex; gap:4px; background:var(--bg); border-radius:12px; padding:4px;}
+  .pill, .toggle{
+    border:none; background:transparent; border-radius:9px; padding:9px 8px;
+    font-size:12px; color:var(--ink-soft); cursor:pointer; text-align:center; flex:1; font-weight:600; transition:.15s;
+  }
+  .pill.active, .toggle.active{background:#fff; color:var(--azul); font-weight:800; box-shadow:var(--shadow-sm);}
+
+  .flete-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:10px;}
+  .flete-campo label{display:block; font-size:10.5px; color:var(--muted); margin-bottom:4px; font-weight:700; text-transform:uppercase; letter-spacing:.02em;}
+  .flete-campo input{width:100%; border:1px solid var(--line); border-radius:8px; padding:7px 6px; font-size:13px; text-align:center; font-family:inherit; color:var(--ink); font-weight:700;}
+  .flete-total{margin-top:10px; background:var(--azul-soft); border-radius:10px; padding:10px 12px; font-size:13.5px; color:var(--azul-dark); font-weight:700; text-align:center; line-height:1.4;}
+
+  .gastos-com-row{margin-top:14px; font-size:13px; color:var(--ink-soft); display:flex; justify-content:space-between; align-items:center; font-weight:600;}
+  .badge-fijo{background:var(--bg); color:var(--ink-soft); border-radius:8px; padding:5px 11px; font-size:14px; font-weight:800; display:inline-flex; align-items:center; gap:5px;}
+  .badge-fijo .lock{font-size:10px; opacity:.7;}
+
+  .btn-enviar{
+    width:100%; background:linear-gradient(135deg,var(--verde),var(--verde-dark)); color:#fff; border:none; border-radius:12px;
+    padding:14px; font-size:15.5px; font-weight:800; margin-top:18px; cursor:pointer; box-shadow:0 2px 10px rgba(63,163,40,.28); transition:.15s;
+  }
+  .btn-enviar:hover{transform:translateY(-1px); box-shadow:0 4px 16px rgba(63,163,40,.34);}
+
+  .card.estimador h3{color:var(--azul); font-size:15px; margin:0 0 12px; font-weight:800;}
+  .btn-abrir-sim{
+    width:100%; background:linear-gradient(135deg,var(--azul),var(--azul-dark)); color:#fff; border:none; border-radius:12px;
+    padding:13px; font-size:14px; font-weight:800; cursor:pointer; margin-top:8px; box-shadow:0 2px 10px rgba(49,121,167,.28); transition:.15s;
+  }
+  .btn-abrir-sim:hover{transform:translateY(-1px); box-shadow:0 4px 16px rgba(49,121,167,.34);}
+  .badge-nuevo{background:var(--verde); color:#fff; font-size:10px; border-radius:10px; padding:2px 8px; margin-left:6px; vertical-align:middle; font-weight:800;}
+  .mini-resultado{font-size:13px; color:var(--ink-soft); margin-top:10px; line-height:1.6;}
+  .mini-resultado b{color:var(--ink);}
+
+  /* ---- Simulador ---- */
+  .sim-wrap{background:#fff; border:1px solid var(--line); border-radius:var(--radius); padding:26px 28px; box-shadow:var(--shadow-md);}
+  .sim-header{display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:6px;}
+  .sim-header h2{color:var(--ink); font-size:21px; margin:0; font-weight:800;}
+  .dolar-mep-badge{
+    display:inline-block; vertical-align:middle; margin-left:10px;
+    font-size:12px; font-weight:700; color:var(--azul-dark); background:var(--azul-soft);
+    border-radius:8px; padding:4px 10px;
+  }
+  .sim-header p{font-size:13px; color:var(--muted); margin:6px 0 0; max-width:560px;}
+  .sim-secciones{display:grid; grid-template-columns:1fr; gap:22px; margin-top:20px; align-items:start;}
+  .sim-secciones + .sim-secciones{margin-top:22px;}
+  .sim-sec{border:1px solid var(--line); border-radius:var(--radius-sm); padding:18px 20px; background:#fbfbfc; transition:background .15s, border-color .15s; scroll-margin-top:170px;}
+  .sim-sec-body{overflow:hidden; transition:max-height .32s ease, opacity .22s ease;}
+  .sim-sec h4{color:var(--ink); font-size:13.5px; margin:0 0 14px; border-bottom:1px solid var(--line); padding-bottom:9px; font-weight:800; text-transform:uppercase; letter-spacing:.02em;}
+  .sim-sec-head{display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid var(--line); padding-bottom:9px; margin-bottom:14px; gap:10px; transition:border-color .25s, padding-bottom .25s, margin-bottom .25s;}
+  .sim-sec-head h4{margin:0; border:none; padding:0;}
+  .sec-icon{width:38px; height:38px; color:var(--azul-dark); flex-shrink:0;}
+  .sim-sec-head h4{display:flex; align-items:center; gap:12px;}
+  .btn-editar{display:none; background:none; border:none; cursor:pointer; font-size:18px; color:var(--azul-dark); padding:4px 6px; line-height:1; flex-shrink:0; border-radius:6px;}
+  .btn-editar:hover{color:var(--azul); background:var(--azul-soft);}
+  .sim-sec.confirmado{background:#fff; border-color:#cfe4c4; border-width:2.5px;}
+  .sim-sec.confirmado .sim-sec-head{border-bottom:none; padding-bottom:0; margin-bottom:0;}
+  .sim-sec.confirmado .sim-sec-body{opacity:0; pointer-events:none;}
+  .sim-sec.confirmado .btn-editar{display:inline-flex; align-items:center;}
+  .btn-confirmar-sec{width:100%; background:#fff; border:1.5px solid var(--verde-dark); color:var(--verde-dark); border-radius:10px; padding:11px; font-size:13.5px; font-weight:800; margin-top:18px; cursor:pointer; transition:.15s;}
+  .btn-confirmar-sec:hover{background:var(--verde-soft);}
+
+  /* ---- Resumen colapsado (visible cuando la sección está confirmada) ---- */
+  .sim-sec-resumen{display:none;}
+  .sim-sec.confirmado .sim-sec-resumen{display:block; padding:4px 0 2px;}
+  .resumen-3col{display:grid; grid-template-columns:repeat(3,1fr); gap:0 24px;}
+  .resumen-col-lbl{font-size:11px; text-transform:uppercase; letter-spacing:.04em; color:var(--azul-dark); font-weight:800; margin-bottom:7px;}
+  .resumen-col-val{font-size:15px; color:var(--ink); font-weight:500; line-height:1.5;}
+  .resumen-col-val b{font-weight:800;}
+  .resumen-col-sub{font-size:13px; color:var(--muted); font-weight:500; margin-top:3px;}
+  .resumen-col-sub b{color:var(--ink); font-weight:800;}
+  .resumen-col + .resumen-col{border-left:1px solid var(--line); padding-left:24px;}
+  .resumen-costos-row{display:flex; flex-wrap:wrap; gap:10px 30px; margin-top:18px; padding-top:16px; border-top:1px solid var(--line);}
+  .resumen-costo{flex:1; min-width:160px; display:flex; flex-direction:column; gap:4px;}
+  .resumen-costo .lbl{font-size:11.5px; color:var(--ink-soft); font-weight:700; text-transform:uppercase; letter-spacing:.02em;}
+  .resumen-costo .val{font-size:17px; font-weight:800; color:var(--ink);}
+  .resumen-costo-total .val{color:var(--azul-dark); font-size:19px;}
+  @media (max-width:880px){
+    .resumen-3col{grid-template-columns:1fr; gap:14px 0;}
+    .resumen-col + .resumen-col{border-left:none; padding-left:0; padding-top:14px; border-top:1px solid var(--line);}
+  }
+  .campo{
+    display:flex; flex-direction:column; gap:5px; margin-bottom:10px;
+    border:1px solid var(--line); border-radius:10px; padding:10px 12px;
+    background:#fff; box-shadow:var(--shadow-sm); transition:border-color .15s, box-shadow .15s;
+  }
+  .campo:focus-within{border-color:var(--azul); box-shadow:0 0 0 3px var(--azul-soft);}
+  .campo label{display:block; font-size:12px; color:var(--ink-soft); font-weight:700; text-transform:none;}
+  .sub-columnas{display:grid; grid-template-columns:repeat(3,1fr); gap:0 26px; margin-top:8px;}
+  .sub-columnas.cols-2{grid-template-columns:repeat(2,1fr);}
+  @media (max-width:880px){ .sub-columnas{grid-template-columns:1fr;} }
+  .sub-columna h6{font-size:11px; text-transform:uppercase; letter-spacing:.05em; color:var(--azul-dark); font-weight:800; margin:0 0 12px; padding-bottom:7px; border-bottom:1px solid var(--line);}
+  .fila-ancha{grid-column:1/-1; margin-top:10px; border-top:1px solid var(--line); padding-top:14px; display:flex; flex-wrap:wrap; gap:10px 30px;}
+  .fila-ancha .campo{flex:1; min-width:240px; margin-bottom:0; background:var(--azul-soft); border-color:var(--azul); box-shadow:none;}
+  .fila-ancha .campo label{color:var(--azul-dark); font-size:13px;}
+  .fila-ancha .campo .badge-fijo{color:var(--azul-dark); font-size:17px;}
+  .fila-2col{display:flex; flex-wrap:wrap; gap:10px 18px; margin-bottom:10px;}
+  .fila-2col .campo{flex:1; min-width:220px; margin-bottom:0;}
+  .plan-global{border:1px solid var(--line); border-radius:var(--radius-sm); padding:18px 20px; background:#fbfbfc; margin-top:20px;}
+
+  .campo-modo-productivo{margin-bottom:20px;}
+  .modo-productivo-label{display:block; font-size:16px; font-weight:800; color:var(--ink); margin-bottom:10px; text-transform:none;}
+  .modo-productivo-toggle{gap:8px; padding:6px; border-radius:14px;}
+  .modo-productivo-toggle .toggle{padding:17px 10px; font-size:14.5px; border-radius:11px;}
+  .etapa-titulo{font-size:11px; text-transform:uppercase; letter-spacing:.05em; color:var(--azul-dark); font-weight:800; margin:0 0 12px; transition:color .15s;}
+  .etapa-inactiva .etapa-titulo{color:var(--muted);}
+  .etapa-sep{border-top:1px solid var(--line); margin-top:16px; padding-top:16px;}
+  .campo-grande input{font-size:16px; padding:9px 10px;}
+  .campo .tip, h6 .tip{
+    display:inline-flex; align-items:center; justify-content:center; width:15px; height:15px; border-radius:50%;
+    background:var(--line); color:var(--ink-soft); cursor:help; margin-left:4px; font-size:10px; font-weight:700;
+    position:relative;
+  }
+  .campo .tip::after, h6 .tip::after{
+    content:attr(data-tip);
+    position:absolute; bottom:calc(100% + 8px); left:50%; transform:translateX(-50%);
+    background:var(--ink); color:#fff; font-size:12px; font-weight:500; line-height:1.4;
+    padding:8px 11px; border-radius:8px; width:220px; text-align:left; white-space:normal;
+    box-shadow:var(--shadow-md); opacity:0; visibility:hidden; pointer-events:none;
+    transition:opacity .15s, visibility .15s; z-index:100;
+  }
+  .campo .tip::before, h6 .tip::before{
+    content:''; position:absolute; bottom:calc(100% + 3px); left:50%; transform:translateX(-50%);
+    border:5px solid transparent; border-top-color:var(--ink);
+    opacity:0; visibility:hidden; pointer-events:none; transition:opacity .15s, visibility .15s; z-index:100;
+  }
+  .campo .tip:hover::after, .campo .tip:hover::before, h6 .tip:hover::after, h6 .tip:hover::before{ opacity:1; visibility:visible; }
+  .campo .tip:empty::after, .campo .tip[data-tip=""]::after, h6 .tip:empty::after, h6 .tip[data-tip=""]::after{ content:none; }
+  .campo .tip:empty::before, .campo .tip[data-tip=""]::before, h6 .tip:empty::before, h6 .tip[data-tip=""]::before{ content:none; }
+  .campo input, .campo select{
+    border:1px solid transparent; border-radius:7px; padding:8px 10px; font-size:15px;
+    width:100%; font-family:inherit; text-align:left; color:var(--ink); font-weight:700; background:var(--bg);
+    transition:background .15s;
+  }
+  .campo select{width:auto; font-weight:700;}
+  .campo input:focus, .campo select:focus{outline:none; background:#fff;}
+  .campo-precio-venta input{width:auto; flex:1;}
+  .campo .badge-fijo{background:none; color:var(--ink); padding:0; font-size:15px;}
+  .badge-locked{background:var(--azul-soft); color:var(--azul-dark); border-radius:8px; padding:6px 12px; font-size:14px; font-weight:800; align-self:flex-start;}
+
+  table.tabla-dieta{width:100%; border-collapse:separate; border-spacing:0; margin:4px 0 14px; border:1px solid var(--line); border-radius:10px; overflow:hidden;}
+  table.tabla-dieta thead th{font-size:10.5px; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.02em; font-weight:800; text-align:center; padding:9px 6px; background:var(--bg); border-bottom:1px solid var(--line);}
+  table.tabla-dieta th:first-child{text-align:center;}
+  table.tabla-dieta td{padding:7px 6px; vertical-align:middle; text-align:center; border-bottom:1px solid var(--line);}
+  table.tabla-dieta tbody tr:last-child td{border-bottom:none;}
+  table.tabla-dieta tbody tr:nth-child(even){background:var(--bg);}
+  table.tabla-dieta td.comp{font-size:13px; color:var(--ink-soft); font-weight:600; white-space:nowrap; text-align:left; padding-left:12px;}
+  table.tabla-dieta td.col-pct, table.tabla-dieta td.col-precio{width:32%;}
+  table.tabla-dieta td input{
+    border:1px solid var(--line); border-radius:8px; padding:6px 8px; font-size:13px;
+    width:100%; font-family:inherit; text-align:center; color:var(--ink); font-weight:700; background:#fff;
+  }
+  table.tabla-dieta td input:focus{outline:2px solid var(--azul-soft); border-color:var(--azul);}
+
+  .peso-stepper{display:flex; align-items:center; gap:3px; margin-top:18px; flex-wrap:nowrap;}
+  .peso-chip{background:var(--azul-soft); border-radius:8px; padding:9px 5px; flex:1 1 0; min-width:0; text-align:center;}
+  .peso-chip-lbl{display:block; font-size:8.8px; color:var(--azul-dark); text-transform:uppercase; letter-spacing:.01em; font-weight:800; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .peso-chip-val{display:block; font-size:19px; color:var(--ink); font-weight:800; margin-top:2px; white-space:nowrap;}
+  .peso-arrow{color:var(--muted); font-size:12px; flex-shrink:0;}
+
+  .resultados-wrap{margin-top:28px; border-top:1px solid var(--line); padding-top:22px;}
+  .resultados-header{display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;}
+  .resultados-header h3{color:var(--ink); font-size:16.5px; margin:0; font-weight:800;}
+  .view-toggle{display:flex; gap:4px; background:var(--bg); border-radius:11px; padding:4px;}
+  .view-toggle button{border:none; background:transparent; padding:8px 14px; font-size:12px; border-radius:8px; cursor:pointer; color:var(--ink-soft); font-weight:700;}
+  .view-toggle button.active{background:var(--azul); color:#fff;}
+  .moneda-toggle button.active{background:var(--verde-dark);}
+
+  table.tabla-res{width:100%; border-collapse:collapse; margin-top:12px; font-size:13.5px;}
+  table.tabla-res td{padding:7px 4px; border-bottom:1px solid #f1f1f3;}
+  table.tabla-res td.lbl{color:var(--ink-soft);}
+  table.tabla-res td.val{text-align:right; color:var(--ink); font-weight:700; white-space:nowrap;}
+  table.tabla-res tr.subtotal td{border-top:1px solid #d8dbe0; border-bottom:2px solid var(--ink); font-weight:800;}
+  table.tabla-res tr.total td{font-weight:800; color:var(--ink); font-size:15px;}
+  table.tabla-res tr.negativo td.val{color:var(--rojo);}
+  table.tabla-res tr.positivo td.val{color:var(--verde);}
+  .bloque-resumen{margin-bottom:20px;}
+  .bloque-resumen h5{
+    font-size:14px; text-transform:uppercase; letter-spacing:.04em; color:var(--azul-dark); margin:0 0 2px; font-weight:800;
+    cursor:pointer; display:flex; align-items:center; gap:6px; user-select:none;
+  }
+  .bloque-resumen h5:hover{color:var(--azul-dark);}
+  .bloque-resumen h5 .chevron{font-size:10px; transition:transform .15s;}
+  .bloque-resumen.colapsado table.tabla-res tr:not(.total-bloque){display:none;}
+  .bloque-resumen.colapsado .nota-formula{display:none;}
+  .bloque-resumen.colapsado table.tabla-res tr.total-bloque td{border-top:none; padding-top:3px;}
+  .btn-ver-totales{
+    background:#fff; border:1.5px solid var(--azul); color:var(--azul); border-radius:9px;
+    padding:8px 14px; font-size:12px; font-weight:800; cursor:pointer; transition:.15s; white-space:nowrap;
+  }
+  .btn-ver-totales:hover{background:var(--azul-soft);}
+  .nota-formula{font-size:12px; color:var(--muted); margin:8px 0 0; line-height:1.55;}
+  .nota-formula b{color:var(--ink-soft);}
+  .fecha-muted{color:var(--muted); font-weight:600; font-size:12px; margin-left:6px;}
+
+  .margen-final{
+    display:flex; justify-content:space-between; align-items:center; background:var(--azul-soft);
+    border-radius:var(--radius-sm); padding:18px 22px; margin-top:6px;
+  }
+  .margen-final .lbl{font-size:14px; color:var(--azul-dark); font-weight:700;}
+  .margen-final .val{font-size:27px; font-weight:800;}
+  .margen-final .val.positivo{color:var(--verde-dark);}
+  .margen-final .val.negativo{color:var(--rojo);}
+  .margen-pct-row{display:flex; flex-wrap:wrap; gap:14px; margin-top:12px;}
+  .margen-pct-item{flex:1; min-width:220px; background:#fff; border:1px solid var(--line); border-radius:var(--radius-sm); padding:12px 16px;}
+  .margen-pct-val{font-size:20px; font-weight:800;}
+  .margen-pct-val.positivo{color:var(--verde-dark);}
+  .margen-pct-val.negativo{color:var(--rojo);}
+  .margen-pct-lbl{font-size:12px; color:var(--muted); margin-top:3px; line-height:1.4;}
+
+  .equilibrio-grid{display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-top:18px;}
+  @media (max-width:760px){ .equilibrio-grid{grid-template-columns:1fr;} }
+  .equilibrio-card{border:1px solid var(--line); border-radius:var(--radius-sm); padding:16px 18px; background:#fbfbfc;}
+  .equilibrio-card h5{margin:0 0 6px; font-size:13px; color:var(--ink); font-weight:800;}
+  .equilibrio-card .precio-grande{font-size:21px; font-weight:800; color:var(--azul);}
+  .ladder{width:100%; font-size:12px; margin-top:10px; border-collapse:collapse;}
+  .ladder td{padding:4px 2px; text-align:right; color:var(--ink-soft);}
+  .ladder tr.base td{font-weight:800; color:var(--ink);}
+  .ladder td:first-child{text-align:left; color:var(--muted);}
+
+  .disclaimer{font-size:11.5px; color:var(--muted); text-align:center; margin-top:20px; line-height:1.6;}
+</style>
+  <link rel="stylesheet" href="revision.css">
+</head>
+<body>
+
+<div class="dcac-header">
+  <div class="logo">de<b>Campo</b><span class="a">a</span><b>Campo</b></div>
+  <div class="lote-tag">Lote #32157 — Prototipo interno</div>
+</div>
+
+<div class="contenedor-principal">
+  <div class="grid">
+
+    <!-- ===================== COLUMNA IZQUIERDA ===================== -->
+    <div class="col-izq">
+
+      <div id="bloque-titulo">
+        <div class="titulo-full" id="titulo-full">
+          <h1><input type="number" id="in-titulo-cabezas" class="input-titulo input-titulo-cabezas" step="1" min="1" title="Editar cantidad de cabezas">&nbsp; <b>Novillitos</b></h1>
+          <div class="subtitulo"><input type="number" id="in-titulo-peso" class="input-titulo input-titulo-peso" step="1" min="1" title="Editar peso promedio (kg)"> kg &nbsp;<em>Brangus Negro y Colorado , Careta</em></div>
+          <div class="lote-num">#32157</div>
+        </div>
+        <div class="titulo-collapsed" id="titulo-collapsed" style="display:none;">
+          <span id="titulo-collapsed-texto"><strong>200 Novillitos</strong> · 180 kg · Brangus Negro y Colorado, Careta · #32157 · Gualeguaychú, Entre Ríos</span>
+          <button class="btn-link" id="btn-volver">← Volver a la publicación</button>
+        </div>
+      </div>
+
+      <div id="area-central">
+        <div id="vista-video">
+          <div class="video-placeholder">
+            <div class="caption-ubicacion"><span>📍 Gualeguaychú, Entre Ríos</span><span>Ver Mapa</span></div>
+          </div>
+          <div class="info-row">
+            <div class="info-card"><div class="info-label">Edad</div><div class="info-val">24<span>Meses</span></div></div>
+            <div class="info-card"><div class="info-label">Calidad</div><div class="info-val verde">7.5<span>sobre 10 pts</span></div></div>
+            <div class="info-card"><div class="info-label">Est. Corporal</div><div class="info-val">3.5<span>sobre 5 pts</span></div></div>
+          </div>
+        </div>
+
+        <div id="vista-simulador" style="display:none;"></div>
+      </div>
+    </div>
+
+    <!-- ===================== COLUMNA DERECHA ===================== -->
+    <div class="col-der">
+      <div class="card sociedad">
+        Seleccioná la Sociedad Compradora
+        <strong>FRIG. RIOPLATENSE S.A.I.C.I.F.</strong>
+      </div>
+
+      <div class="card ofertador">
+        <label>Seleccioná el Precio</label>
+        <div class="precio-row">
+          <button class="step-btn" id="btn-precio-menos" type="button" title="-$50">−</button>
+          <div class="precio-val">$<input type="text" inputmode="numeric" id="in-precio-compra" value="6.200"></div>
+          <button class="step-btn" id="btn-precio-mas" type="button" title="+$50">+</button>
+        </div>
+        <div class="kg-label">Kg &nbsp;+IVA</div>
+
+        <label>Seleccioná el Plazo</label>
+        <div class="pill-row" id="plazo-compra-pills">
+          <button data-val="0" class="pill">Contado</button>
+          <button data-val="30" class="pill active">30 días</button>
+          <button data-val="45" class="pill">30 y 60</button>
+          <button data-val="60" class="pill">60 días</button>
+        </div>
+
+        <label>Seleccioná el Flete</label>
+        <div class="toggle-row" id="flete-compra-toggle">
+          <button data-val="retirar" class="toggle">a Retirar en Origen</button>
+          <button data-val="destino" class="toggle active">Puesto en Destino</button>
+        </div>
+        <div id="destino-compra-wrap" style="display:none; margin-top:4px;">
+          <div class="flete-grid">
+            <div class="flete-campo"><label>Jaulas</label><input type="number" id="in-flete-jaulas" value="4" min="1" step="1"></div>
+            <div class="flete-campo"><label>Km</label><input type="text" inputmode="numeric" id="in-flete-km" value="370"></div>
+            <div class="flete-campo"><label>$/km</label><input type="text" inputmode="numeric" id="in-flete-tarifa" value="2.500"></div>
+          </div>
+          <div class="flete-total" id="flete-total-display"></div>
+        </div>
+
+        <div class="gastos-com-row">Gastos Comerciales <span class="badge-fijo">3% <span class="lock">🔒 fijo</span></span></div>
+
+        <button class="btn-enviar" id="btn-enviar-oferta">Enviar Oferta</button>
+      </div>
+
+      <div class="card estimador" id="card-estimador">
+        <!-- JS renders either the CTA or the mini live-summary here -->
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+/* =========================================================================
+   ESTADO
+   ========================================================================= */
+const state = {
+  // --- Lote (fijo, viene de la publicación) ---
+  cabezasCompra: 200,
+  pesoCompra: 180,
+
+  // --- Oferta de compra (ofertador, editable) ---
+  precioCompra: 6200,
+  comisionCompraPct: 3.0,            // fijo, no editable
+  plazoCompraDias: 30,
+  fleteCompraModo: 'destino',        // 'retirar' | 'destino'
+  fleteCompraJaulas: 4,
+  fleteCompraKm: 370,
+  fleteCompraTarifaKm: 2500,
+
+  // --- Plan productivo ---
+  modoProductivo: 'recria_terminacion', // 'recria_terminacion' | 'solo_recria' | 'solo_terminacion'
+  recriaADG: 0.5,          // kg/día — ganancia diaria estándar en recría
+  recriaDias: 300,
+  terminacionADG: 1.25,    // kg/día — ganancia diaria estándar en terminación
+  terminacionDias: 120,
+  mortandadPct: 2.0,
+
+  // --- Costos de Recría (alimentación a pastura + sanidad) ---
+  // Estructura tomada de la planilla de Costos de Recría del usuario.
+  recriaCostoHaQuintales: 10,          // quintales de soja equivalentes / ha (valor de la tierra)
+  recriaPrecioQuintalSoja: 21,         // USD/quintal
+  recriaCostoSiembraPastura: 330,      // USD/ha
+  recriaMantenimientoPastura: 50,      // USD/ha/año
+  recriaVidaUtilPastura: 4,            // años
+  recriaProduccionAnualMS: 10000,      // kg MS/ha/año
+  recriaEficienciaPct: 60,             // % de la MS producida que se aprovecha
+  recriaConsumoPct: 2.65,              // % del peso vivo consumido por día
+  recriaInsumoSanitarioPrecio: 4416,   // $/kg
+  recriaDosisSanitaria: 2.8,           // kg insumo / cabeza
+
+  // --- Costos de Terminación (dieta de feedlot + sanidad) ---
+  // Estructura tomada de la planilla de Costos de Terminación del usuario.
+  termEnergiaPct: 70, termEnergiaPrecio: 250,      // ej. maíz
+  termProteinaPct: 15, termProteinaPrecio: 425,    // ej. expeller de soja
+  termFibraPct: 12.5, termFibraPrecio: 190,        // ej. silo de maíz
+  termNucleoPct: 2.5, termNucleoPrecio: 1750,      // núcleo vitamínico/mineral
+  termConsumoPct: 3.0,                 // % del peso vivo consumido por día
+  termInsumoSanitarioPrecio: 4416,     // $/kg
+  termDosisSanitaria: 1.8,             // kg insumo / cabeza
+  termEstructuraCabezaDia: 200,        // $/cabeza/día — costos de estructura (ARS)
+
+  // --- Venta ---
+  tipoPrecioVenta: 'vivo',   // 'vivo' | 'carne' — define cómo se interpreta precioVenta
+  rindeEstimadoPct: 58,      // % rendimiento carnicero, solo aplica si tipoPrecioVenta==='carne'
+  precioVenta: 5200,
+  comisionVentaPct: 0,
+  plazoVentaDias: 21,
+  // Flete de venta: en Solo Recría es siempre "a cargo del comprador" (sin costo).
+  // En modos con Terminación, el usuario elige 'retirar' (sin costo, antes
+  // llamado "a cargo de deCampoacampo") o 'planta' (Puesto en Planta: se
+  // descuenta del importe de venta el costo de jaulas×km×tarifa).
+  fleteVentaModo: 'retirar', // 'retirar' | 'planta'
+  fleteVentaJaulas: 4,
+  fleteVentaKm: 370,
+  fleteVentaTarifaKm: 2500,
+
+  // --- Financiero ---
+  tasaAnualPct: 18,
+
+  // --- Cotización del dólar (MEP), usada para convertir a ARS los costos
+  // que se cargan en USD (ver dolarMEP.js más abajo). Valor de referencia
+  // de respaldo; se sobreescribe apenas resuelve el fetch en vivo.
+  dolarMEP: 1300,
+
+  // --- UI ---
+  vista: 'total',          // 'total' | 'cabeza' | 'kg'
+  monedaResultados: 'ars', // 'ars' | 'usd' — toggle de moneda en Resultados
+  simuladorAbierto: false,
+  confirmado: { venta:true, costosRecria:true, costosTerminacion:true },
+  // Colapso individual de cada subsección de Resultados (true = solo se ve el total).
+  resultadosColapsado: { compra:false, recria:false, terminacion:false, venta:false, resultado:false },
+};
+
+/* =========================================================================
+   HELPERS DE FORMATO
+   ========================================================================= */
+const nf0 = new Intl.NumberFormat('es-AR', {maximumFractionDigits:0});
+function money(n){ return (n<0?'-$':'$') + nf0.format(Math.abs(Math.round(n))); }
+// Formato USD para el toggle de moneda en Resultados: 2 decimales para montos
+// chicos (ej. $/kg), 0 decimales para totales grandes.
+function moneyUSD(n){
+  const decimales = Math.abs(n) < 1000 ? 2 : 0;
+  return (n<0?'-USD ':'USD ') + new Intl.NumberFormat('es-AR',{maximumFractionDigits:decimales, minimumFractionDigits:decimales}).format(Math.abs(n));
+}
+// Helper que decide ARS o USD según state.monedaResultados, dividiendo por la
+// cotización del dólar MEP vigente. Usado SOLO en la sección Resultados
+// (fila(), margen-final, tarjetaEquilibrio) — los paneles de Costos y el
+// ofertador siguen mostrando siempre money() en ARS.
+function moneyAuto(n, s){
+  if (s && s.monedaResultados === 'usd' && s.dolarMEP) return moneyUSD(n / s.dolarMEP);
+  return money(n);
+}
+function num(n,d=1){ return new Intl.NumberFormat('es-AR',{maximumFractionDigits:d, minimumFractionDigits:d}).format(n); }
+function pct(n){ return num(n,1)+'%'; }
+// Fechas: suma de días calendario y formateo corto AR (dd/mm/aaaa).
+function addDias(date, dias){ const d = new Date(date); d.setDate(d.getDate()+dias); return d; }
+function formatFecha(date){ return new Intl.DateTimeFormat('es-AR',{day:'2-digit',month:'2-digit',year:'numeric'}).format(date); }
+// Formateo de números enteros "en miles" con separador de miles "." (formato AR),
+// usado en inputs editables que muestran montos grandes (precios, costos, kg de MS, etc.).
+function formatMiles(n){ return nf0.format(Math.round(n||0)); }
+function parseMiles(strVal){
+  if (strVal === null || strVal === undefined) return 0;
+  const limpio = String(strVal).replace(/\./g,'').replace(/[^0-9-]/g,'');
+  const n = parseInt(limpio, 10);
+  return isNaN(n) ? 0 : n;
+}
+
+/* =========================================================================
+   MOTOR DE CÁLCULO
+   ========================================================================= */
+function calcular(s){
+  const r = {};
+
+  // --- Evolución productiva ---
+  // Ganancia de cada etapa = Ganancia Diaria (ADG, kg/día) × Días en la etapa.
+  let kgRecria = 0, kgTerminacion = 0, diasProduccion = 0;
+  const usaRecria = s.modoProductivo !== 'solo_terminacion';
+  const usaTerminacion = s.modoProductivo !== 'solo_recria';
+
+  if (usaRecria){ kgRecria = s.recriaADG * s.recriaDias; diasProduccion += s.recriaDias; }
+  if (usaTerminacion){ kgTerminacion = s.terminacionADG * s.terminacionDias; diasProduccion += s.terminacionDias; }
+
+  const pesoInicial = s.pesoCompra;
+  const pesoFinRecria = pesoInicial + (usaRecria ? kgRecria : 0);
+  const pesoFinTerminacion = pesoFinRecria + (usaTerminacion ? kgTerminacion : 0);
+  const pesoFinal = pesoFinTerminacion;
+
+  // --- Mortandad por etapa, proporcional a los días de cada etapa ---
+  // El % global de mortandad (s.mortandadPct) se reparte entre las etapas
+  // activas según su participación en los días totales de producción (ej.:
+  // 2% total con Recría/Terminación de igual duración → 1% a cada una). Las
+  // cabezas perdidas en cada etapa siempre redondean hacia arriba (ceil) —
+  // nunca se "pierde" una fracción de animal. La etapa de Terminación parte
+  // de las cabezas que efectivamente salieron vivas de la Recría (pérdida
+  // encadenada, no sobre el lote original).
+  const mortandadPctRecria = (usaRecria && diasProduccion > 0)
+    ? s.mortandadPct * (s.recriaDias / diasProduccion) : (usaRecria ? s.mortandadPct : 0);
+  const mortandadPctTerminacion = (usaTerminacion && diasProduccion > 0)
+    ? s.mortandadPct * (s.terminacionDias / diasProduccion) : (usaTerminacion ? s.mortandadPct : 0);
+
+  const cabezasIngresanRecria = usaRecria ? s.cabezasCompra : 0;
+  const cabezasPerdidasRecria = usaRecria ? Math.ceil(cabezasIngresanRecria * mortandadPctRecria/100) : 0;
+  const cabezasSalenRecria = usaRecria ? Math.max(0, cabezasIngresanRecria - cabezasPerdidasRecria) : 0;
+
+  const cabezasIngresanTerminacion = usaTerminacion ? (usaRecria ? cabezasSalenRecria : s.cabezasCompra) : 0;
+  const cabezasPerdidasTerminacion = usaTerminacion ? Math.ceil(cabezasIngresanTerminacion * mortandadPctTerminacion/100) : 0;
+  const cabezasSalenTerminacion = usaTerminacion ? Math.max(0, cabezasIngresanTerminacion - cabezasPerdidasTerminacion) : 0;
+
+  const cabezasVenta = usaTerminacion ? cabezasSalenTerminacion : cabezasSalenRecria;
+  const pesoVentaEfectivo = pesoFinal;
+  const kgGanadoTotal = cabezasVenta * (pesoFinal - s.pesoCompra);
+
+  r.usaRecria = usaRecria; r.usaTerminacion = usaTerminacion;
+  r.kgRecria = kgRecria; r.kgTerminacion = kgTerminacion;
+  r.diasProduccion = diasProduccion;
+  r.pesoInicial = pesoInicial; r.pesoFinRecria = pesoFinRecria; r.pesoFinTerminacion = pesoFinTerminacion;
+  r.pesoFinal = pesoFinal;
+  r.mortandadPctRecria = mortandadPctRecria; r.mortandadPctTerminacion = mortandadPctTerminacion;
+  r.cabezasIngresanRecria = cabezasIngresanRecria; r.cabezasPerdidasRecria = cabezasPerdidasRecria; r.cabezasSalenRecria = cabezasSalenRecria;
+  r.cabezasIngresanTerminacion = cabezasIngresanTerminacion; r.cabezasPerdidasTerminacion = cabezasPerdidasTerminacion; r.cabezasSalenTerminacion = cabezasSalenTerminacion;
+  r.cabezasVenta = cabezasVenta; r.pesoVentaEfectivo = pesoVentaEfectivo;
+  r.kgGanadoTotal = kgGanadoTotal;
+
+  // --- Fechas estimadas del plan (calendario) ---
+  // Ingreso al campo: hoy + 7 días corridos (tiempo estimado de gestión/traslado).
+  const INGRESO_OFFSET_DIAS = 7;
+  const fechaIngreso = addDias(new Date(), INGRESO_OFFSET_DIAS);
+  r.fechaIngreso = fechaIngreso;
+  r.fechaFinRecria = usaRecria ? addDias(fechaIngreso, s.recriaDias) : null;
+  r.fechaFinTerminacion = usaTerminacion ? addDias(fechaIngreso, diasProduccion) : null;
+  // Fecha de ingreso a Terminación = fin de Recría (si hubo) o fecha de
+  // ingreso al campo (si arranca directo en Terminación).
+  r.fechaIngresoTerminacion = usaTerminacion ? (usaRecria ? r.fechaFinRecria : fechaIngreso) : null;
+  // Salida a venta = fin de la última etapa activa del plan.
+  r.fechaSalidaVenta = addDias(fechaIngreso, diasProduccion);
+
+  // --- Compra ---
+  const importeHaciendaCompra = s.cabezasCompra * s.pesoCompra * s.precioCompra;
+  const gastosComercialesCompra = importeHaciendaCompra * s.comisionCompraPct/100;
+  const costoFleteCompra = s.fleteCompraModo === 'retirar'
+    ? s.fleteCompraJaulas * s.fleteCompraKm * s.fleteCompraTarifaKm
+    : 0;
+  const importeTotalCompra = importeHaciendaCompra + gastosComercialesCompra + costoFleteCompra;
+
+  r.importeHaciendaCompra = importeHaciendaCompra;
+  r.gastosComercialesCompra = gastosComercialesCompra;
+  r.costoFleteCompra = costoFleteCompra;
+  r.importeTotalCompra = importeTotalCompra;
+
+  // --- Costos de Recría (alimentación a pastura + sanidad), por cabeza ---
+  // Nota: solo recriaPrecioQuintalSoja, recriaCostoSiembraPastura y
+  // recriaMantenimientoPastura se cargan en USD (igual que la planilla del
+  // usuario); se convierten a ARS acá mismo multiplicando por la cotización
+  // del dólar (s.dolarMEP). recriaInsumoSanitarioPrecio ya está en $ y no se
+  // convierte.
+  const pesoPromRecria = usaRecria ? (pesoInicial + pesoFinRecria)/2 : 0;
+  const costoAnualPasturaHa = (s.recriaCostoHaQuintales * s.recriaPrecioQuintalSoja
+    + (s.recriaVidaUtilPastura > 0 ? s.recriaCostoSiembraPastura / s.recriaVidaUtilPastura : 0)
+    + s.recriaMantenimientoPastura) * s.dolarMEP;
+  const kgMSAprovechableHa = s.recriaProduccionAnualMS * (s.recriaEficienciaPct/100);
+  const costoKgMS = kgMSAprovechableHa > 0 ? costoAnualPasturaHa / kgMSAprovechableHa : 0;
+  const costoRecriaUnitAlimentacion = pesoPromRecria * (s.recriaConsumoPct/100) * s.recriaDias * costoKgMS;
+  const costoRecriaUnitSanidad = s.recriaDosisSanitaria * s.recriaInsumoSanitarioPrecio;
+  const costoRecriaUnitTotal = costoRecriaUnitAlimentacion + costoRecriaUnitSanidad;
+
+  r.pesoPromRecria = pesoPromRecria;
+  r.costoAnualPasturaHa = costoAnualPasturaHa;
+  r.kgMSAprovechableHa = kgMSAprovechableHa;
+  r.costoKgMS = costoKgMS;
+  r.costoRecriaUnitAlimentacion = costoRecriaUnitAlimentacion;
+  r.costoRecriaUnitSanidad = costoRecriaUnitSanidad;
+  r.costoRecriaUnitTotal = costoRecriaUnitTotal;
+
+  // --- Costos de Terminación (dieta de feedlot + sanidad), por cabeza ---
+  // Nota: a diferencia de la planilla original (que en esta celda referenciaba
+  // por error la Ganancia en kg de la etapa), aquí se usan los Días reales de
+  // Terminación — necesario para que el costo represente correctamente el
+  // consumo acumulado durante toda la etapa.
+  // Los precios de los componentes de la dieta y el INMC ya están en $,
+  // no requieren conversión por dólar.
+  const baseTerminacion = usaRecria ? pesoFinRecria : pesoInicial;
+  r.pesoIngresoTerminacion = baseTerminacion;
+  const pesoPromTerminacion = usaTerminacion ? (baseTerminacion + pesoFinTerminacion)/2 : 0;
+  const costoPromedioRacion = (s.termEnergiaPct/100)*s.termEnergiaPrecio
+    + (s.termProteinaPct/100)*s.termProteinaPrecio
+    + (s.termFibraPct/100)*s.termFibraPrecio
+    + (s.termNucleoPct/100)*s.termNucleoPrecio;
+  const costoTermUnitAlimentacion = pesoPromTerminacion * (s.termConsumoPct/100) * s.terminacionDias * costoPromedioRacion;
+  const costoTermUnitSanidad = s.termDosisSanitaria * s.termInsumoSanitarioPrecio;
+  // Costos Estructura: $/cabeza/día (instalaciones, mano de obra, etc.)
+  // prorrateado por los días que el animal pasa en Terminación.
+  const costoTermUnitEstructura = s.termEstructuraCabezaDia * s.terminacionDias;
+  const costoTermUnitTotal = costoTermUnitAlimentacion + costoTermUnitSanidad + costoTermUnitEstructura;
+  // Kg de alimento consumidos por día (promedio) y Conversión (kg alimento
+  // por kg de ganancia diaria) — solo informativos, exclusivos de Terminación.
+  const kgDiarioTerminacion = pesoPromTerminacion * (s.termConsumoPct/100);
+  const conversionTerminacion = s.terminacionADG > 0 ? kgDiarioTerminacion / s.terminacionADG : 0;
+
+  r.pesoPromTerminacion = pesoPromTerminacion;
+  r.costoPromedioRacion = costoPromedioRacion;
+  r.costoTermUnitAlimentacion = costoTermUnitAlimentacion;
+  r.costoTermUnitSanidad = costoTermUnitSanidad;
+  r.costoTermUnitEstructura = costoTermUnitEstructura;
+  r.costoTermUnitTotal = costoTermUnitTotal;
+  r.kgDiarioTerminacion = kgDiarioTerminacion;
+  r.conversionTerminacion = conversionTerminacion;
+
+  // --- Producción total (costo unitario por cabeza × cabezas que efectivamente
+  // ingresan a cada etapa — Terminación parte de las cabezas que salieron
+  // vivas de la Recría, no del lote original) ---
+  const costoProduccionRecria = usaRecria ? costoRecriaUnitTotal * cabezasIngresanRecria : 0;
+  const costoProduccionTerminacion = usaTerminacion ? costoTermUnitTotal * cabezasIngresanTerminacion : 0;
+  const costoProduccionTotal = costoProduccionRecria + costoProduccionTerminacion;
+
+  r.costoProduccionRecria = costoProduccionRecria;
+  r.costoProduccionTerminacion = costoProduccionTerminacion;
+  r.costoProduccionTotal = costoProduccionTotal;
+
+  // --- "Costo TOTAL por kg producido" en Recría y Terminación (item 8) ---
+  r.costoRecriaUnitPorKg = (usaRecria && kgRecria > 0) ? costoRecriaUnitTotal / kgRecria : 0;
+  r.costoTermUnitPorKg = (usaTerminacion && kgTerminacion > 0) ? costoTermUnitTotal / kgTerminacion : 0;
+
+  // --- Venta ---
+  // Tipo de precio: 'vivo' ($/kg vivo, fórmula histórica) o 'carne' ($/kg
+  // carne/res). Con CARNE el importe se multiplica además por el Rinde
+  // Estimado (rindeEstimadoPct) sobre el peso de venta efectivo (kilaje de
+  // salida de terminación, ya NETO — incluye el desbaste de la venta).
+  const factorRinde = s.tipoPrecioVenta === 'carne' ? (s.rindeEstimadoPct/100) : 1;
+  const importeHaciendaVenta = cabezasVenta * pesoVentaEfectivo * s.precioVenta * factorRinde;
+  const gastosComercialesVenta = importeHaciendaVenta * s.comisionVentaPct/100;
+  // Flete de Venta: en Solo Recría siempre a cargo del comprador (sin costo).
+  // Con alguna etapa de Terminación, el usuario elige 'retirar' (a cargo del
+  // comprador, sin costo — antes "a cargo de deCampoacampo") o 'planta'
+  // (Puesto en Planta: deCampoacampo entrega y se descuenta de la venta).
+  const costoFleteVenta = (usaTerminacion && s.fleteVentaModo === 'planta')
+    ? s.fleteVentaJaulas * s.fleteVentaKm * s.fleteVentaTarifaKm
+    : 0;
+  const importeTotalVenta = importeHaciendaVenta - gastosComercialesVenta - costoFleteVenta;
+
+  r.factorRinde = factorRinde;
+  r.importeHaciendaVenta = importeHaciendaVenta;
+  r.gastosComercialesVenta = gastosComercialesVenta;
+  r.costoFleteVenta = costoFleteVenta;
+  r.importeTotalVenta = importeTotalVenta;
+  r.fleteVentaResponsable = !usaTerminacion ? 'comprador' : (s.fleteVentaModo === 'planta' ? 'planta' : 'retirar');
+
+  // --- Resultado económico ---
+  const margenBruto = importeTotalVenta - importeTotalCompra;
+  const margenNetoProductivo = margenBruto - costoProduccionTotal;
+
+  // Costo de Oportunidad Financiero: 3 componentes, cada uno financia un
+  // capital distinto durante el período en que ese capital quedó
+  // efectivamente inmovilizado, hasta la fecha de cobro de la venta
+  // (= fechaSalidaVenta + plazoVentaDias):
+  //  1) Compra: sobre el Importe Total de Compra, desde el ingreso al campo.
+  //  2) Recría: sobre el Costo de Producción de Recría, desde la MITAD de la
+  //     etapa de Recría (el costo se devenga gradualmente durante la etapa).
+  //  3) Terminación: idem, desde la MITAD de la etapa de Terminación.
+  const diasFinanciamiento = diasProduccion - s.plazoCompraDias + s.plazoVentaDias;
+  const costoOportunidadFinanciero = importeTotalCompra * (s.tasaAnualPct/100) * diasFinanciamiento / 365;
+
+  const diasFromIngresoHastaCobro = diasProduccion + s.plazoVentaDias;
+  const diasFinancieroRecria = usaRecria ? (diasFromIngresoHastaCobro - s.recriaDias/2) : 0;
+  const diasFinancieroTerminacion = usaTerminacion
+    ? (diasFromIngresoHastaCobro - (usaRecria ? s.recriaDias : 0) - s.terminacionDias/2)
+    : 0;
+  const costoFinancieroRecria = usaRecria
+    ? costoProduccionRecria * (s.tasaAnualPct/100) * diasFinancieroRecria / 365
+    : 0;
+  const costoFinancieroTerminacion = usaTerminacion
+    ? costoProduccionTerminacion * (s.tasaAnualPct/100) * diasFinancieroTerminacion / 365
+    : 0;
+  const costoFinancieroTotal = costoOportunidadFinanciero + costoFinancieroRecria + costoFinancieroTerminacion;
+
+  const margenNetoEconomico = margenNetoProductivo - costoFinancieroTotal;
+
+  r.margenBruto = margenBruto;
+  r.margenNetoProductivo = margenNetoProductivo;
+  r.diasFinanciamiento = diasFinanciamiento;
+  r.costoOportunidadFinanciero = costoOportunidadFinanciero;
+  r.diasFinancieroRecria = diasFinancieroRecria;
+  r.diasFinancieroTerminacion = diasFinancieroTerminacion;
+  r.costoFinancieroRecria = costoFinancieroRecria;
+  r.costoFinancieroTerminacion = costoFinancieroTerminacion;
+  r.costoFinancieroTotal = costoFinancieroTotal;
+  r.margenNetoEconomico = margenNetoEconomico;
+
+  // --- Margen Neto Económico como % del importe pagado (compra + producción) ---
+  // Importe pagado = Importe Total de Compra + Costo de Producción Total
+  // (no incluye flete de venta ni costo financiero, que no son "pagados").
+  // El % anualizado usa una proporción lineal sobre 365 días (mismo criterio
+  // que el resto del simulador para la tasa de costo financiero, sin interés
+  // compuesto), tomando como días del negocio el total desde el ingreso al
+  // campo hasta el cobro de la venta.
+  const importePagadoTotal = importeTotalCompra + costoProduccionTotal;
+  const margenNetoEconomicoPct = importePagadoTotal > 0
+    ? (margenNetoEconomico / importePagadoTotal) * 100 : 0;
+  const diasNegocioTotal = diasFromIngresoHastaCobro;
+  const margenNetoEconomicoPctAnual = diasNegocioTotal > 0
+    ? margenNetoEconomicoPct * (365 / diasNegocioTotal) : 0;
+
+  r.importePagadoTotal = importePagadoTotal;
+  r.margenNetoEconomicoPct = margenNetoEconomicoPct;
+  r.diasNegocioTotal = diasNegocioTotal;
+  r.margenNetoEconomicoPctAnual = margenNetoEconomicoPctAnual;
+
+  // --- Precios de equilibrio ($/kg de venta) ---
+  // Si el precio de venta es por kg CARNE, el denominador también se expresa
+  // en kg carne (aplicando el Rinde Estimado), para que el precio de
+  // equilibrio resultante sea comparable al precio que el usuario ingresa.
+  const denomEquilibrio = cabezasVenta * pesoVentaEfectivo * (1 - s.comisionVentaPct/100) * factorRinde;
+  const precioEquilibrioProductivo = denomEquilibrio > 0
+    ? (importeTotalCompra + costoProduccionTotal + costoFleteVenta) / denomEquilibrio : 0;
+  const precioEquilibrioEconomico = denomEquilibrio > 0
+    ? (importeTotalCompra + costoProduccionTotal + costoFleteVenta + costoFinancieroTotal) / denomEquilibrio : 0;
+
+  r.precioEquilibrioProductivo = precioEquilibrioProductivo;
+  r.precioEquilibrioEconomico = precioEquilibrioEconomico;
+
+  return r;
+}
+
+/* =========================================================================
+   DIVISOR SEGÚN VISTA (Total / Por Cabeza / Por Kg) — específico por bloque
+   ========================================================================= */
+// Cada bloque de Resultados tiene su propio "kg" relevante para la vista
+// "Por Kg": Compra ÷ kg comprados, Recría ÷ kg de recría, Terminación ÷ kg
+// de terminación, Venta ÷ kg vendidos, Resultado Económico ÷ kilos finales
+// (peso final vivo, pre-desbaste, × cabezas de venta).
+function kgBloque(bloque, s, r){
+  switch(bloque){
+    case 'compra': return s.cabezasCompra * s.pesoCompra;
+    case 'recria': return s.cabezasCompra * r.kgRecria;
+    case 'terminacion': return s.cabezasCompra * r.kgTerminacion;
+    case 'venta': return r.cabezasVenta * r.pesoVentaEfectivo;
+    case 'resultado': return r.cabezasVenta * r.pesoFinal;
+    default: return r.kgGanadoTotal;
+  }
+}
+function divisor(bloque, s, r){
+  if (s.vista === 'cabeza') return s.cabezasCompra || 1;
+  if (s.vista === 'kg') return kgBloque(bloque,s,r) || 1;
+  return 1;
+}
+function val(n, bloque, s, r){ return n / divisor(bloque,s,r); }
+// Texto descriptivo del divisor activo, específico por bloque (reemplaza al
+// antiguo divLbl único, ya que cada bloque ahora divide por un kg distinto).
+function divLabel(bloque, s){
+  if (s.vista === 'cabeza') return '(por cabeza inicial)';
+  if (s.vista === 'kg'){
+    switch(bloque){
+      case 'compra': return '(por kg comprado)';
+      case 'recria': return '(por kg de recría)';
+      case 'terminacion': return '(por kg de terminación)';
+      case 'venta': return '(por kg vendido)';
+      case 'resultado': return '(por kg final)';
+      default: return '(por kg)';
+    }
+  }
+  return '(total del lote)';
+}
+
+/* =========================================================================
+   RENDER: tarjeta mini-estimador (columna derecha)
+   ========================================================================= */
+function renderCardEstimador(){
+  const card = document.getElementById('card-estimador');
+  const r = calcular(state);
+  if (!state.simuladorAbierto){
+    card.innerHTML = `
+      <h3>Estimador de Costos <span class="badge-nuevo">Nuevo</span></h3>
+      <div class="mini-resultado">
+        Costo de Hacienda + gastos: <b>${money(r.importeTotalCompra)}</b><br>
+        ¿Cuánto te conviene este negocio según cómo pensás engordar y vender? Simulalo completo.
+      </div>
+      <button class="btn-abrir-sim" id="btn-abrir-sim">Abrir Simulador de Negocio →</button>
+    `;
+    document.getElementById('btn-abrir-sim').onclick = abrirSimulador;
+  } else {
+    card.innerHTML = `
+      <h3>Simulador de Negocio</h3>
+      <div class="mini-resultado">
+        Margen Neto Económico:<br>
+        <b style="font-size:18px;color:${r.margenNetoEconomico>=0?'#234412':'#d25859'}">${money(r.margenNetoEconomico)}</b>
+      </div>
+      <button class="btn-abrir-sim" id="btn-cerrar-sim2" style="background:#9aa1ab; box-shadow:none;">Cerrar Simulador</button>
+    `;
+    document.getElementById('btn-cerrar-sim2').onclick = cerrarSimulador;
+  }
+}
+
+/* =========================================================================
+   ABRIR / CERRAR SIMULADOR (maneja el layout: colapsa título, oculta video)
+   ========================================================================= */
+function abrirSimulador(){
+  state.simuladorAbierto = true;
+  document.getElementById('titulo-full').style.display = 'none';
+  document.getElementById('titulo-collapsed').style.display = 'flex';
+  document.getElementById('vista-video').style.display = 'none';
+  document.getElementById('vista-simulador').style.display = 'block';
+  renderSimulador();
+  renderCardEstimador();
+}
+function cerrarSimulador(){
+  state.simuladorAbierto = false;
+  document.getElementById('titulo-full').style.display = 'block';
+  document.getElementById('titulo-collapsed').style.display = 'none';
+  document.getElementById('vista-video').style.display = 'block';
+  document.getElementById('vista-simulador').style.display = 'none';
+  renderCardEstimador();
+}
+
+/* =========================================================================
+   RENDER: panel principal del simulador (inputs + resultados)
+   ========================================================================= */
+function renderSimulador(){
+  const cont = document.getElementById('vista-simulador');
+  cont.innerHTML = `
+    <div class="sim-wrap">
+      <div class="sim-header">
+        <div>
+          <h2>Simulador de Negocio Ganadero <span class="dolar-mep-badge" id="dolar-mep-display">USD/MEP: —</span></h2>
+          <p>Estimación económica completa del negocio según tu oferta de compra y tu plan productivo. Resultados a modo de referencia, + IVA donde corresponda.</p>
+        </div>
+      </div>
+
+      <div class="plan-global">
+        <div class="campo-modo-productivo">
+          <label class="modo-productivo-label">¿Qué vas a hacer con los animales<span class="tip" data-tip="Define qué etapas de engorde vas a aplicar antes de vender.">?</span></label>
+          <div class="toggle-row modo-productivo-toggle" id="modo-productivo-toggle">
+            <button data-val="recria_terminacion" class="toggle active">Recría + Terminación</button>
+            <button data-val="solo_recria" class="toggle">Solo Recría</button>
+            <button data-val="solo_terminacion" class="toggle">Solo Terminación</button>
+          </div>
+          <p class="nota-formula"><span class="fecha-muted" id="nota-fecha-ingreso" style="margin-left:0;"></span></p>
+        </div>
+
+        <div class="campo campo-grande etapa-sep"><label>Mortandad (%)<span class="tip" data-tip="% de cabezas que se pierden entre la compra y la venta.">?</span></label><input type="number" step="0.5" id="in-mortandad"></div>
+
+        <div class="peso-stepper" id="peso-stepper"></div>
+      </div>
+
+      <div class="sim-secciones">
+        <div class="sim-sec" id="sec-costos-recria">
+          <div class="sim-sec-head">
+            <h4><svg class="sec-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 5.5c-1.2-1-2.8-.7-3.3.6-.4 1 .1 2.2 1.3 2.6"/><path d="M17 5.5c1.2-1 2.8-.7 3.3.6.4 1-.1 2.2-1.3 2.6"/><path d="M5.3 9c-1.2 0-2.3.8-2.3 2s1.3 2 2.3 1.6"/><path d="M18.7 9c1.2 0 2.3.8 2.3 2s-1.3 2-2.3 1.6"/><path d="M7 9a3 3 0 0 1 3-3h4a3 3 0 0 1 3 3v5a5 5 0 0 1-5 5h0a5 5 0 0 1-5-5V9z"/><path d="M9.5 16c1 .7 2 .7 3 0"/></svg>Esquema Recría<span class="fecha-muted" id="fecha-fin-recria-costos"></span></h4>
+            <button class="btn-editar" id="btn-editar-costos-recria" type="button" title="Editar esta sección">✎</button>
+          </div>
+          <div class="sim-sec-resumen" id="resumen-costos-recria"></div>
+          <div class="sim-sec-body">
+            <div class="fila-2col">
+              <div class="campo campo-grande"><label>Ganancia Diaria en Recría (kg/día)<span class="tip" data-tip="ADG (Average Daily Gain) estándar de recría ≈ 0,5 kg/día. Ajustalo según tu plan nutricional.">?</span></label><input type="number" step="0.05" id="in-recria-adg"></div>
+              <div class="campo campo-grande"><label>Días en Recría<span class="fecha-muted" id="fecha-fin-recria-plan"></span></label><input type="number" step="10" id="in-recria-dias"></div>
+            </div>
+            <p class="nota-formula" id="nota-recria-ganancia"></p>
+
+            <div class="sub-columnas">
+              <div class="sub-columna">
+                <h6>Pastura<span class="tip" data-tip="Costo de la pastura por kg de materia seca producida, según el valor de la tierra y el costo de implantación/mantenimiento de la pastura.">?</span></h6>
+                <div class="campo"><label>Costo Hectárea (quintales de soja)<span class="tip" data-tip="Valor de la hectárea de pastura expresado en quintales de soja equivalentes, referencia habitual para el costo de oportunidad de la tierra.">?</span></label><input type="number" step="1" id="in-recria-ha-quintales"></div>
+                <div class="campo"><label>Precio Quintal de Soja (USD)</label><input type="text" inputmode="numeric" id="in-recria-precio-quintal"></div>
+                <div class="campo"><label>Costo Siembra Pastura (USD/ha)</label><input type="text" inputmode="numeric" id="in-recria-siembra"></div>
+                <div class="campo"><label>Mantenimiento Anual Pastura (USD/ha)</label><input type="text" inputmode="numeric" id="in-recria-mantenimiento"></div>
+                <div class="campo"><label>Vida Útil de la Pastura (años)</label><input type="number" step="1" id="in-recria-vida-util"></div>
+                <div class="campo"><label>Producción Anual de MS (kg/ha)<span class="tip" data-tip="Materia seca producida por hectárea por año.">?</span></label><input type="text" inputmode="numeric" id="in-recria-prod-ms"></div>
+                <div class="campo"><label>Eficiencia de Aprovechamiento (%)<span class="tip" data-tip="% de la materia seca producida que realmente se aprovecha; el resto se pierde en el pastoreo.">?</span></label><input type="number" step="1" id="in-recria-eficiencia"></div>
+                <div class="campo"><label>Costo por kg de MS producido</label><span class="badge-fijo" id="out-recria-costokgms"></span></div>
+              </div>
+
+              <div class="sub-columna">
+                <h6>Alimentación</h6>
+                <div class="campo"><label>Consumo (% del peso vivo/día)<span class="tip" data-tip="Consumo diario de materia seca como % del peso vivo promedio del animal en esta etapa.">?</span></label><input type="number" step="0.05" id="in-recria-consumo"></div>
+                <div class="campo"><label>Peso de Ingreso a la Recría</label><span class="badge-fijo" id="out-recria-pesoingreso"></span></div>
+                <div class="campo"><label>Peso Promedio en Recría</label><span class="badge-fijo" id="out-recria-pesoprom"></span></div>
+                <div class="campo"><label>Peso de Salida de la Recría</label><span class="badge-fijo" id="out-recria-pesosalida"></span></div>
+                <div class="campo"><label>Días en Recría</label><span class="badge-fijo" id="out-recria-diasplan"></span></div>
+                <div class="campo"><label>Costo Alimentación (por cabeza)</label><span class="badge-fijo" id="out-recria-costoalim"></span></div>
+              </div>
+
+              <div class="sub-columna">
+                <h6>Sanidad</h6>
+                <div class="campo"><label>INMC ($/kg)</label><input type="text" inputmode="numeric" id="in-recria-sanitario-precio"></div>
+                <div class="campo"><label>Sanidad en Recría (kg INMC)</label><input type="number" step="0.1" id="in-recria-dosis"></div>
+                <div class="campo"><label>Costo Sanidad (por cabeza)</label><span class="badge-fijo" id="out-recria-costosanidad"></span></div>
+              </div>
+
+              <div class="fila-ancha">
+                <div class="campo"><label style="font-weight:800;">Costo TOTAL por cabeza</label><span class="badge-fijo" id="out-recria-costototal" style="font-size:18px;"></span></div>
+                <div class="campo"><label style="font-weight:800;">Costo TOTAL por kg producido</label><span class="badge-fijo" id="out-recria-costokgproducido" style="font-size:18px;"></span></div>
+              </div>
+            </div>
+
+            <button class="btn-confirmar-sec" id="btn-confirmar-costos-recria" type="button">Confirmar ✓</button>
+          </div>
+        </div>
+
+        <div class="sim-sec" id="sec-costos-terminacion">
+          <div class="sim-sec-head">
+            <h4><svg class="sec-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2c2.2 2.1 3.2 5.4 3.2 9.5S14.2 19.9 12 22c-2.2-2.1-3.2-5.4-3.2-10.5S9.8 4.1 12 2z"/><path d="M9.3 6.2h5.4"/><path d="M8.9 9.3h6.2"/><path d="M8.8 12.4h6.4"/><path d="M9.1 15.5h5.8"/><path d="M9.6 18.5h4.8"/><path d="M9 20.5c-1.4.8-2.8.8-3.8-.3"/><path d="M15 20.5c1.4.8 2.8.8 3.8-.3"/></svg>Esquema Terminación<span class="fecha-muted" id="fecha-fin-term-costos"></span></h4>
+            <button class="btn-editar" id="btn-editar-costos-terminacion" type="button" title="Editar esta sección">✎</button>
+          </div>
+          <div class="sim-sec-resumen" id="resumen-costos-terminacion"></div>
+          <div class="sim-sec-body">
+            <div class="fila-2col">
+              <div class="campo campo-grande"><label>Ganancia Diaria en Terminación (kg/día)<span class="tip" data-tip="ADG estándar de terminación ≈ 1,25 kg/día. Ajustalo según tu plan nutricional.">?</span></label><input type="number" step="0.05" id="in-term-adg"></div>
+              <div class="campo campo-grande"><label>Días en Terminación<span class="fecha-muted" id="fecha-fin-term-plan"></span></label><input type="number" step="10" id="in-term-dias"></div>
+            </div>
+            <p class="nota-formula" id="nota-term-ganancia"></p>
+
+            <p class="nota-formula">Costo de la dieta de feedlot según la participación y el precio de cada componente.</p>
+
+            <table class="tabla-dieta">
+              <thead>
+                <tr><th>Componente</th><th>% Participación</th><th>Precio ($/kg)</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="comp">Energía<span class="tip" data-tip="Grano (maíz/sorgo). Suele representar 65%-75% de la dieta.">?</span></td>
+                  <td class="col-pct"><input type="number" step="1" id="in-term-energia-pct"></td>
+                  <td class="col-precio"><input type="text" inputmode="numeric" id="in-term-energia-precio"></td>
+                </tr>
+                <tr>
+                  <td class="comp">Proteína<span class="tip" data-tip="Expeller de soja, girasol o harina de maní.">?</span></td>
+                  <td class="col-pct"><input type="number" step="1" id="in-term-proteina-pct"></td>
+                  <td class="col-precio"><input type="text" inputmode="numeric" id="in-term-proteina-precio"></td>
+                </tr>
+                <tr>
+                  <td class="comp">Fibra<span class="tip" data-tip="Silo de maíz, rollo picado o cáscara de maní.">?</span></td>
+                  <td class="col-pct"><input type="number" step="0.5" id="in-term-fibra-pct"></td>
+                  <td class="col-precio"><input type="text" inputmode="numeric" id="in-term-fibra-precio"></td>
+                </tr>
+                <tr>
+                  <td class="comp">Núcleo Mineral<span class="tip" data-tip="Calcio, vitaminas y monensina (aditivo) para mejorar la conversión.">?</span></td>
+                  <td class="col-pct"><input type="number" step="0.5" id="in-term-nucleo-pct"></td>
+                  <td class="col-precio"><input type="text" inputmode="numeric" id="in-term-nucleo-precio"></td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="fila-2col">
+              <div class="campo"><label>Participación total de la dieta</label><span class="badge-fijo" id="out-term-sumapct"></span></div>
+              <div class="campo"><label>Costo Promedio de la Ración (ARS/kg)</label><span class="badge-fijo" id="out-term-costoracion"></span></div>
+            </div>
+
+            <div class="sub-columnas cols-2">
+              <div class="sub-columna">
+                <h6>Alimentación</h6>
+                <div class="campo"><label>Consumo (% del peso vivo/día)<span class="tip" data-tip="Consumo diario de la ración como % del peso vivo promedio del animal en esta etapa.">?</span></label><input type="number" step="0.05" id="in-term-consumo"></div>
+                <div class="campo"><label>Peso Promedio en Terminación</label><span class="badge-fijo" id="out-term-pesoprom"></span></div>
+                <div class="campo"><label>Días en Terminación</label><span class="badge-fijo" id="out-term-diasplan"></span></div>
+                <div class="campo"><label>Costo Alimentación (por cabeza)</label><span class="badge-fijo" id="out-term-costoalim"></span></div>
+                <div class="campo"><label>Kg alimento consumidos a diario (promedio)<span class="tip" data-tip="Peso Promedio en Terminación × % de Consumo diario.">?</span></label><span class="badge-fijo" id="out-term-kgdiario"></span></div>
+                <div class="campo"><label>Conversión<span class="tip" data-tip="Kg de alimento consumidos por día ÷ ganancia diaria (ADG) en Terminación.">?</span></label><span class="badge-fijo" id="out-term-conversion"></span></div>
+              </div>
+
+              <div class="sub-columna">
+                <h6>Sanidad</h6>
+                <div class="campo"><label>INMC ($/kg)</label><input type="text" inputmode="numeric" id="in-term-sanitario-precio"></div>
+                <div class="campo"><label>Sanidad en Terminación (kg INMC)</label><input type="number" step="0.1" id="in-term-dosis"></div>
+                <div class="campo"><label>Costo Sanidad (por cabeza)</label><span class="badge-fijo" id="out-term-costosanidad"></span></div>
+
+                <h6 style="margin-top:18px;">Costos Estructura<span class="tip" data-tip="Costos fijos de estructura del feedlot (instalaciones, mano de obra, etc.), prorrateados por cabeza y por día.">?</span></h6>
+                <div class="campo"><label>Costo Estructura ($/cabeza/día)</label><input type="number" step="10" id="in-term-estructura-cabezadia"></div>
+                <div class="campo"><label>Costo Estructura (por cabeza)</label><span class="badge-fijo" id="out-term-costoestructura"></span></div>
+              </div>
+
+              <div class="fila-ancha">
+                <div class="campo"><label style="font-weight:800;">Costo TOTAL por cabeza</label><span class="badge-fijo" id="out-term-costototal" style="font-size:18px;"></span></div>
+                <div class="campo"><label style="font-weight:800;">Costo TOTAL por kg producido</label><span class="badge-fijo" id="out-term-costokgproducido" style="font-size:18px;"></span></div>
+              </div>
+            </div>
+
+            <button class="btn-confirmar-sec" id="btn-confirmar-costos-terminacion" type="button">Confirmar ✓</button>
+          </div>
+        </div>
+
+        <div class="sim-sec" id="sec-venta">
+          <div class="sim-sec-head">
+            <h4><svg class="sec-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.59 2.59a2 2 0 0 0-2.83 0L3 9.34a2 2 0 0 0 0 2.83l8.83 8.83a2 2 0 0 0 2.83 0l6.76-6.76a2 2 0 0 0 0-2.83Z"/><circle cx="8.5" cy="8.5" r="1.5"/></svg>Tu Venta<span class="fecha-muted" id="nota-fecha-venta"></span></h4>
+            <button class="btn-editar" id="btn-editar-venta" type="button" title="Editar esta sección">✎</button>
+          </div>
+          <div class="sim-sec-resumen" id="resumen-venta"></div>
+          <div class="sim-sec-body">
+            <p class="nota-formula" id="nota-venta-resumen"></p>
+            <div class="fila-2col">
+              <div class="campo">
+                <label>Precio de Venta expresado en<span class="tip" data-tip="Elegí si tu precio es por kg de animal vivo o por kg de res (carne) en gancho.">?</span></label>
+                <div class="toggle-row" id="tipo-precio-venta-toggle">
+                  <button data-val="vivo" class="toggle active">$/kg VIVO</button>
+                  <button data-val="carne" class="toggle">$/kg CARNE</button>
+                </div>
+              </div>
+              <div class="campo">
+                <label><span id="label-precio-venta">Precio de Venta ($/kg VIVO +IVA)</span><span class="tip" data-tip="El kilaje de salida de terminación se considera NETO, ya incluye el desbaste de la venta.">?</span></label>
+                <div class="campo-precio-venta">
+                  <button class="step-btn-sm" id="btn-precio-venta-menos" type="button" title="-$50">−</button>
+                  <input type="text" inputmode="numeric" id="in-precio-venta">
+                  <button class="step-btn-sm" id="btn-precio-venta-mas" type="button" title="+$50">+</button>
+                </div>
+              </div>
+            </div>
+            <div class="campo" id="campo-rinde-estimado" style="display:none;">
+              <label>Rinde Estimado<span class="tip" data-tip="% de rendimiento de res respecto al peso vivo. Convierte tu precio $/kg carne a un equivalente sobre el peso vivo del animal.">?</span></label>
+              <input type="number" step="0.5" id="in-rinde-estimado">
+            </div>
+
+            <div class="fila-2col">
+              <div class="campo"><label>Gastos Comerciales Venta (%)</label><input type="number" step="0.5" id="in-comision-venta"></div>
+              <div class="campo"><label>Plazo de cobro (días)<span class="tip" data-tip="Días desde la entrega de la hacienda vendida hasta que cobrás.">?</span></label><input type="number" step="1" id="in-plazo-venta"></div>
+            </div>
+
+            <div class="campo">
+              <label>Flete de Venta<span class="tip" id="tip-flete-venta" data-tip="">?</span></label>
+              <span class="badge-locked" id="badge-flete-venta">A Cargo del Comprador</span>
+              <div class="toggle-row" id="flete-venta-toggle" style="display:none;">
+                <button data-val="retirar" class="toggle active">A Retirar</button>
+                <button data-val="planta" class="toggle">Puesto en Planta</button>
+              </div>
+            </div>
+            <div id="planta-venta-wrap" style="display:none; margin-top:4px;">
+              <div class="flete-grid">
+                <div class="flete-campo"><label>Jaulas</label><input type="number" id="in-flete-venta-jaulas" value="4" min="1" step="1"></div>
+                <div class="flete-campo"><label>Km</label><input type="text" inputmode="numeric" id="in-flete-venta-km" value="370"></div>
+                <div class="flete-campo"><label>$/km</label><input type="text" inputmode="numeric" id="in-flete-venta-tarifa" value="2.500"></div>
+              </div>
+              <div class="flete-total" id="flete-venta-total-display"></div>
+            </div>
+
+            <button class="btn-confirmar-sec" id="btn-confirmar-venta" type="button">Confirmar ✓</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="resultados-wrap">
+        <div class="campo" style="margin-bottom:18px;"><label>Costo de oportunidad anual (%)<span class="tip" data-tip="Tasa anual que usás para valorar el capital inmovilizado en el negocio (costo financiero o de oportunidad).">?</span></label><input type="number" step="1" id="in-tasa"></div>
+        <div class="resultados-header">
+          <h3>Resultado del Negocio</h3>
+          <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+            <button class="btn-ver-totales" id="btn-ver-totales-detalles" type="button"></button>
+            <div class="view-toggle moneda-toggle" id="moneda-toggle">
+              <button data-m="ars" class="active">$ ARS</button>
+              <button data-m="usd">USD</button>
+            </div>
+            <div class="view-toggle" id="view-toggle">
+              <button data-v="total" class="active">Total</button>
+              <button data-v="cabeza">Por Cabeza</button>
+              <button data-v="kg">Por Kg</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="resultados-tablas"></div>
+
+        <div id="margen-final-wrap"></div>
+
+        <h3 style="margin-top:28px;">Precio de Equilibrio (a partir del cual el negocio empata)</h3>
+        <div class="equilibrio-grid" id="equilibrio-grid"></div>
+
+        <div class="disclaimer">
+          Valores estimados a modo de referencia para apoyar la decisión de compra — no constituyen asesoramiento financiero.<br>
+          Todos los importes son + IVA. El resultado real del negocio depende de variables de mercado y productivas fuera de tu control.
+        </div>
+      </div>
+    </div>
+  `;
+
+  // cargar valores actuales en los inputs
+  document.querySelectorAll('#modo-productivo-toggle .toggle').forEach(b=>{
+    b.classList.toggle('active', b.dataset.val === state.modoProductivo);
+  });
+  document.getElementById('in-recria-adg').value = state.recriaADG;
+  document.getElementById('in-recria-dias').value = state.recriaDias;
+  document.getElementById('in-term-adg').value = state.terminacionADG;
+  document.getElementById('in-term-dias').value = state.terminacionDias;
+  document.getElementById('in-mortandad').value = state.mortandadPct;
+
+  document.getElementById('in-recria-ha-quintales').value = state.recriaCostoHaQuintales;
+  document.getElementById('in-recria-precio-quintal').value = formatMiles(state.recriaPrecioQuintalSoja);
+  document.getElementById('in-recria-siembra').value = formatMiles(state.recriaCostoSiembraPastura);
+  document.getElementById('in-recria-mantenimiento').value = formatMiles(state.recriaMantenimientoPastura);
+  document.getElementById('in-recria-vida-util').value = state.recriaVidaUtilPastura;
+  document.getElementById('in-recria-prod-ms').value = formatMiles(state.recriaProduccionAnualMS);
+  document.getElementById('in-recria-eficiencia').value = state.recriaEficienciaPct;
+  document.getElementById('in-recria-consumo').value = state.recriaConsumoPct;
+  document.getElementById('in-recria-sanitario-precio').value = formatMiles(state.recriaInsumoSanitarioPrecio);
+  document.getElementById('in-recria-dosis').value = state.recriaDosisSanitaria;
+
+  document.getElementById('in-term-energia-pct').value = state.termEnergiaPct;
+  document.getElementById('in-term-energia-precio').value = formatMiles(state.termEnergiaPrecio);
+  document.getElementById('in-term-proteina-pct').value = state.termProteinaPct;
+  document.getElementById('in-term-proteina-precio').value = formatMiles(state.termProteinaPrecio);
+  document.getElementById('in-term-fibra-pct').value = state.termFibraPct;
+  document.getElementById('in-term-fibra-precio').value = formatMiles(state.termFibraPrecio);
+  document.getElementById('in-term-nucleo-pct').value = state.termNucleoPct;
+  document.getElementById('in-term-nucleo-precio').value = formatMiles(state.termNucleoPrecio);
+  document.getElementById('in-term-consumo').value = state.termConsumoPct;
+  document.getElementById('in-term-sanitario-precio').value = formatMiles(state.termInsumoSanitarioPrecio);
+  document.getElementById('in-term-dosis').value = state.termDosisSanitaria;
+  document.getElementById('in-term-estructura-cabezadia').value = state.termEstructuraCabezaDia;
+  document.getElementById('in-rinde-estimado').value = state.rindeEstimadoPct;
+  document.getElementById('in-precio-venta').value = formatMiles(state.precioVenta);
+  document.getElementById('in-comision-venta').value = state.comisionVentaPct;
+  document.getElementById('in-flete-venta-jaulas').value = state.fleteVentaJaulas;
+  document.getElementById('in-flete-venta-km').value = formatMiles(state.fleteVentaKm);
+  document.getElementById('in-flete-venta-tarifa').value = formatMiles(state.fleteVentaTarifaKm);
+  document.getElementById('in-plazo-venta').value = state.plazoVentaDias;
+  document.getElementById('in-tasa').value = state.tasaAnualPct;
+
+  bindSimuladorEvents();
+  setupSeccionesConfirmables();
+  actualizarVisibilidadFases();
+  actualizarFleteVentaBadge();
+  actualizarLabelPrecioVenta();
+  renderDolarMEPDisplay();
+  renderResultados();
+}
+
+/* =========================================================================
+   CONFIRMAR / COLAPSAR SECCIONES (Tu Plan Productivo, Tu Venta,
+   Costos de Recría, Costos de Terminación)
+   ========================================================================= */
+function setupSeccionConfirmable(key, secId, btnConfirmarId, btnEditarId){
+  const sec = document.getElementById(secId);
+  const btnConfirmar = document.getElementById(btnConfirmarId);
+  const btnEditar = document.getElementById(btnEditarId);
+  if (!sec || !btnConfirmar || !btnEditar) return;
+  const body = sec.querySelector('.sim-sec-body');
+
+  function colapsar(){
+    body.style.maxHeight = body.scrollHeight + 'px';
+    sec.classList.add('confirmado');
+    requestAnimationFrame(()=> requestAnimationFrame(()=>{ body.style.maxHeight = '0px'; }));
+  }
+  function expandir(){
+    sec.classList.remove('confirmado');
+    body.style.maxHeight = body.scrollHeight + 'px';
+    body.addEventListener('transitionend', function onEnd(e){
+      if (e.target===body && e.propertyName==='max-height'){
+        body.style.maxHeight = 'none';
+        body.removeEventListener('transitionend', onEnd);
+      }
+    });
+  }
+
+  btnConfirmar.addEventListener('click', ()=>{
+    state.confirmado[key] = true;
+    colapsar();
+    setTimeout(()=> irASiguienteSeccionPendiente(sec), 340);
+  });
+  btnEditar.addEventListener('click', ()=>{
+    state.confirmado[key] = false;
+    expandir();
+  });
+
+  if (state.confirmado[key]){
+    sec.classList.add('confirmado');
+    body.style.maxHeight = '0px';
+  } else {
+    body.style.maxHeight = 'none';
+  }
+}
+function irASiguienteSeccionPendiente(actual){
+  const secciones = [...document.querySelectorAll('.sim-sec')];
+  const idx = secciones.indexOf(actual);
+  for (let i = idx+1; i < secciones.length; i++){
+    const sec = secciones[i];
+    const visible = sec.offsetParent !== null && getComputedStyle(sec).display !== 'none';
+    if (visible && !sec.classList.contains('confirmado')){
+      sec.scrollIntoView({behavior:'smooth', block:'start'});
+      return;
+    }
+  }
+}
+function setupSeccionesConfirmables(){
+  setupSeccionConfirmable('venta', 'sec-venta', 'btn-confirmar-venta', 'btn-editar-venta');
+  setupSeccionConfirmable('costosRecria', 'sec-costos-recria', 'btn-confirmar-costos-recria', 'btn-editar-costos-recria');
+  setupSeccionConfirmable('costosTerminacion', 'sec-costos-terminacion', 'btn-confirmar-costos-terminacion', 'btn-editar-costos-terminacion');
+}
+
+function actualizarVisibilidadFases(){
+  const showRecria = state.modoProductivo !== 'solo_terminacion';
+  const showTerminacion = state.modoProductivo !== 'solo_recria';
+  document.getElementById('sec-costos-recria').style.display = showRecria ? 'block' : 'none';
+  document.getElementById('sec-costos-terminacion').style.display = showTerminacion ? 'block' : 'none';
+}
+
+function actualizarPanelesCostos(s,r){
+  const set = (id, html) => { const el = document.getElementById(id); if (el) el.innerHTML = html; };
+
+  const notaRecria = document.getElementById('nota-recria-ganancia');
+  if (notaRecria) notaRecria.innerHTML = r.usaRecria
+    ? `→ Ganancia total en Recría: <b>${num(r.kgRecria,0)} kg</b> (${num(s.recriaADG,2)} kg/día × ${num(s.recriaDias,0)} días)`
+    : '';
+  const notaTerm = document.getElementById('nota-term-ganancia');
+  if (notaTerm) notaTerm.innerHTML = r.usaTerminacion
+    ? `→ Ganancia total en Terminación: <b>${num(r.kgTerminacion,0)} kg</b> (${num(s.terminacionADG,2)} kg/día × ${num(s.terminacionDias,0)} días)`
+    : '';
+
+  set('out-recria-costokgms', money(r.costoKgMS)+' /kg MS');
+  set('out-recria-pesoingreso', num(r.pesoInicial,0)+' kg');
+  set('out-recria-pesoprom', num(r.pesoPromRecria,0)+' kg');
+  set('out-recria-pesosalida', num(r.pesoFinRecria,0)+' kg');
+  set('out-recria-diasplan', num(s.recriaDias,0)+' días');
+  set('out-recria-costoalim', money(r.costoRecriaUnitAlimentacion)+' /cab.');
+  set('out-recria-costosanidad', money(r.costoRecriaUnitSanidad)+' /cab.');
+  set('out-recria-costototal', money(r.costoRecriaUnitTotal)+' /cab.');
+  set('out-recria-costokgproducido', money(r.costoRecriaUnitPorKg)+' /kg');
+
+  const sumaPct = s.termEnergiaPct + s.termProteinaPct + s.termFibraPct + s.termNucleoPct;
+  const colorSuma = Math.abs(sumaPct-100) < 0.01 ? 'var(--verde-dark)' : 'var(--rojo)';
+  set('out-term-sumapct', `<span style="color:${colorSuma}">${pct(sumaPct)}</span>`);
+  set('out-term-costoracion', money(r.costoPromedioRacion)+' /kg');
+  set('out-term-pesoprom', num(r.pesoPromTerminacion,0)+' kg');
+  set('out-term-diasplan', num(s.terminacionDias,0)+' días');
+  set('out-term-costoalim', money(r.costoTermUnitAlimentacion)+' /cab.');
+  set('out-term-costosanidad', money(r.costoTermUnitSanidad)+' /cab.');
+  set('out-term-costoestructura', money(r.costoTermUnitEstructura)+' /cab.');
+  set('out-term-costototal', money(r.costoTermUnitTotal)+' /cab.');
+  set('out-term-kgdiario', num(r.kgDiarioTerminacion,2)+' kg/día');
+  set('out-term-conversion', num(r.conversionTerminacion,2)+' kg alim./kg prod.');
+  set('out-term-costokgproducido', money(r.costoTermUnitPorKg)+' /kg');
+}
+
+function actualizarFechas(s,r){
+  const set = (id, html) => { const el = document.getElementById(id); if (el) el.innerHTML = html; };
+
+  set('nota-fecha-ingreso', `→ Ingreso estimado: ${formatFecha(r.fechaIngreso)}`);
+
+  set('fecha-fin-recria-plan', r.usaRecria ? `→ sale el ${formatFecha(r.fechaFinRecria)}` : '');
+  set('fecha-fin-term-plan', r.usaTerminacion ? `→ sale el ${formatFecha(r.fechaFinTerminacion)}` : '');
+  set('fecha-fin-recria-costos', r.usaRecria ? `→ salen el ${formatFecha(r.fechaFinRecria)}` : '');
+  set('fecha-fin-term-costos', r.usaTerminacion ? `→ salen el ${formatFecha(r.fechaFinTerminacion)}` : '');
+
+  set('nota-fecha-venta', `→ Salida a venta: ${formatFecha(r.fechaSalidaVenta)}`);
+  set('nota-venta-resumen', `Vas a vender <b>${num(r.cabezasVenta,0)}</b> animales de <b>${num(r.pesoVentaEfectivo,0)} kg</b>.`);
+}
+
+/* =========================================================================
+   RESUMEN COLAPSADO — tarjeta visible cuando la sección está confirmada
+   (Esquema Recría, Esquema Terminación, Tu Venta). 3 columnas equidistantes
+   con el detalle de ingreso/duración/salida de la etapa + fila de costos.
+   ========================================================================= */
+function actualizarResumenColapsado(s,r){
+  const labelPrecioVenta = s.tipoPrecioVenta === 'carne' ? '$/kg carne' : '$/kg vivo';
+
+  const elR = document.getElementById('resumen-costos-recria');
+  if (elR){
+    elR.innerHTML = !r.usaRecria ? '' : `
+      <div class="resumen-3col">
+        <div class="resumen-col">
+          <div class="resumen-col-lbl">Ingresan</div>
+          <div class="resumen-col-val"><b>${num(r.cabezasIngresanRecria,0)}</b> animales<br>de <b>${num(r.pesoInicial,0)} kg</b><br>el <b>${formatFecha(r.fechaIngreso)}</b></div>
+        </div>
+        <div class="resumen-col">
+          <div class="resumen-col-lbl">Duración</div>
+          <div class="resumen-col-val"><b>${num(s.recriaDias,0)} días</b> de recría</div>
+          <div class="resumen-col-sub">ganancia diaria de <b>${num(s.recriaADG,2)} kg/día</b></div>
+        </div>
+        <div class="resumen-col">
+          <div class="resumen-col-lbl">Salen</div>
+          <div class="resumen-col-val"><b>${num(r.cabezasSalenRecria,0)}</b> animales<br>de <b>${num(r.pesoFinRecria,0)} kg</b><br>el <b>${formatFecha(r.fechaFinRecria)}</b></div>
+        </div>
+      </div>
+      <div class="resumen-costos-row">
+        <div class="resumen-costo"><span class="lbl">Costo x kg ganado</span><span class="val">${money(r.costoRecriaUnitPorKg)}</span></div>
+        <div class="resumen-costo"><span class="lbl">Costo x cabeza</span><span class="val">${money(r.costoRecriaUnitTotal)}</span></div>
+        <div class="resumen-costo resumen-costo-total"><span class="lbl">Costo TOTAL</span><span class="val">${money(r.costoProduccionRecria)}</span></div>
+      </div>`;
+  }
+
+  const elT = document.getElementById('resumen-costos-terminacion');
+  if (elT){
+    elT.innerHTML = !r.usaTerminacion ? '' : `
+      <div class="resumen-3col">
+        <div class="resumen-col">
+          <div class="resumen-col-lbl">Ingresan</div>
+          <div class="resumen-col-val"><b>${num(r.cabezasIngresanTerminacion,0)}</b> animales<br>de <b>${num(r.pesoIngresoTerminacion,0)} kg</b><br>el <b>${formatFecha(r.fechaIngresoTerminacion)}</b></div>
+        </div>
+        <div class="resumen-col">
+          <div class="resumen-col-lbl">Duración</div>
+          <div class="resumen-col-val"><b>${num(s.terminacionDias,0)} días</b> de terminación</div>
+          <div class="resumen-col-sub">ganancia diaria de <b>${num(s.terminacionADG,2)} kg/día</b></div>
+        </div>
+        <div class="resumen-col">
+          <div class="resumen-col-lbl">Salen</div>
+          <div class="resumen-col-val"><b>${num(r.cabezasSalenTerminacion,0)}</b> animales<br>de <b>${num(r.pesoFinTerminacion,0)} kg</b><br>el <b>${formatFecha(r.fechaFinTerminacion)}</b></div>
+        </div>
+      </div>
+      <div class="resumen-costos-row">
+        <div class="resumen-costo"><span class="lbl">Costo x kg ganado</span><span class="val">${money(r.costoTermUnitPorKg)}</span></div>
+        <div class="resumen-costo"><span class="lbl">Costo x cabeza</span><span class="val">${money(r.costoTermUnitTotal)}</span></div>
+        <div class="resumen-costo resumen-costo-total"><span class="lbl">Costo TOTAL</span><span class="val">${money(r.costoProduccionTerminacion)}</span></div>
+      </div>`;
+  }
+
+  const elV = document.getElementById('resumen-venta');
+  if (elV){
+    const fechaCobro = addDias(r.fechaSalidaVenta, s.plazoVentaDias);
+    const kgTotalVenta = r.cabezasVenta * r.pesoVentaEfectivo;
+    const precioNetoKg = kgTotalVenta > 0 ? r.importeTotalVenta / kgTotalVenta : 0;
+    const importePorCabeza = r.cabezasVenta > 0 ? r.importeTotalVenta / r.cabezasVenta : 0;
+    const labelFlete = r.fleteVentaResponsable === 'planta' ? 'puesto en planta'
+      : r.fleteVentaResponsable === 'retirar' ? 'a retirar en campo'
+      : 'a cargo del comprador';
+    elV.innerHTML = `
+      <div class="resumen-3col">
+        <div class="resumen-col">
+          <div class="resumen-col-lbl">Vendés</div>
+          <div class="resumen-col-val"><b>${num(r.cabezasVenta,0)}</b> animales<br>de <b>${num(r.pesoVentaEfectivo,0)} kg</b><br>el <b>${formatFecha(r.fechaSalidaVenta)}</b></div>
+        </div>
+        <div class="resumen-col">
+          <div class="resumen-col-lbl">Precio</div>
+          <div class="resumen-col-val"><b>${money(s.precioVenta)} ${labelPrecioVenta}</b></div>
+          <div class="resumen-col-sub">Gastos comerciales <b>${pct(s.comisionVentaPct)}</b></div>
+          <div class="resumen-col-sub">Flete <b>${labelFlete}</b></div>
+        </div>
+        <div class="resumen-col">
+          <div class="resumen-col-lbl">Cobrás</div>
+          <div class="resumen-col-val">el <b>${formatFecha(fechaCobro)}</b></div>
+          <div class="resumen-col-sub">plazo de <b>${num(s.plazoVentaDias,0)} días</b></div>
+        </div>
+      </div>
+      <div class="resumen-costos-row">
+        <div class="resumen-costo"><span class="lbl">Precio neto x kg</span><span class="val">${money(precioNetoKg)}</span></div>
+        <div class="resumen-costo"><span class="lbl">Importe x cabeza</span><span class="val">${money(importePorCabeza)}</span></div>
+        <div class="resumen-costo resumen-costo-total"><span class="lbl">Importe TOTAL Venta</span><span class="val">${money(r.importeTotalVenta)}</span></div>
+      </div>`;
+  }
+}
+
+function actualizarFleteVentaBadge(){
+  const badge = document.getElementById('badge-flete-venta');
+  const tip = document.getElementById('tip-flete-venta');
+  const toggle = document.getElementById('flete-venta-toggle');
+  if (!badge) return;
+  const usaTerminacion = state.modoProductivo !== 'solo_recria';
+  if (usaTerminacion){
+    badge.style.display = 'none';
+    if (toggle) toggle.style.display = 'flex';
+    if (tip) tip.dataset.tip = 'Al vender hacienda terminada elegís si la retira el comprador en el campo, o si deCampoacampo la entrega puesta en planta (el flete se descuenta de tu venta).';
+    actualizarPlantaVentaWrapVisibilidad();
+  } else {
+    badge.style.display = '';
+    if (toggle) toggle.style.display = 'none';
+    const plantaWrap = document.getElementById('planta-venta-wrap');
+    if (plantaWrap) plantaWrap.style.display = 'none';
+    badge.textContent = 'A Cargo del Comprador';
+    if (tip) tip.dataset.tip = 'En Solo Recría vendés hacienda flaca: el flete corre por cuenta de quien la retira. No se descuenta de tu venta.';
+  }
+}
+
+function actualizarPlantaVentaWrapVisibilidad(){
+  const wrap = document.getElementById('planta-venta-wrap');
+  if (!wrap) return;
+  wrap.style.display = state.fleteVentaModo === 'planta' ? 'block' : 'none';
+  if (state.fleteVentaModo === 'planta') actualizarFleteVentaTotalDisplay();
+}
+
+function actualizarFleteVentaTotalDisplay(){
+  const el = document.getElementById('flete-venta-total-display');
+  if (!el) return;
+  const r = calcular(state);
+  const total = state.fleteVentaJaulas * state.fleteVentaKm * state.fleteVentaTarifaKm;
+  const porCabeza = r.cabezasVenta > 0 ? total / r.cabezasVenta : 0;
+  el.innerHTML = `Costo de Flete Total: <b>${money(total)}</b> (${money(porCabeza)}/cab.)`;
+}
+
+function actualizarLabelPrecioVenta(){
+  const el = document.getElementById('label-precio-venta');
+  if (!el) return;
+  el.textContent = state.tipoPrecioVenta === 'carne' ? 'Precio de Venta ($/kg CARNE +IVA)' : 'Precio de Venta ($/kg VIVO +IVA)';
+}
+
+function renderPesoStepper(r){
+  const el = document.getElementById('peso-stepper');
+  if (!el) return;
+  const chips = [chipPeso('Peso Inicial', r.pesoInicial)];
+  if (r.usaRecria) chips.push(chipPeso('Fin Recría', r.pesoFinRecria));
+  if (r.usaTerminacion) chips.push(chipPeso('Fin Terminación', r.pesoFinTerminacion));
+  el.innerHTML = chips.join('<span class="peso-arrow">→</span>');
+}
+function chipPeso(lbl, kg){
+  return `<div class="peso-chip"><span class="peso-chip-lbl">${lbl}</span><span class="peso-chip-val">${num(kg,0)} kg</span></div>`;
+}
+
+function bindSimuladorEvents(){
+  const bind = (id, key, parse=parseFloat) => {
+    document.getElementById(id).addEventListener('input', e=>{
+      state[key] = parse(e.target.value);
+      renderResultados();
+      renderCardEstimador();
+    });
+  };
+  // Para inputs "en miles" (montos grandes): se parsean tolerando separadores
+  // de miles ya tipeados, y se reformatean con "." al perder el foco.
+  const bindMiles = (id, key) => {
+    const el = document.getElementById(id);
+    el.addEventListener('input', e=>{
+      state[key] = parseMiles(e.target.value);
+      renderResultados();
+      renderCardEstimador();
+    });
+    el.addEventListener('blur', e=>{
+      e.target.value = formatMiles(state[key]);
+    });
+  };
+  bind('in-recria-adg','recriaADG');
+  bind('in-recria-dias','recriaDias');
+  bind('in-term-adg','terminacionADG');
+  bind('in-term-dias','terminacionDias');
+  bind('in-mortandad','mortandadPct');
+  bindMiles('in-precio-venta','precioVenta');
+  document.getElementById('btn-precio-venta-menos').addEventListener('click', ()=>{
+    state.precioVenta = Math.max(0, state.precioVenta - 50);
+    document.getElementById('in-precio-venta').value = formatMiles(state.precioVenta);
+    renderResultados(); renderCardEstimador();
+  });
+  document.getElementById('btn-precio-venta-mas').addEventListener('click', ()=>{
+    state.precioVenta += 50;
+    document.getElementById('in-precio-venta').value = formatMiles(state.precioVenta);
+    renderResultados(); renderCardEstimador();
+  });
+  bind('in-comision-venta','comisionVentaPct');
+  bind('in-plazo-venta','plazoVentaDias');
+  bind('in-tasa','tasaAnualPct');
+
+  bind('in-recria-ha-quintales','recriaCostoHaQuintales');
+  bindMiles('in-recria-precio-quintal','recriaPrecioQuintalSoja');
+  bindMiles('in-recria-siembra','recriaCostoSiembraPastura');
+  bindMiles('in-recria-mantenimiento','recriaMantenimientoPastura');
+  bind('in-recria-vida-util','recriaVidaUtilPastura');
+  bindMiles('in-recria-prod-ms','recriaProduccionAnualMS');
+  bind('in-recria-eficiencia','recriaEficienciaPct');
+  bind('in-recria-consumo','recriaConsumoPct');
+  bindMiles('in-recria-sanitario-precio','recriaInsumoSanitarioPrecio');
+  bind('in-recria-dosis','recriaDosisSanitaria');
+
+  bind('in-term-energia-pct','termEnergiaPct');
+  bindMiles('in-term-energia-precio','termEnergiaPrecio');
+  bind('in-term-proteina-pct','termProteinaPct');
+  bindMiles('in-term-proteina-precio','termProteinaPrecio');
+  bind('in-term-fibra-pct','termFibraPct');
+  bindMiles('in-term-fibra-precio','termFibraPrecio');
+  bind('in-term-nucleo-pct','termNucleoPct');
+  bindMiles('in-term-nucleo-precio','termNucleoPrecio');
+  bind('in-term-consumo','termConsumoPct');
+  bindMiles('in-term-sanitario-precio','termInsumoSanitarioPrecio');
+  bind('in-term-dosis','termDosisSanitaria');
+  bind('in-term-estructura-cabezadia','termEstructuraCabezaDia');
+
+  document.querySelectorAll('#modo-productivo-toggle .toggle').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      state.modoProductivo = b.dataset.val;
+      state.mortandadPct = state.modoProductivo === 'recria_terminacion' ? 2.0
+        : state.modoProductivo === 'solo_recria' ? 1.5 : 1.0;
+      document.getElementById('in-mortandad').value = state.mortandadPct;
+      document.querySelectorAll('#modo-productivo-toggle .toggle').forEach(x=>x.classList.remove('active'));
+      b.classList.add('active');
+      actualizarVisibilidadFases();
+      actualizarFleteVentaBadge();
+      renderResultados();
+      renderCardEstimador();
+    });
+  });
+
+  document.querySelectorAll('#tipo-precio-venta-toggle .toggle').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      state.tipoPrecioVenta = b.dataset.val;
+      document.querySelectorAll('#tipo-precio-venta-toggle .toggle').forEach(x=>x.classList.remove('active'));
+      b.classList.add('active');
+      document.getElementById('campo-rinde-estimado').style.display = state.tipoPrecioVenta === 'carne' ? 'flex' : 'none';
+      actualizarLabelPrecioVenta();
+      renderResultados();
+      renderCardEstimador();
+    });
+  });
+  bind('in-rinde-estimado','rindeEstimadoPct');
+
+  document.querySelectorAll('#flete-venta-toggle .toggle').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      state.fleteVentaModo = b.dataset.val;
+      document.querySelectorAll('#flete-venta-toggle .toggle').forEach(x=>x.classList.remove('active'));
+      b.classList.add('active');
+      actualizarPlantaVentaWrapVisibilidad();
+      renderResultados();
+      renderCardEstimador();
+    });
+  });
+  document.getElementById('in-flete-venta-jaulas').addEventListener('input', e=>{
+    state.fleteVentaJaulas = parseFloat(e.target.value) || 0;
+    actualizarFleteVentaTotalDisplay();
+    renderResultados();
+    renderCardEstimador();
+  });
+  document.getElementById('in-flete-venta-km').addEventListener('input', e=>{
+    state.fleteVentaKm = parseMiles(e.target.value);
+    actualizarFleteVentaTotalDisplay();
+    renderResultados();
+    renderCardEstimador();
+  });
+  document.getElementById('in-flete-venta-km').addEventListener('blur', e=>{
+    e.target.value = formatMiles(state.fleteVentaKm);
+  });
+  document.getElementById('in-flete-venta-tarifa').addEventListener('input', e=>{
+    state.fleteVentaTarifaKm = parseMiles(e.target.value);
+    actualizarFleteVentaTotalDisplay();
+    renderResultados();
+    renderCardEstimador();
+  });
+  document.getElementById('in-flete-venta-tarifa').addEventListener('blur', e=>{
+    e.target.value = formatMiles(state.fleteVentaTarifaKm);
+  });
+
+  document.querySelectorAll('#view-toggle button').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      state.vista = b.dataset.v;
+      document.querySelectorAll('#view-toggle button').forEach(x=>x.classList.remove('active'));
+      b.classList.add('active');
+      renderResultados();
+    });
+  });
+
+  document.querySelectorAll('#moneda-toggle button').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      state.monedaResultados = b.dataset.m;
+      document.querySelectorAll('#moneda-toggle button').forEach(x=>x.classList.remove('active'));
+      b.classList.add('active');
+      renderResultados();
+    });
+  });
+}
+
+/* =========================================================================
+   RENDER: tablas de resultados + margen final + precios de equilibrio
+   ========================================================================= */
+function fila(lbl, value, bloque, s, r, opts={}){
+  const v = val(value, bloque, s, r);
+  const cls = opts.cls ? ` ${opts.cls}` : '';
+  return `<tr class="${cls}"><td class="lbl">${lbl}</td><td class="val">${moneyAuto(v, s)}</td></tr>`;
+}
+
+// --- Colapso individual de cada subsección de Resultados (ver totales / ver detalle) ---
+function claseBloque(key){
+  return state.resultadosColapsado[key] ? 'bloque-resumen colapsado' : 'bloque-resumen';
+}
+function tituloBloque(key, texto){
+  const colapsado = state.resultadosColapsado[key];
+  return `<h5 onclick="toggleBloqueResumen('${key}')"><span class="chevron">${colapsado?'▸':'▾'}</span>${texto}</h5>`;
+}
+function toggleBloqueResumen(key){
+  state.resultadosColapsado[key] = !state.resultadosColapsado[key];
+  renderResultados();
+}
+
+function renderResultados(){
+  const s = state;
+  const r = calcular(s);
+  renderPesoStepper(r);
+  actualizarPanelesCostos(s,r);
+  actualizarFechas(s,r);
+  actualizarResumenColapsado(s,r);
+
+  const labelFleteCompra = s.fleteCompraModo === 'retirar'
+    ? `Costo de Flete (${num(s.fleteCompraJaulas,0)} jaulas × ${num(s.fleteCompraKm,0)} km × ${money(s.fleteCompraTarifaKm)}/km)`
+    : 'Costo de Flete';
+  const labelFleteVenta = r.fleteVentaResponsable === 'planta'
+    ? `Costo de Flete (${num(s.fleteVentaJaulas,0)} jaulas × ${num(s.fleteVentaKm,0)} km × ${money(s.fleteVentaTarifaKm)}/km)`
+    : r.fleteVentaResponsable === 'retirar'
+      ? 'Costo de Flete (a retirar en campo — a cargo del comprador)'
+      : 'Costo de Flete (a cargo del comprador)';
+
+  const tablas = document.getElementById('resultados-tablas');
+  tablas.innerHTML = `
+    <div class="${claseBloque('compra')}">
+      ${tituloBloque('compra', `Compra ${divLabel('compra',s)}`)}
+      <table class="tabla-res">
+        ${fila('Importe Hacienda', r.importeHaciendaCompra, 'compra', s, r)}
+        ${fila('Gastos Comerciales (3% fijo)', r.gastosComercialesCompra, 'compra', s, r)}
+        ${fila(labelFleteCompra, r.costoFleteCompra, 'compra', s, r)}
+        ${fila('Importe Total Compra', r.importeTotalCompra, 'compra', s, r, {cls:'subtotal total-bloque'})}
+      </table>
+    </div>
+
+    ${r.usaRecria ? `
+    <div class="${claseBloque('recria')}">
+      ${tituloBloque('recria', `Recría ${divLabel('recria',s)}`)}
+      <table class="tabla-res">
+        ${fila('Costo Producción Recría', r.costoProduccionRecria, 'recria', s, r, {cls:'subtotal total-bloque'})}
+      </table>
+      <p class="nota-formula">
+        Ganancia en Recría: <b>${num(r.kgRecria,0)} kg</b> (${num(s.recriaADG,2)} kg/día × ${num(s.recriaDias,0)} días) · Costo unitario por cabeza: <b>${money(r.costoRecriaUnitTotal)}</b>
+      </p>
+    </div>` : ''}
+
+    ${r.usaTerminacion ? `
+    <div class="${claseBloque('terminacion')}">
+      ${tituloBloque('terminacion', `Terminación ${divLabel('terminacion',s)}`)}
+      <table class="tabla-res">
+        ${fila('Costo Producción Terminación', r.costoProduccionTerminacion, 'terminacion', s, r, {cls:'subtotal total-bloque'})}
+      </table>
+      <p class="nota-formula">
+        Ganancia en Terminación: <b>${num(r.kgTerminacion,0)} kg</b> (${num(s.terminacionADG,2)} kg/día × ${num(s.terminacionDias,0)} días) · Costo unitario por cabeza: <b>${money(r.costoTermUnitTotal)}</b>
+      </p>
+    </div>` : ''}
+
+    <div class="${claseBloque('venta')}">
+      ${tituloBloque('venta', `Venta ${divLabel('venta',s)}`)}
+      <table class="tabla-res">
+        ${fila('Importe Hacienda', r.importeHaciendaVenta, 'venta', s, r)}
+        ${fila('Gastos Comerciales', -r.gastosComercialesVenta, 'venta', s, r)}
+        ${fila(labelFleteVenta, -r.costoFleteVenta, 'venta', s, r)}
+        ${fila('Importe Total Venta', r.importeTotalVenta, 'venta', s, r, {cls:'subtotal total-bloque'})}
+      </table>
+      <p class="nota-formula">
+        Peso de venta efectivo (neto): <b>${num(r.pesoVentaEfectivo,0)} kg</b>${s.tipoPrecioVenta==='carne'? ` · Precio expresado en $/kg carne con rinde estimado de ${pct(s.rindeEstimadoPct)}` : ''}
+      </p>
+    </div>
+
+    <div class="${claseBloque('resultado')}">
+      ${tituloBloque('resultado', `Resultado Económico ${divLabel('resultado',s)}`)}
+      <table class="tabla-res">
+        ${fila('Margen Bruto (Venta − Compra)', r.margenBruto, 'resultado', s, r)}
+        ${fila('− Costo de Producción', -r.costoProduccionTotal, 'resultado', s, r)}
+        <tr class="subtotal"><td class="lbl">Margen Neto Productivo</td><td class="val">${moneyAuto(val(r.margenNetoProductivo,'resultado',s,r), s)}</td></tr>
+        ${fila(`− Costo Oport. Financiero Compra (${num(r.diasFinanciamiento,0)} d, ${pct(s.tasaAnualPct)} anual)`, -r.costoOportunidadFinanciero, 'resultado', s, r)}
+        ${r.usaRecria ? fila(`− Costo Financiero Recría (${num(r.diasFinancieroRecria,0)} d, ${pct(s.tasaAnualPct)} anual)`, -r.costoFinancieroRecria, 'resultado', s, r) : ''}
+        ${r.usaTerminacion ? fila(`− Costo Financiero Terminación (${num(r.diasFinancieroTerminacion,0)} d, ${pct(s.tasaAnualPct)} anual)`, -r.costoFinancieroTerminacion, 'resultado', s, r) : ''}
+        <tr class="subtotal total-bloque ${r.margenNetoEconomico>=0?'positivo':'negativo'}"><td class="lbl">Margen Neto Económico</td><td class="val">${moneyAuto(val(r.margenNetoEconomico,'resultado',s,r), s)}</td></tr>
+      </table>
+      <p class="nota-formula">
+        Costo Oport. Financiero Compra = Importe Total Compra (<b>${money(r.importeTotalCompra)}</b>) × Tasa Anual (<b>${pct(s.tasaAnualPct)}</b>) × Días de Financiamiento (<b>${num(r.diasFinanciamiento,0)}</b>) ÷ 365 — capital inmovilizado en la compra (hacienda + gastos comerciales + flete si lo pagaste vos).
+        ${r.usaRecria? ` Costo Financiero Recría = Costo Producción Recría (<b>${money(r.costoProduccionRecria)}</b>) × Tasa Anual × Días desde la mitad de la Recría hasta el cobro (<b>${num(r.diasFinancieroRecria,0)}</b>) ÷ 365.`:''}
+        ${r.usaTerminacion? ` Costo Financiero Terminación = Costo Producción Terminación (<b>${money(r.costoProduccionTerminacion)}</b>) × Tasa Anual × Días desde la mitad de la Terminación hasta el cobro (<b>${num(r.diasFinancieroTerminacion,0)}</b>) ÷ 365.`:''}
+      </p>
+    </div>
+  `;
+
+  const btnVerTotales = document.getElementById('btn-ver-totales-detalles');
+  if (btnVerTotales){
+    const todosColapsados = Object.values(s.resultadosColapsado).every(v=>v===true);
+    btnVerTotales.textContent = todosColapsados ? 'Ver Detalles' : 'Ver Totales';
+    btnVerTotales.onclick = ()=>{
+      const nuevoValor = !todosColapsados;
+      Object.keys(s.resultadosColapsado).forEach(k=>{ s.resultadosColapsado[k] = nuevoValor; });
+      renderResultados();
+    };
+  }
+
+  document.getElementById('margen-final-wrap').innerHTML = `
+    <div class="margen-final">
+      <div class="lbl">Margen Neto Económico ${divLabel('resultado',s)}</div>
+      <div class="val ${r.margenNetoEconomico>=0?'positivo':'negativo'}">${moneyAuto(val(r.margenNetoEconomico,'resultado',s,r), s)}</div>
+    </div>
+    <div class="margen-pct-row">
+      <div class="margen-pct-item">
+        <div class="margen-pct-val ${r.margenNetoEconomicoPct>=0?'positivo':'negativo'}">${pct(r.margenNetoEconomicoPct)}</div>
+        <div class="margen-pct-lbl">sobre el importe pagado (compra + producción: <b>${money(r.importePagadoTotal)}</b>), en <b>${num(r.diasNegocioTotal,0)} días</b> de negocio.</div>
+      </div>
+      <div class="margen-pct-item">
+        <div class="margen-pct-val ${r.margenNetoEconomicoPctAnual>=0?'positivo':'negativo'}">${pct(r.margenNetoEconomicoPctAnual)}</div>
+        <div class="margen-pct-lbl">anualizado (proporcional a 365 días).</div>
+      </div>
+    </div>
+  `;
+
+  document.getElementById('equilibrio-grid').innerHTML = `
+    ${tarjetaEquilibrio('Precio de Equilibrio Productivo', 'Precio de venta ($/kg) a partir del cual cubrís compra + producción.', r.precioEquilibrioProductivo, s)}
+    ${tarjetaEquilibrio('Precio de Equilibrio Económico', 'Precio de venta ($/kg) a partir del cual además cubrís el costo de oportunidad del capital.', r.precioEquilibrioEconomico, s)}
+  `;
+}
+
+function tarjetaEquilibrio(titulo, desc, precioBase, s){
+  const variaciones = [-10,-5,0,5,10];
+  const filas = variaciones.map(v=>{
+    const p = precioBase * (1 + v/100);
+    return `<tr class="${v===0?'base':''}"><td>${v===0? 'Equilibrio' : (v>0?'+':'')+v+'%'}</td><td>${moneyAuto(p, s)}</td></tr>`;
+  }).join('');
+  return `
+    <div class="equilibrio-card">
+      <h5>${titulo}</h5>
+      <div class="precio-grande">${moneyAuto(precioBase, s)} / kg</div>
+      <p style="font-size:12px;color:var(--muted);margin:4px 0 0;">${desc}</p>
+      <table class="ladder">${filas}</table>
+    </div>
+  `;
+}
+
+/* =========================================================================
+   EVENTOS DEL OFERTADOR (columna derecha) — siempre activos
+   ========================================================================= */
+function actualizarFleteTotalDisplay(){
+  const el = document.getElementById('flete-total-display');
+  if (!el) return;
+  const total = state.fleteCompraJaulas * state.fleteCompraKm * state.fleteCompraTarifaKm;
+  const porCabeza = state.cabezasCompra > 0 ? total / state.cabezasCompra : 0;
+  el.innerHTML = `Costo de Flete Total: <b>${money(total)}</b> (${money(porCabeza)}/cab.)`;
+}
+
+/* ---- Título del lote: CANTIDAD y KILOS editables ---- */
+function actualizarTituloLote(){
+  const el = document.getElementById('titulo-collapsed-texto');
+  if (!el) return;
+  el.innerHTML = `<strong>${Math.round(state.cabezasCompra)} Novillitos</strong> · ${Math.round(state.pesoCompra)} kg · Brangus Negro y Colorado, Careta · #32157 · Gualeguaychú, Entre Ríos`;
+}
+document.getElementById('in-titulo-cabezas').value = state.cabezasCompra;
+document.getElementById('in-titulo-peso').value = state.pesoCompra;
+document.getElementById('in-titulo-cabezas').addEventListener('input', e=>{
+  state.cabezasCompra = parseInt(e.target.value, 10) || 0;
+  actualizarTituloLote();
+  actualizarFleteTotalDisplay();
+  renderResultados(); renderCardEstimador();
+});
+document.getElementById('in-titulo-peso').addEventListener('input', e=>{
+  state.pesoCompra = parseFloat(e.target.value) || 0;
+  actualizarTituloLote();
+  renderResultados(); renderCardEstimador();
+});
+actualizarTituloLote();
+
+document.getElementById('in-precio-compra').addEventListener('input', e=>{
+  state.precioCompra = parseMiles(e.target.value);
+  renderResultados(); renderCardEstimador();
+});
+document.getElementById('in-precio-compra').addEventListener('blur', e=>{
+  e.target.value = formatMiles(state.precioCompra);
+});
+document.getElementById('btn-precio-menos').addEventListener('click', ()=>{
+  state.precioCompra = Math.max(0, state.precioCompra - 50);
+  document.getElementById('in-precio-compra').value = formatMiles(state.precioCompra);
+  renderResultados(); renderCardEstimador();
+});
+document.getElementById('btn-precio-mas').addEventListener('click', ()=>{
+  state.precioCompra += 50;
+  document.getElementById('in-precio-compra').value = formatMiles(state.precioCompra);
+  renderResultados(); renderCardEstimador();
+});
+
+document.getElementById('in-flete-jaulas').addEventListener('input', e=>{
+  state.fleteCompraJaulas = parseFloat(e.target.value)||0;
+  actualizarFleteTotalDisplay();
+  renderResultados(); renderCardEstimador();
+});
+document.getElementById('in-flete-km').addEventListener('input', e=>{
+  state.fleteCompraKm = parseMiles(e.target.value);
+  actualizarFleteTotalDisplay();
+  renderResultados(); renderCardEstimador();
+});
+document.getElementById('in-flete-km').addEventListener('blur', e=>{
+  e.target.value = formatMiles(state.fleteCompraKm);
+});
+document.getElementById('in-flete-tarifa').addEventListener('input', e=>{
+  state.fleteCompraTarifaKm = parseMiles(e.target.value);
+  actualizarFleteTotalDisplay();
+  renderResultados(); renderCardEstimador();
+});
+document.getElementById('in-flete-tarifa').addEventListener('blur', e=>{
+  e.target.value = formatMiles(state.fleteCompraTarifaKm);
+});
+
+document.querySelectorAll('#plazo-compra-pills .pill').forEach(b=>{
+  b.addEventListener('click', ()=>{
+    state.plazoCompraDias = parseFloat(b.dataset.val);
+    document.querySelectorAll('#plazo-compra-pills .pill').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    renderResultados(); renderCardEstimador();
+  });
+});
+document.querySelectorAll('#flete-compra-toggle .toggle').forEach(b=>{
+  b.addEventListener('click', ()=>{
+    state.fleteCompraModo = b.dataset.val;
+    document.querySelectorAll('#flete-compra-toggle .toggle').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    document.getElementById('destino-compra-wrap').style.display = state.fleteCompraModo === 'retirar' ? 'block' : 'none';
+    if (state.fleteCompraModo === 'retirar') actualizarFleteTotalDisplay();
+    renderResultados(); renderCardEstimador();
+  });
+});
+document.getElementById('btn-enviar-oferta').addEventListener('click', ()=>{
+  alert('Prototipo de Simulador de Negocio — este botón no envía ofertas reales.');
+});
+document.getElementById('btn-volver').addEventListener('click', cerrarSimulador);
+
+// renderResultados() solo tiene efecto real una vez que el simulador está montado;
+// se vuelve no-op seguro si todavía no existen los nodos.
+const _renderResultadosOrig = renderResultados;
+renderResultados = function(){
+  if (document.getElementById('resultados-tablas')) _renderResultadosOrig();
+};
+
+/* =========================================================================
+   COTIZACIÓN USD/MEP (se usa para convertir a ARS los costos cargados en
+   USD). Se refresca como máximo una vez por día: el valor del día se
+   guarda en localStorage y se reutiliza hasta el día siguiente. Si el
+   fetch en vivo falla (sin conexión, API caída, etc.) se conserva el
+   valor de referencia ya cargado en state.dolarMEP.
+   ========================================================================= */
+const DOLAR_MEP_CACHE_KEY = 'dcac_sim_dolar_mep_cache_v1';
+function hoyISO(){ return new Date().toISOString().slice(0,10); }
+
+async function actualizarDolarMEP(){
+  try{
+    const cache = JSON.parse(localStorage.getItem(DOLAR_MEP_CACHE_KEY) || 'null');
+    if (cache && cache.fecha === hoyISO() && cache.valor > 0){
+      state.dolarMEP = cache.valor;
+      state.dolarMEPEsFallback = false;
+      renderDolarMEPDisplay(); renderResultados(); renderCardEstimador();
+      return;
+    }
+  } catch(e){ /* caché corrupta: seguimos al fetch en vivo */ }
+
+  try{
+    const res = await fetch('https://dolarapi.com/v1/dolares/bolsa');
+    if (!res.ok) throw new Error('HTTP '+res.status);
+    const data = await res.json();
+    const valor = Number(data.venta);
+    if (!valor || valor <= 0) throw new Error('valor inválido');
+    state.dolarMEP = valor;
+    state.dolarMEPEsFallback = false;
+    try{ localStorage.setItem(DOLAR_MEP_CACHE_KEY, JSON.stringify({fecha: hoyISO(), valor})); }catch(e){}
+  } catch(e){
+    // Sin conexión a la API: queda el valor de referencia (state.dolarMEP ya
+    // tiene un valor por defecto definido en el estado inicial).
+    state.dolarMEPEsFallback = true;
+  }
+  renderDolarMEPDisplay(); renderResultados(); renderCardEstimador();
+}
+
+function renderDolarMEPDisplay(){
+  const el = document.getElementById('dolar-mep-display');
+  if (!el) return;
+  el.textContent = state.dolarMEPEsFallback
+    ? `USD/MEP (ref.): ${money(state.dolarMEP)}`
+    : `USD/MEP: ${money(state.dolarMEP)}`;
+}
+
+/* =========================================================================
+   INICIALIZACIÓN
+   ========================================================================= */
+actualizarFleteTotalDisplay();
+renderCardEstimador();
+actualizarDolarMEP();
+</script>
+
+<script src="config.js"></script>
+<script src="revision.js"></script>
+</body>
+</html>
